@@ -21,7 +21,6 @@ package org.apache.sling.scripting.sightly.impl.compiler;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.sling.scripting.sightly.compiler.SightlyCompilerException;
 import org.apache.sling.scripting.sightly.compiler.commands.Command;
 import org.apache.sling.scripting.sightly.compiler.commands.CommandHandler;
 import org.apache.sling.scripting.sightly.compiler.commands.CommandStream;

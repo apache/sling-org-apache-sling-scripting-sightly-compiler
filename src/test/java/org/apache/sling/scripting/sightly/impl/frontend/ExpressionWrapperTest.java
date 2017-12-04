@@ -18,6 +18,8 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.frontend;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,9 +47,6 @@ import org.apache.sling.scripting.sightly.impl.filter.URIManipulationFilter;
 import org.apache.sling.scripting.sightly.impl.filter.XSSFilter;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class ExpressionWrapperTest {
 

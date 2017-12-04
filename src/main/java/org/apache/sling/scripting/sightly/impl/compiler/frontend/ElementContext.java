@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
-import org.apache.sling.scripting.sightly.impl.html.dom.MarkupHandler;
 import org.apache.sling.scripting.sightly.impl.plugin.AggregatePluginInvoke;
 import org.apache.sling.scripting.sightly.impl.plugin.PluginCallInfo;
 import org.apache.sling.scripting.sightly.impl.plugin.PluginInvoke;

@@ -18,8 +18,6 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.filter;
 
-import org.apache.sling.scripting.sightly.compiler.expression.Expression;
-
 /**
  * Defines a context for the {@link Expression} that will be processed by a {@link Filter}. The context can then be used by filters to
  * further enhance the decision mechanism for their processing.

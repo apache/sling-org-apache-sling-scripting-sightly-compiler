@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.compiler;
 
-import java.util.Locale;
-
 /**
  * <p>
  *     This class documents what runtime functions (abstracted by
