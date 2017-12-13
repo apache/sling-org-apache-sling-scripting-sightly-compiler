@@ -51,8 +51,10 @@ public class ObjectModelTest {
         assertTrue(ObjectModel.toBoolean("TRUE"));
         assertTrue(ObjectModel.toBoolean("TrUE"));
         Integer[] testArray = new Integer[] {1, 2, 3};
+        int[] testPrimitiveArray = new int[] {1, 2, 3};
         List testList = Arrays.asList(testArray);
         assertTrue(ObjectModel.toBoolean(testArray));
+        assertTrue(ObjectModel.toBoolean(testPrimitiveArray));
         assertFalse(ObjectModel.toBoolean(new Integer[]{}));
         assertTrue(ObjectModel.toBoolean(testList));
         assertFalse(ObjectModel.toBoolean(Collections.emptyList()));
@@ -84,8 +86,11 @@ public class ObjectModelTest {
         assertEquals("1", ObjectModel.toString(1));
         assertEquals("ADD", ObjectModel.toString(BinaryOperator.ADD));
         Integer[] testArray = new Integer[] {1, 2, 3};
+        int[] testPrimitiveArray = new int[] {1, 2, 3};
         List testList = Arrays.asList(testArray);
         assertEquals("1,2,3", ObjectModel.toString(testList));
+        assertEquals("1,2,3", ObjectModel.toString(testArray));
+        assertEquals("1,2,3", ObjectModel.toString(testPrimitiveArray));
     }
 
     @Test
@@ -93,15 +98,17 @@ public class ObjectModelTest {
         assertTrue(ObjectModel.toCollection(null).isEmpty());
         assertTrue(ObjectModel.toCollection(new StringBuilder()).isEmpty());
         Integer[] testArray = new Integer[] {1, 2, 3};
-        List testList = Arrays.asList(testArray);
+        int[] testPrimitiveArray = new int[]{1, 2, 3};
+        List<Integer> testList = Arrays.asList(testArray);
         Map<String, Integer> map = new HashMap<String, Integer>() {{
             put("one", 1);
             put("two", 2);
         }};
         assertEquals(testList, ObjectModel.toCollection(testArray));
+        assertEquals(testList, ObjectModel.toCollection(testPrimitiveArray));
         assertEquals(testList, ObjectModel.toCollection(testList));
         assertEquals(map.keySet(), ObjectModel.toCollection(map));
-        Vector vector = new Vector(testList);
+        Vector<Integer> vector = new Vector<>(testList);
         assertEquals(testList, ObjectModel.toCollection(vector.elements()));
         assertEquals(testList, ObjectModel.toCollection(testList.iterator()));
         assertEquals(testList, ObjectModel.toCollection(new Bag<>(testArray)));

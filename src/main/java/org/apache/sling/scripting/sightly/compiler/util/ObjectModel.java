@@ -259,6 +259,14 @@ public final class ObjectModel {
         if (object instanceof Object[]) {
             return Arrays.asList((Object[]) object);
         }
+        if (object.getClass().isArray()) {
+            int length = Array.getLength(object);
+            Collection<Object> list = new ArrayList<>();
+            for (int i = 0; i < length; i++) {
+                list.add(Array.get(object, i));
+            }
+            return list;
+        }
         if (object instanceof Collection) {
             return (Collection<Object>) object;
         }
