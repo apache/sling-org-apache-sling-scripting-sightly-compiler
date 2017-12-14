@@ -20,6 +20,7 @@ package org.apache.sling.scripting.sightly.compiler;
 
 import java.util.List;
 
+import org.apache.sling.scripting.sightly.compiler.commands.Command;
 import org.apache.sling.scripting.sightly.compiler.commands.CommandStream;
 import org.osgi.annotation.versioning.ProviderType;
 

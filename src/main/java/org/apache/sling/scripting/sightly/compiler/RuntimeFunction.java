@@ -55,7 +55,7 @@ public final class RuntimeFunction {
      *     <li>optional: locale information</li>
      *     <li>optional: hint information</li>
      *     <li>optional (not part of the specification): basename information; for more details see
-     *     {@link java.util.ResourceBundle#getBundle(String, Locale)}</li>
+     *     {@link java.util.ResourceBundle#getBundle(String, java.util.Locale)}</li>
      * </ol>
      * <p>
      *     For more details check https://github.com/Adobe-Marketing-Cloud/htl-spec/blob/1.2/SPECIFICATION.md#123-i18n.
