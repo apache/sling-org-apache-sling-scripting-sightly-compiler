@@ -18,7 +18,11 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.compiler.backend;
 
+import org.apache.sling.scripting.sightly.compiler.CompilationUnit;
+import org.apache.sling.scripting.sightly.compiler.SightlyCompiler;
+import org.apache.sling.scripting.sightly.compiler.commands.Command;
 import org.apache.sling.scripting.sightly.compiler.commands.CommandStream;
+import org.apache.sling.scripting.sightly.compiler.commands.CommandVisitor;
 import org.osgi.annotation.versioning.ConsumerType;
 
 /**
