@@ -113,7 +113,7 @@ public final class ObjectModel {
             String propertyName = toString(property);
             if (StringUtils.isNotEmpty(propertyName)) {
                 if (target instanceof Map) {
-                    resolved = ((Map) target).get(propertyName);
+                    resolved = ((Map) target).get(property);
                 }
                 if (resolved == null) {
                     resolved = getField(target, propertyName);
