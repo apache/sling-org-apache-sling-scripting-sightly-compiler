@@ -153,6 +153,12 @@ public class ObjectModelTest {
         assertEquals(1, ObjectModel.resolveProperty(map, "one"));
         assertNull(ObjectModel.resolveProperty(map, null));
         assertNull(ObjectModel.resolveProperty(map, ""));
+        Map<Integer, String> stringMap = new HashMap<Integer, String>(){{
+            put(1, "one");
+            put(2, "two");
+        }};
+        assertEquals("one", ObjectModel.resolveProperty(stringMap, 1));
+        assertEquals("two", ObjectModel.resolveProperty(stringMap, 2));
         Person johnDoe = AdultFactory.createAdult("John", "Doe");
         assertEquals("Expected to be able to access public static final constants.", 1l, ObjectModel.resolveProperty(johnDoe, "CONSTANT"));
         assertNull("Did not expect to be able to access public fields from package protected classes.", ObjectModel.resolveProperty(johnDoe,
@@ -163,6 +169,24 @@ public class ObjectModelTest {
         assertNull("Expected null result for public method available on implementation but not exposed by interface.", ObjectModel
                 .resolveProperty(johnDoe, "fullName"));
         assertNull("Expected null result for inexistent method.", ObjectModel.resolveProperty(johnDoe, "nomethod"));
+    }
+
+    @Test
+    public void testGetIndex() {
+        Integer[] testArray = new Integer[] {1, 2, 3};
+        assertEquals(2, ObjectModel.getIndex(testArray, 1));
+        assertNull(ObjectModel.getIndex(testArray, 3));
+        assertNull(ObjectModel.getIndex(testArray, -1));
+        List<Integer> testList = Arrays.asList(testArray);
+        assertEquals(2, ObjectModel.getIndex(testList, 1));
+        assertNull(ObjectModel.getIndex(testList, 3));
+        assertNull(ObjectModel.getIndex(testList, -1));
+        Map<Integer, String> stringMap = new HashMap<Integer, String>(){{
+            put(1, "one");
+            put(2, "two");
+        }};
+        assertNull(ObjectModel.getIndex(stringMap, 1));
+        assertNull(ObjectModel.getIndex(stringMap, 2));
     }
 
 
