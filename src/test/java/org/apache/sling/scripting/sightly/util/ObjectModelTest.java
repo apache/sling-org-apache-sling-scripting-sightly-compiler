@@ -122,6 +122,7 @@ public class ObjectModelTest {
 
     @Test
     public void testCollectionToString() {
+        assertEquals("", ObjectModel.collectionToString(null));
         Integer[] testArray = new Integer[] {1, 2, 3};
         List testList = Arrays.asList(testArray);
         assertEquals("1,2,3", ObjectModel.collectionToString(testList));
@@ -129,6 +130,7 @@ public class ObjectModelTest {
 
     @Test
     public void testFromIterator() {
+        assertTrue(ObjectModel.fromIterator(null).isEmpty());
         Integer[] testArray = new Integer[] {1, 2, 3};
         List testList = Arrays.asList(testArray);
         assertEquals(testList, ObjectModel.fromIterator(testList.iterator()));
@@ -136,8 +138,10 @@ public class ObjectModelTest {
 
     @Test
     public void testResolveProperty() {
-        assertEquals(0, ObjectModel.resolveProperty(Collections.EMPTY_LIST, "size"));
+        assertNull(ObjectModel.resolveProperty(null, 0));
+        assertNull(ObjectModel.resolveProperty(this, null));
         assertNull(ObjectModel.resolveProperty(null, null));
+        assertEquals(0, ObjectModel.resolveProperty(Collections.EMPTY_LIST, "size"));
         Integer[] testArray = new Integer[] {1, 2, 3};
         assertEquals(2, ObjectModel.resolveProperty(testArray, 1));
         assertNull(ObjectModel.resolveProperty(testArray, 3));
@@ -173,6 +177,7 @@ public class ObjectModelTest {
 
     @Test
     public void testGetIndex() {
+        assertNull(ObjectModel.getIndex(null, 0));
         Integer[] testArray = new Integer[] {1, 2, 3};
         assertEquals(2, ObjectModel.getIndex(testArray, 1));
         assertNull(ObjectModel.getIndex(testArray, 3));
@@ -187,6 +192,19 @@ public class ObjectModelTest {
         }};
         assertNull(ObjectModel.getIndex(stringMap, 1));
         assertNull(ObjectModel.getIndex(stringMap, 2));
+    }
+
+    @Test
+    public void testClassBasedMethodsForNulls() {
+        assertNull(ObjectModel.getField(null, null));
+        assertNull(ObjectModel.getField("", null));
+        assertNull(ObjectModel.getField(this, ""));
+        assertNull(ObjectModel.findBeanMethod(null, null));
+        assertNull(ObjectModel.findBeanMethod(this.getClass(), null));
+        assertNull(ObjectModel.findBeanMethod(this.getClass(), ""));
+        assertNull(ObjectModel.invokeBeanMethod(null, null));
+        assertNull(ObjectModel.invokeBeanMethod(this, null));
+        assertNull(ObjectModel.invokeBeanMethod(this, ""));
     }
 
 

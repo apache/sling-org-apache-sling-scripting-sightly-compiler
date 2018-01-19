@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 public final class ObjectModel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectModel.class);
+    private static final String EMPTY_STRING = "";
 
     /**
      * A {@link Set} that stores all the supported primitive classes.
@@ -153,7 +154,7 @@ public final class ObjectModel {
         }
 
         String s = object.toString().trim();
-        if ("".equals(s)) {
+        if (EMPTY_STRING.equals(s)) {
             return false;
         } else if ("true".equalsIgnoreCase(s) || "false".equalsIgnoreCase(s)) {
             return Boolean.parseBoolean(s);
@@ -217,7 +218,7 @@ public final class ObjectModel {
      * @return the string representation of the object or an empty string
      */
     public static String toString(Object object) {
-        String output = "";
+        String output = EMPTY_STRING;
         if (object != null) {
             if (object instanceof String) {
                 output = (String) object;
@@ -298,8 +299,11 @@ public final class ObjectModel {
      * @return the CSV; if the {@code collection} is empty then an empty string will be returned
      */
     public static String collectionToString(Collection<?> collection) {
+        if (collection == null) {
+            return EMPTY_STRING;
+        }
         StringBuilder builder = new StringBuilder();
-        String prefix = "";
+        String prefix = EMPTY_STRING;
         for (Object o : collection) {
             builder.append(prefix).append(toString(o));
             prefix = ",";
@@ -314,6 +318,9 @@ public final class ObjectModel {
      * @return a collection with the iterator's elements
      */
     public static Collection<Object> fromIterator(Iterator<Object> iterator) {
+        if (iterator == null) {
+            return Collections.EMPTY_LIST;
+        }
         ArrayList<Object> result = new ArrayList<>();
         while (iterator.hasNext()) {
             result.add(iterator.next());
@@ -330,6 +337,9 @@ public final class ObjectModel {
      * @return the value stored at the {@code index} or {@code null}
      */
     public static Object getIndex(Object object, int index) {
+        if (object == null) {
+            return null;
+        }
         Class<?> cls = object.getClass();
         if (cls.isArray() && index >= 0 && index < Array.getLength(object)) {
             return Array.get(object, index);
@@ -349,6 +359,9 @@ public final class ObjectModel {
      * @return the value of the field or {@code null} if the field was not found
      */
     public static Object getField(Object object, String fieldName) {
+        if (object == null || StringUtils.isEmpty(fieldName)) {
+            return null;
+        }
         Class<?> cls = object.getClass();
         if (cls.isArray() && "length".equals(fieldName)) {
             return Array.getLength(object);
@@ -370,6 +383,9 @@ public final class ObjectModel {
      * @return the invocation's result or {@code null} if such a method cannot be found
      */
     public static Object invokeBeanMethod(Object object, String methodName) {
+        if (object == null || StringUtils.isEmpty(methodName)) {
+            return null;
+        }
         Class<?> cls = object.getClass();
         Method method = findBeanMethod(cls, methodName);
         if (method != null) {
@@ -396,6 +412,9 @@ public final class ObjectModel {
      * @return a method that matches the criteria or {@code null}
      */
     public static Method findBeanMethod(Class<?> cls, String baseName) {
+        if (cls == null || StringUtils.isEmpty(baseName)) {
+            return null;
+        }
         Method[] publicMethods = cls.getMethods();
         String capitalized = StringUtils.capitalize(baseName);
         for (Method method : publicMethods) {
@@ -421,6 +440,9 @@ public final class ObjectModel {
      * {@link Object#toString()}, {@code false} otherwise
      */
     public static boolean isMethodAllowed(Method method) {
+        if (method == null) {
+            return false;
+        }
         Class<?> declaringClass = method.getDeclaringClass();
         return declaringClass != Object.class || TO_STRING_METHOD.equals(method.getName());
     }
