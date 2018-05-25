@@ -18,34 +18,26 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.plugin;
 
-import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.sling.scripting.sightly.compiler.commands.Conditional;
+import org.apache.sling.scripting.sightly.compiler.commands.Loop;
 import org.apache.sling.scripting.sightly.compiler.commands.OutText;
-import org.apache.sling.scripting.sightly.impl.compiler.Syntax;
+import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.BinaryOperation;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.BinaryOperator;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.Identifier;
-import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.NumericConstant;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.UnaryOperation;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.UnaryOperator;
-import org.apache.sling.scripting.sightly.impl.compiler.frontend.CompilerContext;
-import org.apache.sling.scripting.sightly.compiler.commands.Conditional;
-import org.apache.sling.scripting.sightly.compiler.commands.Loop;
-import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
 import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
+import org.apache.sling.scripting.sightly.impl.compiler.Syntax;
+import org.apache.sling.scripting.sightly.impl.compiler.frontend.CompilerContext;
 
-public class RepeatPlugin extends AbstractPlugin {
+public class RepeatPlugin extends AbstractRepeatPlugin {
 
-    private static final String INDEX = "index";
-    private static final String COUNT = "count";
-    private static final String FIRST = "first";
-    private static final String MIDDLE = "middle";
-    private static final String LAST = "last";
-    private static final String ODD = "odd";
-    private static final String EVEN = "even";
     private static final OutText NEW_LINE = new OutText("\n");
 
     public RepeatPlugin() {
@@ -59,18 +51,83 @@ public class RepeatPlugin extends AbstractPlugin {
 
             private String listVariable = compilerContext.generateVariable("collectionVar");
             private String collectionSizeVar = compilerContext.generateVariable("size");
+            private String collectionNotEmpty = compilerContext.generateVariable("notEmpty");
+            private String beginVariable = compilerContext.generateVariable(BEGIN);
+            private String stepVariable = compilerContext.generateVariable(STEP);
+            private String endVariable = compilerContext.generateVariable(END);
+            private String validStartStepEnd = compilerContext.generateVariable("validStartStepEnd");
 
             @Override
             public void beforeElement(PushStream stream, String tagName) {
                 stream.write(new VariableBinding.Start(listVariable, expression.getRoot()));
                 stream.write(new VariableBinding.Start(collectionSizeVar,
                         new UnaryOperation(UnaryOperator.LENGTH, new Identifier(listVariable))));
-                stream.write(new Conditional.Start(collectionSizeVar, true));
+                stream.write(new VariableBinding.Start(collectionNotEmpty, new BinaryOperation(BinaryOperator.GT, new Identifier
+                        (collectionSizeVar), NumericConstant.ZERO)));
+                stream.write(new Conditional.Start(collectionNotEmpty, true));
+                Map<String, ExpressionNode> options = expression.getOptions();
+                if (options.containsKey(BEGIN)) {
+                    stream.write(new VariableBinding.Start(beginVariable, expression.getOptions().get(BEGIN)));
+                } else {
+                    stream.write(new VariableBinding.Start(beginVariable, NumericConstant.ZERO));
+                }
+                if (options.containsKey(STEP)) {
+                    stream.write(new VariableBinding.Start(stepVariable, expression.getOptions().get(STEP)));
+                } else {
+                    stream.write(new VariableBinding.Start(stepVariable, NumericConstant.ONE));
+                }
+                if (options.containsKey(END)) {
+                    stream.write(new VariableBinding.Start(endVariable, expression.getOptions().get(END)));
+                } else {
+                    stream.write(new VariableBinding.Start(endVariable, new Identifier(collectionSizeVar)));
+                }
+                stream.write(new VariableBinding.Start(validStartStepEnd,
+                                new BinaryOperation(BinaryOperator.AND,
+                                        new BinaryOperation(BinaryOperator.AND,
+                                                new BinaryOperation(BinaryOperator.LT, new Identifier(beginVariable), new Identifier(collectionSizeVar)),
+                                                new BinaryOperation(
+                                                        BinaryOperator.AND,
+                                                        new BinaryOperation(BinaryOperator.GEQ, new Identifier(beginVariable), NumericConstant.ZERO),
+                                                        new BinaryOperation(BinaryOperator.GT, new Identifier(stepVariable), NumericConstant.ZERO)
+                                                )
+                                        ),
+                                        new BinaryOperation(BinaryOperator.GT, new Identifier(endVariable), NumericConstant.ZERO)
+                                )
+                        )
+                );
+                stream.write(new Conditional.Start(validStartStepEnd, true));
                 String itemVariable = decodeItemVariable();
                 String loopStatusVar = Syntax.itemLoopStatusVariable(itemVariable);
                 String indexVariable = compilerContext.generateVariable("index");
                 stream.write(new Loop.Start(listVariable, itemVariable, indexVariable));
                 stream.write(new VariableBinding.Start(loopStatusVar, buildStatusObj(indexVariable, collectionSizeVar)));
+                String stepConditionVariable = compilerContext.generateVariable("stepCondition");
+                stream.write(new VariableBinding.Start(stepConditionVariable,
+                                new BinaryOperation(
+                                        BinaryOperator.REM,
+                                        new BinaryOperation(
+                                                BinaryOperator.SUB,
+                                                new Identifier(indexVariable),
+                                                new Identifier(beginVariable)
+                                        ),
+                                        new Identifier(stepVariable))
+                        )
+                );
+                String loopTraversalVariable = compilerContext.generateVariable("traversal");
+                stream.write(new VariableBinding.Start(loopTraversalVariable,
+                                new BinaryOperation(
+                                        BinaryOperator.AND,
+                                        new BinaryOperation(
+                                                BinaryOperator.AND,
+                                                new BinaryOperation(BinaryOperator.GEQ, new Identifier(indexVariable), new Identifier(
+                                                        beginVariable)),
+                                                new BinaryOperation(BinaryOperator.LEQ, new Identifier(indexVariable), new Identifier(endVariable))
+                                        ),
+                                        new BinaryOperation(BinaryOperator.EQ, new Identifier(stepConditionVariable), NumericConstant.ZERO)
+                                )
+                        )
+                );
+                stream.write(new Conditional.Start(loopTraversalVariable, true));
 
             }
 
@@ -81,9 +138,18 @@ public class RepeatPlugin extends AbstractPlugin {
 
             @Override
             public void afterElement(PushStream stream) {
+                stream.write(Conditional.END);
+                stream.write(VariableBinding.END);
+                stream.write(VariableBinding.END);
                 stream.write(VariableBinding.END);
                 stream.write(Loop.END);
                 stream.write(Conditional.END);
+                stream.write(VariableBinding.END);
+                stream.write(VariableBinding.END);
+                stream.write(VariableBinding.END);
+                stream.write(VariableBinding.END);
+                stream.write(Conditional.END);
+                stream.write(VariableBinding.END);
                 stream.write(VariableBinding.END);
                 stream.write(VariableBinding.END);
             }
@@ -95,26 +161,6 @@ public class RepeatPlugin extends AbstractPlugin {
                     return args[0];
                 }
                 return Syntax.DEFAULT_LIST_ITEM_VAR_NAME;
-            }
-
-            private MapLiteral buildStatusObj(String indexVar, String sizeVar) {
-                HashMap<String, ExpressionNode> obj = new HashMap<>();
-                Identifier indexId = new Identifier(indexVar);
-                BinaryOperation firstExpr = new BinaryOperation(BinaryOperator.EQ, indexId, NumericConstant.ZERO);
-                BinaryOperation lastExpr = new BinaryOperation(
-                        BinaryOperator.EQ,
-                        indexId,
-                        new BinaryOperation(BinaryOperator.SUB, new Identifier(sizeVar), NumericConstant.ONE));
-                obj.put(INDEX, indexId);
-                obj.put(COUNT, new BinaryOperation(BinaryOperator.ADD, indexId, NumericConstant.ONE));
-                obj.put(FIRST, firstExpr);
-                obj.put(MIDDLE, new UnaryOperation(
-                        UnaryOperator.NOT,
-                        new BinaryOperation(BinaryOperator.OR, firstExpr, lastExpr)));
-                obj.put(LAST, lastExpr);
-                obj.put(ODD, parityCheck(indexId, NumericConstant.ZERO));
-                obj.put(EVEN, parityCheck(indexId, NumericConstant.ONE));
-                return new MapLiteral(obj);
             }
 
             private ExpressionNode parityCheck(ExpressionNode numericExpression, NumericConstant expected) {

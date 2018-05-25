@@ -50,14 +50,16 @@ public final class VariableTracker<T> {
      * @param data the data associated with the variable
      */
     public void pushVariable(String name, T data) {
-        name = name.toLowerCase();
-        Stack<T> dataStack = variableData.get(name);
-        if (dataStack == null) {
-            dataStack = new Stack<>();
-            variableData.put(name, dataStack);
+        if (name != null) {
+            name = name.toLowerCase();
+            Stack<T> dataStack = variableData.get(name);
+            if (dataStack == null) {
+                dataStack = new Stack<>();
+                variableData.put(name, dataStack);
+            }
+            dataStack.push(data);
+            declarationStack.push(name);
         }
-        dataStack.push(data);
-        declarationStack.push(name);
     }
 
     /**

@@ -47,6 +47,9 @@ public abstract class TrackingVisitor<T> extends UniformVisitor {
         super.visit(loopStart);
         tracker.pushVariable(loopStart.getIndexVariable(), assignDefault(loopStart));
         tracker.pushVariable(loopStart.getItemVariable(), assignDefault(loopStart));
+        tracker.pushVariable(loopStart.getBeginVariable(), assignDefault(loopStart));
+        tracker.pushVariable(loopStart.getStepVariable(), assignDefault(loopStart));
+        tracker.pushVariable(loopStart.getEndVariable(), assignDefault(loopStart));
     }
 
     @Override

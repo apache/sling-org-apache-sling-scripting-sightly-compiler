@@ -28,11 +28,21 @@ public final class Loop {
         private String listVariable;
         private String itemVariable;
         private String indexVariable;
+        private String beginVariable;
+        private String stepVariable;
+        private String endVariable;
 
         public Start(String listVariable, String itemVariable, String indexVariable) {
+            this(listVariable, itemVariable, indexVariable, null, null, null);
+        }
+
+        public Start(String listVariable, String itemVariable, String indexVariable, String beginVariable, String stepVariable, String endVariable) {
             this.listVariable = listVariable;
             this.itemVariable = itemVariable;
             this.indexVariable = indexVariable;
+            this.beginVariable = beginVariable;
+            this.stepVariable = stepVariable;
+            this.endVariable = endVariable;
         }
 
         public String getListVariable() {
@@ -47,6 +57,18 @@ public final class Loop {
             return indexVariable;
         }
 
+        public String getBeginVariable() {
+            return beginVariable;
+        }
+
+        public String getStepVariable() {
+            return stepVariable;
+        }
+
+        public String getEndVariable() {
+            return endVariable;
+        }
+
         @Override
         public void accept(CommandVisitor visitor) {
             visitor.visit(this);
@@ -58,6 +80,9 @@ public final class Loop {
                     "listVariable='" + listVariable + '\'' +
                     ", itemVariable='" + itemVariable + '\'' +
                     ", indexVariable='" + indexVariable + '\'' +
+                    ", beginVariable='" + beginVariable + '\'' +
+                    ", stepVariable='" + stepVariable + '\'' +
+                    ", endVariable='" + endVariable + '\'' +
                     '}';
         }
     }

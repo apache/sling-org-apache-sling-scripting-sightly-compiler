@@ -21,7 +21,7 @@
  * The {@code org.apache.sling.scripting.sightly.compiler.commands} package defines the API for
  * {@link org.apache.sling.scripting.sightly.compiler.commands.Command} processing.
  */
-@Version("1.0.0")
+@Version("1.1.0")
 package org.apache.sling.scripting.sightly.compiler.commands;
 
 import org.osgi.annotation.versioning.Version;
