@@ -18,6 +18,8 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.compiler.expression.nodes;
 
+import java.util.Collection;
+
 import org.apache.sling.scripting.sightly.compiler.SightlyCompilerException;
 import org.apache.sling.scripting.sightly.compiler.util.ObjectModel;
 
@@ -182,6 +184,13 @@ public enum BinaryOperator {
                     % ObjectModel.toNumber(right).intValue());
         }
 
+    },
+
+    IN {
+        @Override
+        public Object eval(Object left, Object right) {
+            return inOp(left, right);
+        }
     };
 
     public static boolean eq(Object left, Object right) {
@@ -237,6 +246,21 @@ public enum BinaryOperator {
         }
         throw new SightlyCompilerException("Operands are not of the same type: the equality operator can only be applied to String, Number" +
                 " and Boolean types.");
+    }
+
+    public static boolean inOp(Object left, Object right) {
+        if (left instanceof String && right instanceof String) {
+            String leftString = (String) left;
+            String rightString = (String) right;
+            return rightString.contains(leftString);
+        }
+        Collection rightElements = ObjectModel.toCollection(right);
+        for (Object element : rightElements) {
+            if (element.equals(left)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static Number adjust(double x) {

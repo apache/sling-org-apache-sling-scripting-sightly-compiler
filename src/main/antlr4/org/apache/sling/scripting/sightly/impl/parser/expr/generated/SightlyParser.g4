@@ -83,7 +83,7 @@ binaryOp returns [ExpressionNode node] //is there any priority precedence betwee
     ;
     
 operator returns [BinaryOperator op]
-    :    AND_OP { $op = BinaryOperator.AND; } | OR_OP { $op = BinaryOperator.OR; }
+    :    AND_OP { $op = BinaryOperator.AND; } | OR_OP { $op = BinaryOperator.OR; } | IN_OP { $op = BinaryOperator.IN; }
     ;
 
 comparisonTerm returns [ExpressionNode node]

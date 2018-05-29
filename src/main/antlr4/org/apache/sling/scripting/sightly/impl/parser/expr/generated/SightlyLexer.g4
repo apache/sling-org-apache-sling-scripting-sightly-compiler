@@ -38,6 +38,8 @@ LBRACKET: '(';
 
 RBRACKET: ')';
 
+IN_OP: 'in';
+
 AND_OP: '&&';
 
 OR_OP: '||';
