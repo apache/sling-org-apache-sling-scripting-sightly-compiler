@@ -80,8 +80,12 @@ public final class NumericConstant implements Atom {
     }
 
     private Number parseNumber(String s) {
-        if (s.contains(".")) {
-            return Double.parseDouble(s);
+        if (s.contains(".") || s.contains("e") || s.contains("E")) {
+            double interim = Double.parseDouble(s);
+            if (interim == 0) {
+                return 0.0;
+            }
+            return interim;
         }
         return Long.parseLong(s);
     }

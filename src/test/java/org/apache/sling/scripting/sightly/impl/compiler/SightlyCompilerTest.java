@@ -18,13 +18,16 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.compiler;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.List;
 
 import org.apache.sling.scripting.sightly.compiler.CompilationResult;
 import org.apache.sling.scripting.sightly.compiler.CompilationUnit;
 import org.apache.sling.scripting.sightly.compiler.CompilerMessage;
 import org.apache.sling.scripting.sightly.compiler.SightlyCompiler;
-import org.apache.sling.scripting.sightly.impl.TestUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -42,7 +45,7 @@ public class SightlyCompilerTest {
 
     @Test
     public void testEmptyExpression() {
-        CompilationResult result = compile("/empty-expression.html");
+        CompilationResult result = compileFile("/empty-expression.html");
         assertTrue("Didn't expect any warnings or errors.", result.getErrors().size() == 0 && result.getWarnings().size() == 0);
     }
 
@@ -55,7 +58,7 @@ public class SightlyCompilerTest {
     }
 
     private void testMissingExplicitContext(String script) {
-        CompilationResult result = compile(script);
+        CompilationResult result = compileFile(script);
         List<CompilerMessage> warnings = result.getWarnings();
         assertTrue(script + ": Expected compilation warnings.", warnings.size() == 1);
         CompilerMessage warningMessage = warnings.get(0);
@@ -91,7 +94,7 @@ public class SightlyCompilerTest {
     @Test
     public void testSensitiveAttributes() {
         String script = "/sensitive-attributes.html";
-        CompilationResult result = compile(script);
+        CompilationResult result = compileFile(script);
         List<CompilerMessage> warnings = result.getWarnings();
         assertTrue("Expected compilation warnings.", warnings.size() == 2);
         CompilerMessage _1stWarning = warnings.get(0);
@@ -110,15 +113,72 @@ public class SightlyCompilerTest {
     @Test
     public void testErrorReporting1() {
         String script = "/error-1.html";
-        CompilationResult result = compile(script);
+        CompilationResult result = compileFile(script);
         List<CompilerMessage> errors = result.getErrors();
         assertTrue("Expected compilation errors.", errors.size() == 1);
         CompilerMessage error = errors.get(0);
         assertEquals("Error is not reported at the expected line.", 18, error.getLine());
     }
 
-    private CompilationResult compile(String file) {
-        CompilationUnit compilationUnit = TestUtils.readScriptFromClasspath(file);
+    @Test
+    public void testNumberParsing() {
+        // integers
+        int integerTestRange = 20;
+        for (int i = -1 * integerTestRange; i < integerTestRange; i++) {
+            assertEquals(0, compileSource("${" + i + "}").getErrors().size());
+        }
+
+        // doubles
+        double  doubleTestRange = 20.00;
+        for (double i = -1.00 * doubleTestRange; i < doubleTestRange; i+= 0.1) {
+            assertEquals(0, compileSource("${" + i + "}").getErrors().size());
+        }
+
+        assertEquals(0, compileSource("${-0.0}").getErrors().size());
+        assertEquals(0, compileSource("${-0.000}").getErrors().size());
+        assertEquals(1, compileSource("${-00.0}").getErrors().size());
+        assertEquals(1, compileSource("${00.0}").getErrors().size());
+        assertEquals(1, compileSource("${00}").getErrors().size());
+        assertEquals(1, compileSource("${-0}").getErrors().size());
+        assertEquals(1, compileSource("${01}").getErrors().size());
+        assertEquals(0, compileSource("${0.1e-2}").getErrors().size());
+        assertEquals(0, compileSource("${0.1e+2}").getErrors().size());
+        assertEquals(1, compileSource("${00.1e-2}").getErrors().size());
+        assertEquals(1, compileSource("${0e-2}").getErrors().size());
+        assertEquals(1, compileSource("${01e-2}").getErrors().size());
+        assertEquals(0, compileSource("${1e-2}").getErrors().size());
+        assertEquals(0, compileSource("${1e+2}").getErrors().size());
+    }
+
+    private CompilationResult compileFile(final String file) {
+        InputStream stream = this.getClass().getResourceAsStream(file);
+        final Reader reader = new InputStreamReader(stream);
+        CompilationUnit compilationUnit = new CompilationUnit() {
+            @Override
+            public String getScriptName() {
+                return file;
+            }
+
+            @Override
+            public Reader getScriptReader() {
+                return reader;
+            }
+        };
+        return compiler.compile(compilationUnit);
+    }
+
+    private CompilationResult compileSource(final String source) {
+        CompilationUnit compilationUnit = new CompilationUnit() {
+            @Override
+            public String getScriptName() {
+                return "NO_NAME";
+            }
+
+            @Override
+            public Reader getScriptReader() {
+                return new StringReader(source);
+            }
+        };
         return compiler.compile(compilationUnit);
     }
 
