@@ -54,6 +54,7 @@ import org.apache.sling.scripting.sightly.impl.plugin.ListPlugin;
 import org.apache.sling.scripting.sightly.impl.plugin.Plugin;
 import org.apache.sling.scripting.sightly.impl.plugin.RepeatPlugin;
 import org.apache.sling.scripting.sightly.impl.plugin.ResourcePlugin;
+import org.apache.sling.scripting.sightly.impl.plugin.SetPlugin;
 import org.apache.sling.scripting.sightly.impl.plugin.TemplatePlugin;
 import org.apache.sling.scripting.sightly.impl.plugin.TestPlugin;
 import org.apache.sling.scripting.sightly.impl.plugin.TextPlugin;
@@ -96,6 +97,7 @@ public final class SightlyCompiler {
         plugins.add(new ResourcePlugin());
         plugins.add(new TemplatePlugin());
         plugins.add(new TestPlugin());
+        plugins.add(new SetPlugin());
         plugins.add(new TextPlugin());
         plugins.add(new UnwrapPlugin());
         plugins.add(new UsePlugin());
