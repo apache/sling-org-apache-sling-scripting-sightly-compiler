@@ -43,7 +43,7 @@ public class TestPlugin extends AbstractPlugin {
 
             @Override
             public void beforeElement(PushStream stream, String tagName) {
-                String variableName = decodeVariableName();
+                String variableName = decodeVariableName(callInfo);
                 globalBinding = variableName != null;
                 if (variableName == null) {
                     variableName = compilerContext.generateVariable("testVariable");
@@ -63,15 +63,6 @@ public class TestPlugin extends AbstractPlugin {
                     stream.write(VariableBinding.END);
                 }
             }
-
-            private String decodeVariableName() {
-                String[] args = callInfo.getArguments();
-                if (args.length > 0) {
-                    return args[0];
-                }
-                return null;
-            }
-
         };
     }
 

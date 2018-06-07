@@ -40,17 +40,28 @@ public class UnwrapPlugin extends AbstractPlugin {
     }
 
     @Override
-    public PluginInvoke invoke(final Expression expression, PluginCallInfo callInfo, final CompilerContext compilerContext) {
+    public PluginInvoke invoke(final Expression expression, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
+
         return new DefaultPluginInvoke() {
 
-            private final String variable = compilerContext.generateVariable("unwrapCondition");
-            private final Command unwrapTest = new Conditional.Start(variable, false);
+            private Command unwrapTest;
             private boolean isSlyTag = false;
+            private String identifierName = decodeVariableName(callInfo);
+            private boolean globalBinding;
 
             @Override
             public void beforeElement(PushStream stream, String tagName) {
+                globalBinding = identifierName != null;
+                if (identifierName == null) {
+                    identifierName = compilerContext.generateVariable("unwrapCondition");
+                }
+                if (globalBinding) {
+                    stream.write(new VariableBinding.Global(identifierName, expression.getRoot()));
+                } else {
+                    stream.write(new VariableBinding.Start(identifierName, testNode()));
+                }
                 isSlyTag = "sly".equals(tagName.toLowerCase());
-                stream.write(new VariableBinding.Start(variable, testNode()));
+                unwrapTest = new Conditional.Start(identifierName, false);
             }
 
             @Override
@@ -87,7 +98,9 @@ public class UnwrapPlugin extends AbstractPlugin {
 
             @Override
             public void afterElement(PushStream stream) {
-                stream.write(VariableBinding.END);
+                if (!globalBinding) {
+                    stream.write(VariableBinding.END);
+                }
             }
 
             private ExpressionNode testNode() {

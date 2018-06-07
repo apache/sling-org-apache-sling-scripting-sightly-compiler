@@ -18,6 +18,7 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 package org.apache.sling.scripting.sightly.impl.plugin;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.scripting.sightly.compiler.SightlyCompilerException;
 import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
@@ -38,6 +39,9 @@ public class SetPlugin extends AbstractPlugin {
     public PluginInvoke invoke(final Expression expressionNode, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
 
         final String variableName = decodeVariableName(callInfo);
+        if (StringUtils.isEmpty(variableName)) {
+            throw new SightlyCompilerException("Identifier name was not provided.");
+        }
 
         return new DefaultPluginInvoke() {
 
@@ -49,14 +53,5 @@ public class SetPlugin extends AbstractPlugin {
 
         };
     }
-
-    private String decodeVariableName(PluginCallInfo callInfo) {
-        String[] arguments = callInfo.getArguments();
-        if (arguments.length == 0) {
-            throw new SightlyCompilerException("Identifier name was not provided.");
-        }
-        return arguments[0];
-    }
-
 
 }

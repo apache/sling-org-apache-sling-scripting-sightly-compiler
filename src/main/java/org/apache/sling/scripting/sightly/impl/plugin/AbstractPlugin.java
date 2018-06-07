@@ -37,4 +37,12 @@ public abstract class AbstractPlugin implements Plugin {
     public int compareTo(Plugin o) {
         return this.priority - o.priority();
     }
+
+    public String decodeVariableName(PluginCallInfo pluginCallInfo) {
+        String[] args = pluginCallInfo.getArguments();
+        if (args.length > 0) {
+            return args[0];
+        }
+        return null;
+    }
 }
