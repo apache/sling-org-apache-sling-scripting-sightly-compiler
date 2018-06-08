@@ -57,12 +57,12 @@ public class TreeTraverser {
         }
         String tagName = elem.getName();
 
-        if (elem.isHasStartElement()) {
+        if (elem.isStartElement()) {
             handler.onOpenTagStart("<" + tagName, tagName);
             for (TemplateAttribute attribute : elem.getAttributes()) {
                 handler.onAttribute(attribute.getName(), attribute.getValue(), attribute.getQuoteChar());
             }
-            if (elem.isHasEndSlash()) {
+            if (elem.hasEndSlash()) {
                 handler.onOpenTagEnd("/>");
             } else {
                 handler.onOpenTagEnd(">");

@@ -21,6 +21,10 @@ package org.apache.sling.scripting.sightly.impl.html.dom;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * HTML parser. Invokes a <code>DocumentHandler</code> whenever an event occurs.
@@ -67,6 +71,9 @@ public final class HtmlParser {
 
     /** Expression state constant */
     private final static int EXPR_MAYBE = 1;
+
+    final static Set<String> VOID_ELEMENTS = Collections.unmodifiableSet(new HashSet<>(
+            Arrays.asList("area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr")));
 
     /** Parse state */
     private PARSE_STATE parseState = PARSE_STATE.OUTSIDE;
@@ -479,9 +486,8 @@ public final class HtmlParser {
 
         tokenizer.tokenize(snippet, 0, snippet.length);
         if (!tokenizer.endTag()) {
-            documentHandler.onStartElement(tokenizer.tagName(), tokenizer
-                    .attributes(), tokenizer
-                    .endSlash());
+            documentHandler.onStartElement(tokenizer.tagName(), tokenizer.attributes(),
+                    tokenizer.endSlash() || VOID_ELEMENTS.contains(tokenizer.tagName().toLowerCase()));
         } else {
             documentHandler.onEndElement(tokenizer.tagName());
         }
