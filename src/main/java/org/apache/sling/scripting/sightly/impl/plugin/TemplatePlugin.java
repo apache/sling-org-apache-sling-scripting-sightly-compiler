@@ -41,6 +41,8 @@ public class TemplatePlugin extends AbstractPlugin {
 
     @Override
     public PluginInvoke invoke(final Expression expressionNode, final PluginCallInfo callInfo, CompilerContext compilerContext) {
+        final String templateName = decodeName(callInfo);
+
         return new DefaultPluginInvoke() {
 
             @Override
@@ -51,9 +53,8 @@ public class TemplatePlugin extends AbstractPlugin {
 
             @Override
             public void beforeElement(PushStream stream, String tagName) {
-                String name = decodeName();
                 Set<String> parameters = extractParameters();
-                stream.write(new Procedure.Start(name, parameters));
+                stream.write(new Procedure.Start(templateName, parameters));
             }
 
             @Override
@@ -81,13 +82,14 @@ public class TemplatePlugin extends AbstractPlugin {
                 return options.keySet();
             }
 
-            private String decodeName() {
-                String[] arguments = callInfo.getArguments();
-                if (arguments.length == 0) {
-                    throw new SightlyCompilerException("Template name was not provided.", "data-sly-template=");
-                }
-                return arguments[0];
-            }
         };
+    }
+
+    private String decodeName(PluginCallInfo callInfo) {
+        String[] arguments = callInfo.getArguments();
+        if (arguments.length == 0) {
+            throw new SightlyCompilerException("Template name was not provided.");
+        }
+        return arguments[0];
     }
 }

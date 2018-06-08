@@ -32,6 +32,7 @@ import org.apache.sling.scripting.sightly.compiler.commands.OutputVariable;
 import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
+import org.apache.sling.scripting.sightly.compiler.expression.MarkupContext;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.BinaryOperation;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.BinaryOperator;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.BooleanConstant;
@@ -51,7 +52,6 @@ import org.apache.sling.scripting.sightly.impl.compiler.util.SymbolGenerator;
 import org.apache.sling.scripting.sightly.impl.filter.ExpressionContext;
 import org.apache.sling.scripting.sightly.impl.filter.Filter;
 import org.apache.sling.scripting.sightly.impl.html.MarkupUtils;
-import org.apache.sling.scripting.sightly.compiler.expression.MarkupContext;
 import org.apache.sling.scripting.sightly.impl.plugin.Plugin;
 import org.apache.sling.scripting.sightly.impl.plugin.PluginCallInfo;
 import org.apache.sling.scripting.sightly.impl.plugin.PluginInvoke;
@@ -85,7 +85,15 @@ public class MarkupHandler {
     public void onAttribute(String name, String value, char quoteChar) {
         ElementContext context = elementStack.peek();
         if (Syntax.isPluginAttribute(name)) {
-            handlePlugin(name, StringUtils.defaultString(value, ""), context);
+            try {
+                handlePlugin(name, StringUtils.defaultString(value, ""), context);
+            } catch (SightlyCompilerException e) {
+                if (StringUtils.isEmpty(e.getOffendingInput())) {
+                    throw new SightlyCompilerException(e.getMessage(),
+                            name + (StringUtils.isNotEmpty(value) ? "=" + quoteChar + value + quoteChar : ""));
+                }
+                throw e;
+            }
         } else {
             context.addAttribute(name, value, quoteChar);
         }

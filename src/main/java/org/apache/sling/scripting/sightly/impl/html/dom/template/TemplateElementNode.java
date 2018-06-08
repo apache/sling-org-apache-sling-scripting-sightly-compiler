@@ -55,11 +55,11 @@ public class TemplateElementNode extends TemplateNode {
         return name;
     }
 
-    public boolean isHasEndSlash() {
+    public boolean hasEndSlash() {
         return hasEndSlash;
     }
 
-    public boolean isHasStartElement() {
+    public boolean isStartElement() {
         return hasStartElement;
     }
 

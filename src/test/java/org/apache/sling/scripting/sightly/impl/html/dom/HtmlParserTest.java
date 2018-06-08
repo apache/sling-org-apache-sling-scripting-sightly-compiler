@@ -18,19 +18,32 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.html.dom;
 
+import java.io.IOException;
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.scripting.sightly.impl.html.dom.template.*;
-
+import org.apache.sling.scripting.sightly.impl.html.dom.template.Template;
+import org.apache.sling.scripting.sightly.impl.html.dom.template.TemplateCommentNode;
+import org.apache.sling.scripting.sightly.impl.html.dom.template.TemplateElementNode;
+import org.apache.sling.scripting.sightly.impl.html.dom.template.TemplateNode;
+import org.apache.sling.scripting.sightly.impl.html.dom.template.TemplateParser;
+import org.apache.sling.scripting.sightly.impl.html.dom.template.TemplateTextNode;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class HtmlParserTest {
+
+    private static final String DATA_TEST_ATTRIBUTE = "data-test-attribute";
 
     /**
      * Pretty print a template nodes structure for debugging of failed tests
@@ -79,7 +92,7 @@ public class HtmlParserTest {
      */
     private static void assertSameStructure(TemplateNode reference, TemplateNode parsed) {
         if (parsed == null || reference == null) {
-            assertTrue("Expecting both null", parsed == reference);
+            assertSame("Expecting both null", parsed, reference);
             return;
         }
         assertEquals("Expecting same class", reference.getClass(), parsed.getClass());
@@ -113,7 +126,7 @@ public class HtmlParserTest {
         }
 
         if (parsedChildren == null || referenceChildren == null) {
-            assertTrue("Expecting both children null", parsedChildren == referenceChildren);
+            assertSame("Expecting both children null", parsedChildren, referenceChildren);
             return;
         }
 
@@ -130,7 +143,7 @@ public class HtmlParserTest {
      * Create a basic template nodes structure containing one text nodes and one comment nodes
      *
      * @param textAndComment - String containing text (optional) and comment
-     * @return
+     * @return a reference template
      */
     private Template createReference(String textAndComment) {
         int commentIx = textAndComment.indexOf("<!");
@@ -185,4 +198,123 @@ public class HtmlParserTest {
             throw e;
         }
     }
+
+    @Test
+    public void testVoidElements() throws IOException {
+        VoidAndSelfClosingElementsDocumentHandler voidAndSelfClosingElementsDocumentHandler = new VoidAndSelfClosingElementsDocumentHandler();
+        for (String tag : HtmlParser.VOID_ELEMENTS) {
+            StringReader stringReader = new StringReader("<" + tag + " " + DATA_TEST_ATTRIBUTE + ">");
+            HtmlParser.parse(stringReader, voidAndSelfClosingElementsDocumentHandler);
+            assertEquals("Parsed tag is not what was expected.", tag, voidAndSelfClosingElementsDocumentHandler.getLastProcessedTag());
+        }
+        assertEquals("Expected 0 invocations for 'onEndElement'", 0, voidAndSelfClosingElementsDocumentHandler.onEndElementInvocations);
+        assertEquals("Expected as many invocations for 'onStartElement' as many void elements.", HtmlParser.VOID_ELEMENTS.size(),
+                voidAndSelfClosingElementsDocumentHandler.onStartElementInvocations);
+
+        HtmlParser.parse(new StringReader("<img " + DATA_TEST_ATTRIBUTE + "/>"), voidAndSelfClosingElementsDocumentHandler);
+        assertEquals("Expected 0 invocations for 'onEndElement'", 0, voidAndSelfClosingElementsDocumentHandler.onEndElementInvocations);
+        assertEquals("Expected as many invocations for 'onStartElement' as many void elements + 1.", HtmlParser.VOID_ELEMENTS.size() + 1,
+                voidAndSelfClosingElementsDocumentHandler.onStartElementInvocations);
+    }
+
+    @Test
+    public void testExplicitlyClosedElements() throws IOException {
+        TestDocumentHandler handler = new TestDocumentHandler();
+        Set<String> tags = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("a", "p", "div")));
+        for (String tag : tags) {
+            StringReader stringReader = new StringReader("<" + tag + " " + DATA_TEST_ATTRIBUTE + "></" + tag + ">");
+            HtmlParser.parse(stringReader, handler);
+            assertEquals("Parsed tag is not what was expected.", tag, handler.getLastProcessedTag());
+        }
+        assertEquals("Expected as many invocations for 'onEndElement' as many test elements.", tags.size(),
+                handler.onEndElementInvocations);
+        assertEquals("Expected as many invocations for 'onStartElement' as many test elements.", tags.size(),
+                handler.onStartElementInvocations);
+    }
+
+    abstract class AbstractDocumentHandler implements DocumentHandler {
+
+        private String lastProcessedTag;
+
+        @Override
+        public void onCharacters(char[] ch, int off, int len) {
+
+        }
+
+        @Override
+        public void onComment(String characters) {
+
+        }
+
+        @Override
+        public void onStartElement(String name, AttributeList attList, boolean endSlash) {
+            lastProcessedTag = name;
+        }
+
+        @Override
+        public void onEndElement(String name) {
+
+        }
+
+        @Override
+        public void onStart() {
+
+        }
+
+        @Override
+        public void onEnd() {
+
+        }
+
+        String getLastProcessedTag() {
+            return lastProcessedTag;
+        }
+    }
+
+    class VoidAndSelfClosingElementsDocumentHandler extends AbstractDocumentHandler {
+
+        int onEndElementInvocations = 0;
+        int onStartElementInvocations = 0;
+
+        @Override
+        public void onStartElement(String name, AttributeList attList, boolean endSlash) {
+            super.onStartElement(name, attList, endSlash);
+            assertTrue("Expected a " + DATA_TEST_ATTRIBUTE + ".",
+                    attList.attributeCount() == 1 && attList.containsAttribute(DATA_TEST_ATTRIBUTE) &&
+                            attList.getValue(DATA_TEST_ATTRIBUTE) == null);
+            assertTrue("Expected a self-closing attribute.", endSlash);
+            onStartElementInvocations++;
+        }
+
+        @Override
+        public void onEndElement(String name) {
+            super.onEndElement(name);
+            onEndElementInvocations++;
+        }
+    }
+
+    class TestDocumentHandler extends AbstractDocumentHandler {
+        int onEndElementInvocations = 0;
+        int onStartElementInvocations = 0;
+
+        @Override
+        public void onStartElement(String name, AttributeList attList, boolean endSlash) {
+            super.onStartElement(name, attList, endSlash);
+            assertTrue("Expected a " + DATA_TEST_ATTRIBUTE + ".",
+                    attList.attributeCount() == 1 && attList.containsAttribute(DATA_TEST_ATTRIBUTE) &&
+                            attList.getValue(DATA_TEST_ATTRIBUTE) == null);
+            assertFalse("Did not expect a self-closing attribute.", endSlash);
+            onStartElementInvocations++;
+        }
+
+        @Override
+        public void onEndElement(String name) {
+            super.onEndElement(name);
+            onEndElementInvocations++;
+        }
+    }
+
+
+
+
 }
