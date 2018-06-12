@@ -163,7 +163,13 @@ public final class SightlyCompiler {
 
     private ScriptError getScriptError(String documentFragment, String offendingInput, int lineOffset, int columnOffset, String message) {
         if (StringUtils.isNotEmpty(offendingInput)) {
-            int offendingInputIndex = documentFragment.indexOf(offendingInput);
+            String longestContiguousOffendingSequence = null;
+            if (documentFragment.contains(offendingInput)) {
+                longestContiguousOffendingSequence = offendingInput;
+            } else {
+                longestContiguousOffendingSequence = getContiguousOffendingSequence(offendingInput);
+            }
+            int offendingInputIndex = documentFragment.indexOf(longestContiguousOffendingSequence);
             if (offendingInputIndex > -1) {
                 String textBeforeError = documentFragment.substring(0, offendingInputIndex);
                 int line = lineOffset;
@@ -182,10 +188,27 @@ public final class SightlyCompiler {
                 if (column != columnOffset) {
                     column +=columnOffset;
                 }
-                return new ScriptError(line, column, offendingInput + ": " + message);
+                return new ScriptError(line, column, longestContiguousOffendingSequence + ": " + message);
             }
         }
         return new ScriptError(lineOffset, columnOffset, message);
+    }
+
+    private String getContiguousOffendingSequence(String input) {
+        if (input != null) {
+            StringBuilder longestSequence = new StringBuilder();
+            char[] inputCharArray = input.toCharArray();
+            for (int index = inputCharArray.length - 1; index >= 0; index--) {
+                char c = inputCharArray[index];
+                if (!Character.isWhitespace(c)) {
+                    longestSequence.insert(0, c);
+                } else {
+                    break;
+                }
+            }
+            return longestSequence.toString();
+        }
+        return null;
     }
 
     private static class ScriptError {
@@ -194,7 +217,7 @@ public final class SightlyCompiler {
         private int column;
         private String errorMessage;
 
-        public ScriptError(int lineNumber, int column, String errorMessage) {
+        ScriptError(int lineNumber, int column, String errorMessage) {
             this.lineNumber = lineNumber;
             this.column = column;
             this.errorMessage = errorMessage;

@@ -22,7 +22,7 @@ package org.apache.sling.scripting.sightly.compiler;
 public final class SightlyCompilerException extends RuntimeException {
 
     private String offendingInput;
-    private int line;
+    private int line = 1;
     private int column;
 
     /**
