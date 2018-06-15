@@ -19,8 +19,12 @@
 
 package org.apache.sling.scripting.sightly.impl.html.dom;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
@@ -69,6 +73,8 @@ public class MarkupHandler {
     private final ExpressionWrapper expressionWrapper;
 
     private final Stack<ElementContext> elementStack = new Stack<>();
+    private static final Set<String> URI_ATTRIBUTES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("action", "cite",
+            "data", "formaction", "href",  "manifest", "poster", "src")));
 
     public MarkupHandler(PushStream stream, Map<String, Plugin> pluginRegistry, List<Filter> filters) {
         this.stream = stream;
@@ -449,9 +455,9 @@ public class MarkupHandler {
     }
 
     private MarkupContext getAttributeMarkupContext(String attributeName) {
-        if ("src".equalsIgnoreCase(attributeName) || "href".equalsIgnoreCase(attributeName)) {
-            return MarkupContext.URI;
-        }
+       if (URI_ATTRIBUTES.contains(attributeName.toLowerCase())) {
+           return MarkupContext.URI;
+       }
         return MarkupContext.ATTRIBUTE;
     }
 
