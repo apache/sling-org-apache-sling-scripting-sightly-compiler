@@ -94,9 +94,8 @@ public class MarkupHandler {
             try {
                 handlePlugin(name, StringUtils.defaultString(value, ""), context);
             } catch (SightlyCompilerException e) {
-                if (StringUtils.isEmpty(e.getOffendingInput())) {
-                    throw new SightlyCompilerException(e.getMessage(),
-                            name + (StringUtils.isNotEmpty(value) ? "=" + quoteChar + value + quoteChar : ""));
+                if (StringUtils.isEmpty(e.getOffendingInput()) && StringUtils.isNotEmpty(value)) {
+                    throw new SightlyCompilerException(e.getMessage(), name + "=" + quoteChar + value + quoteChar );
                 }
                 throw e;
             }

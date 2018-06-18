@@ -18,6 +18,8 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.html.dom;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.scripting.sightly.compiler.SightlyCompilerException;
 import org.apache.sling.scripting.sightly.impl.html.dom.template.Template;
 import org.apache.sling.scripting.sightly.impl.html.dom.template.TemplateAttribute;
 import org.apache.sling.scripting.sightly.impl.html.dom.template.TemplateCommentNode;
@@ -51,6 +53,8 @@ public class TreeTraverser {
     }
 
     private void traverseElement(TemplateElementNode elem) {
+        SightlyCompilerException bubbledError = null;
+        StringBuilder offendingInput = new StringBuilder();
         if ("ROOT".equalsIgnoreCase(elem.getName())) {
             traverseChildren(elem);
             return;
@@ -59,13 +63,38 @@ public class TreeTraverser {
 
         if (elem.isStartElement()) {
             handler.onOpenTagStart("<" + tagName, tagName);
-            for (TemplateAttribute attribute : elem.getAttributes()) {
-                handler.onAttribute(attribute.getName(), attribute.getValue(), attribute.getQuoteChar());
+            try {
+                for (TemplateAttribute attribute : elem.getAttributes()) {
+                    handler.onAttribute(attribute.getName(), attribute.getValue(), attribute.getQuoteChar());
+                }
+            } catch (SightlyCompilerException e) {
+                if (StringUtils.isEmpty(e.getOffendingInput())) {
+                    bubbledError = e;
+                    offendingInput.append("<").append(tagName);
+                    for (TemplateAttribute attribute : elem.getAttributes()) {
+                        String quoteChar = String.valueOf(attribute.getQuoteChar());
+                        offendingInput.append(" ").append(attribute.getName());
+                        if (StringUtils.isNotEmpty(attribute.getValue())) {
+                            offendingInput.append("=").append(quoteChar).append(attribute.getValue()).append(quoteChar);
+                        }
+                    }
+                } else {
+                    throw e;
+                }
             }
             if (elem.hasEndSlash()) {
                 handler.onOpenTagEnd("/>");
+                if (bubbledError != null) {
+                    offendingInput.append("/>");
+                }
             } else {
                 handler.onOpenTagEnd(">");
+                if (bubbledError != null) {
+                    offendingInput.append(">");
+                }
+            }
+            if (bubbledError != null) {
+                throw new SightlyCompilerException(bubbledError.getMessage(), offendingInput.toString());
             }
         } else {
             handler.onOpenTagStart("", tagName);
