@@ -21,7 +21,7 @@ package org.apache.sling.scripting.sightly.compiler.expression.nodes;
 import java.util.Collection;
 
 import org.apache.sling.scripting.sightly.compiler.SightlyCompilerException;
-import org.apache.sling.scripting.sightly.compiler.util.ObjectModel;
+import org.apache.sling.scripting.sightly.render.ObjectModel;
 
 /**
  * Binary operators used in expressions.

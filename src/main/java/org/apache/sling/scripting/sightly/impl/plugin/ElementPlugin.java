@@ -18,7 +18,6 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.plugin;
 
-import org.apache.sling.scripting.sightly.compiler.RuntimeFunction;
 import org.apache.sling.scripting.sightly.compiler.commands.Conditional;
 import org.apache.sling.scripting.sightly.compiler.commands.OutText;
 import org.apache.sling.scripting.sightly.compiler.commands.OutputVariable;
@@ -95,7 +94,7 @@ public class ElementPlugin extends AbstractPlugin {
         ExpressionNode root = expression.getRoot();
         if (root instanceof RuntimeCall) {
             RuntimeCall runtimeCall = (RuntimeCall) root;
-            if (runtimeCall.getFunctionName().equals(RuntimeFunction.XSS)) {
+            if (runtimeCall.getFunctionName().equals(RuntimeCall.XSS)) {
                 return expression;
             }
         }

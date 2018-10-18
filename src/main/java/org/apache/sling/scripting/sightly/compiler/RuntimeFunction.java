@@ -27,7 +27,11 @@ package org.apache.sling.scripting.sightly.compiler;
  *     that can transpile {@link org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall}s to specific runtime function
  *     implementations.
  * </p>
+ *
+ * @deprecated constants are available in {@link org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall}
+ * starting with version 1.2.0 of the {@link org.apache.sling.scripting.sightly.compiler.expression.nodes} API.
  */
+@Deprecated
 public final class RuntimeFunction {
 
     /**

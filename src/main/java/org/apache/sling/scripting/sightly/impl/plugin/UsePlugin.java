@@ -18,12 +18,11 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.plugin;
 
-import org.apache.sling.scripting.sightly.compiler.RuntimeFunction;
 import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
-import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall;
+import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 import org.apache.sling.scripting.sightly.impl.compiler.frontend.CompilerContext;
 
 public class UsePlugin extends AbstractPlugin {
@@ -45,7 +44,7 @@ public class UsePlugin extends AbstractPlugin {
             public void beforeElement(PushStream stream, String tagName) {
                 String variableName = decodeVariableName();
                 stream.write(new VariableBinding.Global(variableName,
-                        new RuntimeCall(RuntimeFunction.USE, expression.getRoot(), new MapLiteral(expression.getOptions()))));
+                        new RuntimeCall(RuntimeCall.USE, expression.getRoot(), new MapLiteral(expression.getOptions()))));
             }
 
             private String decodeVariableName() {

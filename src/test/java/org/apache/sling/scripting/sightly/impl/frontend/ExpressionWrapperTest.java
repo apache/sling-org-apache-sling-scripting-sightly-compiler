@@ -18,15 +18,12 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.frontend;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.sling.scripting.sightly.compiler.RuntimeFunction;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.MarkupContext;
@@ -47,6 +44,8 @@ import org.apache.sling.scripting.sightly.impl.filter.URIManipulationFilter;
 import org.apache.sling.scripting.sightly.impl.filter.XSSFilter;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ExpressionWrapperTest {
 
@@ -75,7 +74,7 @@ public class ExpressionWrapperTest {
         Expression result = wrapper.transform(interpolation, MarkupContext.TEXT, ExpressionContext.TEXT);
         List<ExpressionNode> xssArguments = runOptionsAndXSSAssertions(result, 1);
         RuntimeCall i18n = (RuntimeCall) xssArguments.get(0);
-        assertEquals("Expected to I18n runtime function call.", RuntimeFunction.I18N, i18n.getFunctionName());
+        assertEquals("Expected to I18n runtime function call.", RuntimeCall.I18N, i18n.getFunctionName());
     }
 
     @Test
@@ -91,7 +90,7 @@ public class ExpressionWrapperTest {
         Expression result = wrapper.transform(interpolation, MarkupContext.TEXT, ExpressionContext.TEXT);
         List<ExpressionNode> xssArguments = runOptionsAndXSSAssertions(result, 0);
         RuntimeCall format = (RuntimeCall) xssArguments.get(0);
-        assertEquals(RuntimeFunction.FORMAT, format.getFunctionName());
+        assertEquals(RuntimeCall.FORMAT, format.getFunctionName());
     }
 
     @Test
@@ -107,7 +106,7 @@ public class ExpressionWrapperTest {
         Expression result = wrapper.transform(interpolation, MarkupContext.TEXT, ExpressionContext.TEXT);
         List<ExpressionNode> xssArguments = runOptionsAndXSSAssertions(result, 0);
         RuntimeCall join = (RuntimeCall) xssArguments.get(0);
-        assertEquals(RuntimeFunction.JOIN, join.getFunctionName());
+        assertEquals(RuntimeCall.JOIN, join.getFunctionName());
     }
 
     @Test
@@ -143,13 +142,13 @@ public class ExpressionWrapperTest {
         Expression result = wrapper.transform(interpolation, MarkupContext.TEXT, ExpressionContext.TEXT);
         List<ExpressionNode> xssArguments = runOptionsAndXSSAssertions(result, 0);
         RuntimeCall join = (RuntimeCall) xssArguments.get(0);
-        assertEquals(RuntimeFunction.URI_MANIPULATION, join.getFunctionName());
+        assertEquals(RuntimeCall.URI_MANIPULATION, join.getFunctionName());
     }
 
     private List<ExpressionNode> runOptionsAndXSSAssertions(Expression result, int expectedOptions) {
         assertEquals("Options map size for expression after processing is different from expected.", expectedOptions, result.getOptions().size());
         RuntimeCall xss = (RuntimeCall) result.getRoot();
-        assertEquals("Expected XSS escaping applied to expression.", RuntimeFunction.XSS, xss.getFunctionName());
+        assertEquals("Expected XSS escaping applied to expression.", RuntimeCall.XSS, xss.getFunctionName());
         return xss.getArguments();
     }
 

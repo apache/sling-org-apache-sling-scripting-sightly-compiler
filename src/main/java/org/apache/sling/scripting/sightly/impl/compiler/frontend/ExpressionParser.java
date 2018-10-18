@@ -18,7 +18,7 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.compiler.frontend;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.apache.sling.scripting.sightly.compiler.SightlyCompilerException;
@@ -47,7 +47,7 @@ public class ExpressionParser {
     }
 
     private SightlyParser createParser(String string) {
-        SightlyLexer lexer = new SightlyLexer(new ANTLRInputStream(string));
+        SightlyLexer lexer = new SightlyLexer(CharStreams.fromString(string));
         lexer.removeErrorListeners();
         lexer.addErrorListener(new SightlyParserErrorListener());
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);

@@ -37,7 +37,7 @@
         The versioning scheme defined here corresponds to SLING-7406 (<module_version>-<htl_specification_version>). Take care when
         releasing to only increase the first part, unless the module provides support for a newer version of the HTL specification.
     -->
-    <version>1.0.23-1.4.0-SNAPSHOT</version>
+    <version>1.1.0-1.4.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>Apache Sling Scripting HTL Compiler</name>
@@ -55,7 +55,7 @@
   </scm>
 
     <properties>
-        <antlr.version>4.1</antlr.version>
+        <antlr.version>4.7.1</antlr.version>
         <jacoco.maven.plugin.version>0.7.9</jacoco.maven.plugin.version>
     </properties>
 
@@ -79,7 +79,6 @@
                 <configuration>
                     <exportScr>true</exportScr>
                     <instructions>
-                        <Embed-Dependency>antlr4-runtime,org.abego.treelayout.core</Embed-Dependency>
                         <Provide-Capability>
                             io.sightly.compiler; version:Version=1.0,
                             io.sightly.compiler; version:Version=1.1,
@@ -205,10 +204,13 @@
             <artifactId>antlr4-runtime</artifactId>
             <version>${antlr.version}</version>
         </dependency>
+
+        <!-- Needed for the ObjectModel -->
         <dependency>
-            <groupId>org.abego.treelayout</groupId>
-            <artifactId>org.abego.treelayout.core</artifactId>
-            <version>1.0.1</version>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.scripting.sightly.runtime</artifactId>
+            <version>1.0.0-1.4.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Logging -->

@@ -21,15 +21,14 @@ package org.apache.sling.scripting.sightly.impl.plugin;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.sling.scripting.sightly.compiler.RuntimeFunction;
 import org.apache.sling.scripting.sightly.compiler.commands.OutputVariable;
-import org.apache.sling.scripting.sightly.impl.compiler.Patterns;
 import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
-import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall;
+import org.apache.sling.scripting.sightly.impl.compiler.Patterns;
+import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 import org.apache.sling.scripting.sightly.impl.compiler.frontend.CompilerContext;
 
 /**
@@ -52,7 +51,7 @@ public class ResourcePlugin extends AbstractPlugin {
             public void beforeChildren(PushStream stream) {
                 String resourceVar = compilerContext.generateVariable("resourceContent");
                 stream.write(new VariableBinding.Start(resourceVar,
-                        new RuntimeCall(RuntimeFunction.RESOURCE, expression.getRoot(), new MapLiteral(expressionOptions))));
+                        new RuntimeCall(RuntimeCall.RESOURCE, expression.getRoot(), new MapLiteral(expressionOptions))));
                 stream.write(new OutputVariable(resourceVar));
                 stream.write(VariableBinding.END);
                 Patterns.beginStreamIgnore(stream);

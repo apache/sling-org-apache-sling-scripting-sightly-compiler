@@ -38,7 +38,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The {@code ObjectModel} class provides various static models for object conversion and object property resolution.
+ *
+ * @deprecated This class has been moved to {@link org.apache.sling.scripting.sightly.render.ObjectModel}.
  */
+@Deprecated
 public final class ObjectModel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectModel.class);
@@ -51,7 +54,6 @@ public final class ObjectModel {
 
     static {
         Set<Class<?>> primitivesBuilder = new HashSet<>();
-        primitivesBuilder.add(Boolean.class);
         primitivesBuilder.add(Boolean.class);
         primitivesBuilder.add(Character.class);
         primitivesBuilder.add(Byte.class);

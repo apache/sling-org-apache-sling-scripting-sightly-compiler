@@ -18,7 +18,6 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.filter;
 
-import org.apache.sling.scripting.sightly.compiler.RuntimeFunction;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall;
@@ -51,7 +50,7 @@ public class JoinFilter extends AbstractFilter {
             return expression;
         }
         ExpressionNode translation =
-                new RuntimeCall(RuntimeFunction.JOIN, expression.getRoot(), expression.removeOption(JOIN_OPTION));
+                new RuntimeCall(RuntimeCall.JOIN, expression.getRoot(), expression.removeOption(JOIN_OPTION));
         return expression.withNode(translation);
     }
 }

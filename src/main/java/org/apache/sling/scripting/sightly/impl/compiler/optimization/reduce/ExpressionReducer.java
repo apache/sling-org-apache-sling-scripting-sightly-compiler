@@ -40,7 +40,7 @@ import org.apache.sling.scripting.sightly.compiler.expression.nodes.StringConsta
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.TernaryOperator;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.UnaryOperation;
 import org.apache.sling.scripting.sightly.compiler.util.VariableTracker;
-import org.apache.sling.scripting.sightly.compiler.util.ObjectModel;
+import org.apache.sling.scripting.sightly.render.ObjectModel;
 
 /**
  * Try to evaluate constant parts in expressions

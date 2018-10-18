@@ -18,15 +18,14 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.plugin;
 
-import org.apache.sling.scripting.sightly.compiler.RuntimeFunction;
 import org.apache.sling.scripting.sightly.compiler.commands.OutputVariable;
+import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
+import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.MarkupContext;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall;
 import org.apache.sling.scripting.sightly.impl.compiler.Patterns;
-import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
 import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
-import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.impl.compiler.frontend.CompilerContext;
 import org.apache.sling.scripting.sightly.impl.filter.ExpressionContext;
 
@@ -66,7 +65,7 @@ public class TextPlugin extends AbstractPlugin {
         ExpressionNode root = expression.getRoot();
         if (root instanceof RuntimeCall) {
             RuntimeCall runtimeCall = (RuntimeCall) root;
-            if (runtimeCall.getFunctionName().equals(RuntimeFunction.XSS)) {
+            if (runtimeCall.getFunctionName().equals(RuntimeCall.XSS)) {
                 return expression;
             }
         }

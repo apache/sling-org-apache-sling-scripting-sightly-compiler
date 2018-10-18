@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.scripting.sightly.compiler.RuntimeFunction;
 import org.apache.sling.scripting.sightly.compiler.commands.Conditional;
 import org.apache.sling.scripting.sightly.compiler.commands.Loop;
 import org.apache.sling.scripting.sightly.compiler.commands.OutText;
@@ -345,7 +344,7 @@ public class AttributePlugin extends AbstractPlugin {
                                                      ExpressionNode hint) {
         if (hint != null) {
             //todo: this is not the indicated way to escape via XSS. Correct after modifying the compiler context API
-            return new RuntimeCall(RuntimeFunction.XSS, node, new StringConstant(markupContext.getName()), hint);
+            return new RuntimeCall(RuntimeCall.XSS, node, new StringConstant(markupContext.getName()), hint);
         }
         return compilerContext.adjustToContext(new Expression(node), markupContext, ExpressionContext.ATTRIBUTE).getRoot();
     }

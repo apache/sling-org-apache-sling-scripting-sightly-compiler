@@ -18,7 +18,6 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.filter;
 
-import org.apache.sling.scripting.sightly.compiler.RuntimeFunction;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
@@ -39,9 +38,6 @@ public class FormatFilter extends AbstractFilter {
     }
 
     private FormatFilter() {
-        if (FormatFilterLoader.INSTANCE != null) {
-            throw new IllegalStateException("INSTANCE was already defined.");
-        }
     }
 
     public static FormatFilter getInstance() {
@@ -57,7 +53,7 @@ public class FormatFilter extends AbstractFilter {
             return expression;
         }
         ExpressionNode translation =
-                new RuntimeCall(RuntimeFunction.FORMAT, expression.getRoot(),
+                new RuntimeCall(RuntimeCall.FORMAT, expression.getRoot(),
                         new MapLiteral(getFilterOptions(expression,
                                 FORMAT_OPTION,
                                 TYPE_OPTION,

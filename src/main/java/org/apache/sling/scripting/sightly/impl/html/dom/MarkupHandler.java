@@ -28,7 +28,6 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.scripting.sightly.compiler.RuntimeFunction;
 import org.apache.sling.scripting.sightly.compiler.SightlyCompilerException;
 import org.apache.sling.scripting.sightly.compiler.commands.Conditional;
 import org.apache.sling.scripting.sightly.compiler.commands.OutText;
@@ -222,7 +221,7 @@ public class MarkupHandler {
         boolean alreadyEscaped = false;
         if (valueExpression.getRoot() instanceof RuntimeCall) {
             RuntimeCall rc = (RuntimeCall) valueExpression.getRoot();
-            if (RuntimeFunction.XSS.equals(rc.getFunctionName())) {
+            if (RuntimeCall.XSS.equals(rc.getFunctionName())) {
                 alreadyEscaped = true;
             }
         }
@@ -230,8 +229,7 @@ public class MarkupHandler {
         stream.write(new VariableBinding.Start(attrValue, node)); //attrContent = <expr>
         if (!alreadyEscaped) {
             Expression contentExpression = valueExpression.withNode(new Identifier(attrValue));
-            stream.write(new VariableBinding.Start(attrContent, adjustContext(compilerContext, contentExpression, markupContext,
-                    ExpressionContext.ATTRIBUTE).getRoot()));
+            stream.write(new VariableBinding.Start(attrContent, adjustContext(compilerContext, contentExpression, markupContext).getRoot()));
             stream.write(
                     new VariableBinding.Start(
                             shouldDisplayAttr,
@@ -473,15 +471,14 @@ public class MarkupHandler {
                 ("script".equals(parentElementName) || "style".equals(parentElementName));
     }
 
-    private Expression adjustContext(CompilerContext compilerContext, Expression expression, MarkupContext markupContext,
-                                     ExpressionContext expressionContext) {
+    private Expression adjustContext(CompilerContext compilerContext, Expression expression, MarkupContext markupContext) {
         ExpressionNode root = expression.getRoot();
         if (root instanceof RuntimeCall) {
             RuntimeCall runtimeCall = (RuntimeCall) root;
-            if (runtimeCall.getFunctionName().equals(RuntimeFunction.XSS)) {
+            if (runtimeCall.getFunctionName().equals(RuntimeCall.XSS)) {
                 return expression;
             }
         }
-        return compilerContext.adjustToContext(expression, markupContext, expressionContext);
+        return compilerContext.adjustToContext(expression, markupContext, ExpressionContext.ATTRIBUTE);
     }
 }

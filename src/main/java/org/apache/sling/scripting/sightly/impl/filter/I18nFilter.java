@@ -20,7 +20,6 @@ package org.apache.sling.scripting.sightly.impl.filter;
 
 import java.util.Map;
 
-import org.apache.sling.scripting.sightly.compiler.RuntimeFunction;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
@@ -58,7 +57,7 @@ public final class I18nFilter extends AbstractFilter {
             return expression;
         }
         Map <String, ExpressionNode> options = getFilterOptions(expression, HINT_OPTION, LOCALE_OPTION, BASENAME_OPTION);
-        ExpressionNode translation = new RuntimeCall(RuntimeFunction.I18N, expression.getRoot(), new MapLiteral
+        ExpressionNode translation = new RuntimeCall(RuntimeCall.I18N, expression.getRoot(), new MapLiteral
                 (options));
         expression.removeOption(I18N_OPTION);
         expression.getOptions().put(FormatFilter.FORMAT_LOCALE_OPTION, options.get(LOCALE_OPTION));

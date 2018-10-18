@@ -18,11 +18,10 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.filter;
 
-import org.apache.sling.scripting.sightly.compiler.RuntimeFunction;
-import org.apache.sling.scripting.sightly.impl.compiler.Syntax;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall;
+import org.apache.sling.scripting.sightly.impl.compiler.Syntax;
 
 /**
  * XSS filter implementation.
@@ -52,7 +51,7 @@ public class XSSFilter extends AbstractFilter {
         }
         ExpressionNode context = expression.removeOption(Syntax.CONTEXT_OPTION);
         if (context != null) {
-            return expression.withNode(new RuntimeCall(RuntimeFunction.XSS, expression.getRoot(), context));
+            return expression.withNode(new RuntimeCall(RuntimeCall.XSS, expression.getRoot(), context));
         }
         return expression;
     }

@@ -35,7 +35,7 @@ import org.apache.sling.scripting.sightly.impl.compiler.util.stream.EmitterVisit
 import org.apache.sling.scripting.sightly.impl.compiler.util.stream.Streams;
 import org.apache.sling.scripting.sightly.impl.compiler.visitor.StatefulRangeIgnore;
 import org.apache.sling.scripting.sightly.impl.compiler.visitor.TrackingVisitor;
-import org.apache.sling.scripting.sightly.compiler.util.ObjectModel;
+import org.apache.sling.scripting.sightly.render.ObjectModel;
 
 /**
  * Removes code under conditionals which are proven to fail. It is probably a good idea to run this optimization after running

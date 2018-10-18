@@ -18,15 +18,14 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.plugin;
 
-import org.apache.sling.scripting.sightly.compiler.RuntimeFunction;
 import org.apache.sling.scripting.sightly.compiler.commands.OutputVariable;
-import org.apache.sling.scripting.sightly.impl.compiler.Patterns;
 import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
-import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.Identifier;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall;
+import org.apache.sling.scripting.sightly.impl.compiler.Patterns;
+import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 import org.apache.sling.scripting.sightly.impl.compiler.frontend.CompilerContext;
 
 /**
@@ -48,7 +47,7 @@ public class IncludePlugin extends AbstractPlugin {
                 String pathVar = compilerContext.generateVariable("includePath");
                 stream.write(new VariableBinding.Start(pathVar, expression.getRoot()));
                 stream.write(new VariableBinding.Start(includedContentVar,
-                        new RuntimeCall(RuntimeFunction.INCLUDE, new Identifier(pathVar), new MapLiteral(expression.getOptions()))));
+                        new RuntimeCall(RuntimeCall.INCLUDE, new Identifier(pathVar), new MapLiteral(expression.getOptions()))));
                 stream.write(new OutputVariable(includedContentVar));
                 stream.write(VariableBinding.END); //end includedContentVar
                 stream.write(VariableBinding.END); //end pathVar

@@ -20,7 +20,6 @@ package org.apache.sling.scripting.sightly.impl.filter;
 
 import java.util.Map;
 
-import org.apache.sling.scripting.sightly.compiler.RuntimeFunction;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
@@ -80,7 +79,7 @@ public class URIManipulationFilter extends AbstractFilter {
                     ADD_QUERY, REMOVE_QUERY);
             if (uriOptions.size() > 0) {
                 ExpressionNode translation =
-                        new RuntimeCall(RuntimeFunction.URI_MANIPULATION, expression.getRoot(), new MapLiteral(uriOptions));
+                        new RuntimeCall(RuntimeCall.URI_MANIPULATION, expression.getRoot(), new MapLiteral(uriOptions));
                 return expression.withNode(translation);
             }
         }
