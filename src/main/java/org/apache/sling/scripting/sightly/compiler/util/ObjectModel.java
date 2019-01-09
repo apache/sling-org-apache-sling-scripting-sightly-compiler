@@ -366,12 +366,17 @@ public final class ObjectModel {
         if (cls.isArray() && "length".equals(fieldName)) {
             return Array.getLength(object);
         }
-        try {
-            Field field = cls.getField(fieldName);
-            return field.get(object);
-        } catch (Exception e) {
-            return null;
+        for (Field field : cls.getFields()){
+            if (field.getName().equals(fieldName)){
+                try {
+                    return field.get(object);
+                }
+                catch (IllegalAccessException e) {
+                    return null;
+                }
+            }
         }
+        return null;
     }
 
     /**
