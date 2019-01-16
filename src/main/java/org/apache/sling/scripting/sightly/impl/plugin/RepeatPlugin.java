@@ -57,6 +57,9 @@ public class RepeatPlugin extends AbstractRepeatPlugin {
             private String endVariable = compilerContext.generateVariable(END);
             private String validStartStepEnd = compilerContext.generateVariable("validStartStepEnd");
 
+            private boolean beginAtIndexZero = false;
+            private boolean stepOne = false;
+
             @Override
             public void beforeElement(PushStream stream, String tagName) {
                 stream.write(new VariableBinding.Start(listVariable, expression.getRoot()));
@@ -69,11 +72,13 @@ public class RepeatPlugin extends AbstractRepeatPlugin {
                 if (options.containsKey(BEGIN)) {
                     stream.write(new VariableBinding.Start(beginVariable, expression.getOptions().get(BEGIN)));
                 } else {
+                    beginAtIndexZero = true;
                     stream.write(new VariableBinding.Start(beginVariable, NumericConstant.ZERO));
                 }
                 if (options.containsKey(STEP)) {
                     stream.write(new VariableBinding.Start(stepVariable, expression.getOptions().get(STEP)));
                 } else {
+                    stepOne = true;
                     stream.write(new VariableBinding.Start(stepVariable, NumericConstant.ONE));
                 }
                 if (options.containsKey(END)) {
@@ -103,6 +108,7 @@ public class RepeatPlugin extends AbstractRepeatPlugin {
                 stream.write(new VariableBinding.Start(loopStatusVar, buildStatusObj(indexVariable, collectionSizeVar)));
                 String stepConditionVariable = compilerContext.generateVariable("stepCondition");
                 stream.write(new VariableBinding.Start(stepConditionVariable,
+                                beginAtIndexZero && stepOne ? new NumericConstant(0) :
                                 new BinaryOperation(
                                         BinaryOperator.REM,
                                         new BinaryOperation(
