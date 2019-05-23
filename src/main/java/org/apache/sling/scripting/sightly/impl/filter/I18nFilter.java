@@ -18,7 +18,11 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.filter;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
@@ -35,14 +39,14 @@ public final class I18nFilter extends AbstractFilter {
     public static final String LOCALE_OPTION = "locale";
     public static final String BASENAME_OPTION = "basename";
 
+    private static final Set<String> OPTIONS = new HashSet<>(Arrays.asList(I18N_OPTION, HINT_OPTION, LOCALE_OPTION, BASENAME_OPTION));
+    private static final Set<String> REQUIRED_OPTIONS = Collections.singleton(I18N_OPTION);
+
     private static final class I18nFilterLoader {
         private static final I18nFilter INSTANCE = new I18nFilter();
     }
 
     private I18nFilter() {
-        if (I18nFilterLoader.INSTANCE != null) {
-            throw new IllegalStateException("INSTANCE was already defined.");
-        }
         priority = 90;
     }
 
@@ -51,16 +55,28 @@ public final class I18nFilter extends AbstractFilter {
     }
 
     @Override
-    public Expression apply(Expression expression, ExpressionContext expressionContext) {
-        if (!expression.containsOption(I18N_OPTION) || expressionContext == ExpressionContext.PLUGIN_DATA_SLY_USE || expressionContext
-                == ExpressionContext.PLUGIN_DATA_SLY_TEMPLATE || expressionContext == ExpressionContext.PLUGIN_DATA_SLY_CALL) {
-            return expression;
+    protected Expression apply(Expression expression, Map<String, ExpressionNode> options) {
+        if (options.containsKey(I18N_OPTION)) {
+            ExpressionNode translation = new RuntimeCall(RuntimeCall.I18N, expression.getRoot(), new MapLiteral(options));
+            expression.removeOption(I18N_OPTION);
+            expression.getOptions().put(FormatFilter.FORMAT_LOCALE_OPTION, options.get(LOCALE_OPTION));
+            return expression.withNode(translation);
         }
-        Map <String, ExpressionNode> options = getFilterOptions(expression, HINT_OPTION, LOCALE_OPTION, BASENAME_OPTION);
-        ExpressionNode translation = new RuntimeCall(RuntimeCall.I18N, expression.getRoot(), new MapLiteral
-                (options));
-        expression.removeOption(I18N_OPTION);
-        expression.getOptions().put(FormatFilter.FORMAT_LOCALE_OPTION, options.get(LOCALE_OPTION));
-        return expression.withNode(translation);
+        return expression;
+    }
+
+    @Override
+    public Set<String> getOptions() {
+        return OPTIONS;
+    }
+
+    @Override
+    public Set<String> getRequiredOptions() {
+        return REQUIRED_OPTIONS;
+    }
+
+    @Override
+    public Set<ExpressionContext> getApplicableContexts() {
+        return NON_PARAMETRIZABLE_CONTEXTS;
     }
 }

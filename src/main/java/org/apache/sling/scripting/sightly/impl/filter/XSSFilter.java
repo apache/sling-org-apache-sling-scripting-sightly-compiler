@@ -18,6 +18,9 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.filter;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall;
@@ -33,9 +36,6 @@ public class XSSFilter extends AbstractFilter {
     }
 
     private XSSFilter() {
-        if (XSSFilterLoader.INSTANCE != null) {
-            throw new IllegalStateException("INSTANCE was already defined.");
-        }
         priority = 110;
     }
 
@@ -44,11 +44,7 @@ public class XSSFilter extends AbstractFilter {
     }
 
     @Override
-    public Expression apply(Expression expression, ExpressionContext expressionContext) {
-        if (expressionContext == ExpressionContext.PLUGIN_DATA_SLY_USE || expressionContext == ExpressionContext.PLUGIN_DATA_SLY_TEMPLATE
-                || expressionContext == ExpressionContext.PLUGIN_DATA_SLY_CALL) {
-            return expression;
-        }
+    protected Expression apply(Expression expression, Map<String, ExpressionNode> options) {
         ExpressionNode context = expression.removeOption(Syntax.CONTEXT_OPTION);
         if (context != null) {
             return expression.withNode(new RuntimeCall(RuntimeCall.XSS, expression.getRoot(), context));
@@ -56,4 +52,8 @@ public class XSSFilter extends AbstractFilter {
         return expression;
     }
 
+    @Override
+    public Set<ExpressionContext> getApplicableContexts() {
+        return NON_PARAMETRIZABLE_CONTEXTS;
+    }
 }

@@ -47,10 +47,7 @@ public class CompilerContext {
     }
 
     public Expression adjustToContext(Expression expression, MarkupContext context, ExpressionContext expressionContext) {
-        if (!expression.getOptions().containsKey(Syntax.CONTEXT_OPTION)) {
-            return expressionWrapper.adjustToContext(expression, context, expressionContext);
-        }
-        return expression;
+        return expressionWrapper.adjustToContext(expression, context, expressionContext);
     }
 
     public PushStream getPushStream() {

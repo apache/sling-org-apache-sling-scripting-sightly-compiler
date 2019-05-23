@@ -18,8 +18,12 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.filter;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
@@ -27,6 +31,14 @@ import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 public abstract class AbstractFilter implements Filter {
 
     protected int priority = 100;
+    public static final Set<ExpressionContext> NON_PARAMETRIZABLE_CONTEXTS;
+    static {
+        Set<ExpressionContext> contexts = new HashSet<>(Arrays.asList(ExpressionContext.values()));
+        contexts.remove(ExpressionContext.PLUGIN_DATA_SLY_USE);
+        contexts.remove(ExpressionContext.PLUGIN_DATA_SLY_TEMPLATE);
+        contexts.remove(ExpressionContext.PLUGIN_DATA_SLY_CALL);
+        NON_PARAMETRIZABLE_CONTEXTS = Collections.unmodifiableSet(contexts);
+    }
 
     @Override
     public int priority() {
@@ -43,6 +55,17 @@ public abstract class AbstractFilter implements Filter {
         return 1;
     }
 
+    @Override
+    public Expression apply(Expression expression, ExpressionContext expressionContext) {
+        Set<String> expressionOptions = expression.getOptions().keySet();
+        if (getApplicableContexts().contains(expressionContext) && expressionOptions.containsAll(getRequiredOptions())) {
+            return apply(expression, getFilterOptions(expression, getOptions()));
+        }
+        return expression;
+    }
+
+    protected abstract Expression apply(Expression expression, Map<String, ExpressionNode> options);
+
     /**
      * Collects the options passed in the {@code options} array into a new map while removing them from the original expression.
      *
@@ -50,7 +73,7 @@ public abstract class AbstractFilter implements Filter {
      * @param options    the options of interest for the {@link Filter}
      * @return a map with the retrieved options; the map can be empty if none of the options were found
      */
-    protected Map<String, ExpressionNode> getFilterOptions(Expression expression, String... options) {
+    protected Map<String, ExpressionNode> getFilterOptions(Expression expression, Set<String> options) {
         Map<String, ExpressionNode> collector = new HashMap<>();
         for (String option : options) {
             ExpressionNode optionNode = expression.removeOption(option);

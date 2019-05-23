@@ -18,6 +18,11 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.filter;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 
 /**
@@ -44,5 +49,32 @@ public interface Filter extends Comparable<Filter> {
      * @return an integer representing the filter's priority
      */
     int priority();
+
+    /**
+     * Provides the option names this {@code Filter} will process.
+     *
+     * @return a set of option names
+     */
+    default Set<String> getOptions() {
+        return Collections.emptySet();
+    }
+
+    /**
+     * Provides the option names that will trigger a filter's execution.
+     *
+     * @return the required options from an expression in order to trigger the filter
+     */
+    default Set<String> getRequiredOptions() {
+        return Collections.emptySet();
+    }
+
+    /**
+     * Provides the applicable contexts for this filter.
+     *
+     * @return the applicable contexts for this filter
+     */
+    default Set<ExpressionContext> getApplicableContexts() {
+        return new HashSet<>(Arrays.asList(ExpressionContext.values()));
+    }
 
 }

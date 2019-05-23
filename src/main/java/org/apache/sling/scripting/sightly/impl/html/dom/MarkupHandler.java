@@ -78,7 +78,7 @@ public class MarkupHandler {
     public MarkupHandler(PushStream stream, Map<String, Plugin> pluginRegistry, List<Filter> filters) {
         this.stream = stream;
         this.pluginRegistry = pluginRegistry;
-        this.expressionWrapper = new ExpressionWrapper(filters);
+        this.expressionWrapper = new ExpressionWrapper(stream, filters);
         this.compilerContext = new CompilerContext(symbolGenerator, expressionWrapper, stream);
     }
 

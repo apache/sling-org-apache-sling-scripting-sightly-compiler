@@ -19,15 +19,20 @@
 package org.apache.sling.scripting.sightly.impl.compiler.frontend;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.BinaryOperation;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.BinaryOperator;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.StringConstant;
+import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 import org.apache.sling.scripting.sightly.impl.compiler.Syntax;
+import org.apache.sling.scripting.sightly.impl.filter.AbstractFilter;
 import org.apache.sling.scripting.sightly.impl.filter.ExpressionContext;
 import org.apache.sling.scripting.sightly.impl.filter.Filter;
 import org.apache.sling.scripting.sightly.compiler.expression.MarkupContext;
@@ -38,9 +43,18 @@ import org.apache.sling.scripting.sightly.compiler.expression.MarkupContext;
 public class ExpressionWrapper {
 
     private final List<Filter> filters;
+    private final Set<String> knownOptions;
+    private final PushStream stream;
 
-    public ExpressionWrapper(List<Filter> filters) {
+    public ExpressionWrapper(PushStream stream, List<Filter> filters) {
+        this.stream = stream;
         this.filters = filters;
+        Set<String> options = new HashSet<>();
+        for (Filter filter : filters) {
+            options.addAll(filter.getOptions());
+        }
+        options.add(Syntax.CONTEXT_OPTION);
+        knownOptions = Collections.unmodifiableSet(options);
     }
 
     public Expression transform(Interpolation interpolation, MarkupContext markupContext, ExpressionContext expressionContext) {
@@ -51,13 +65,20 @@ public class ExpressionWrapper {
                 nodes.add(new StringConstant(fragment.getText()));
             } else {
                 Expression expression = fragment.getExpression();
+                if (AbstractFilter.NON_PARAMETRIZABLE_CONTEXTS.contains(expressionContext)) {
+                    for (String option : expression.getOptions().keySet()) {
+                        if (!knownOptions.contains(option)) {
+                            stream.warn(new PushStream.StreamMessage(String.format("Unknown option '%s'.", option), expression.getRawText()));
+                        }
+                    }
+                }
                 Expression transformed = adjustToContext(expression, markupContext, expressionContext);
                 nodes.add(transformed.getRoot());
                 options.putAll(transformed.getOptions());
             }
         }
         ExpressionNode root = join(nodes);
-        if (interpolation.size() > 1 && options.containsKey(Syntax.CONTEXT_OPTION)) {
+        if (interpolation.size() > 1) {
             //context must not be calculated by merging
             options.remove(Syntax.CONTEXT_OPTION);
         }
