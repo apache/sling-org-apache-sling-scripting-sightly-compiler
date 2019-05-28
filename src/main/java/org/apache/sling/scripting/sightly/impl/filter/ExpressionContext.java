@@ -18,6 +18,11 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.filter;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Defines a context for the {@link Expression} that will be processed by a {@link Filter}. The context can then be used by filters to
  * further enhance the decision mechanism for their processing.
@@ -25,26 +30,33 @@ package org.apache.sling.scripting.sightly.impl.filter;
 public enum ExpressionContext {
 
     // Plugin contexts
-    PLUGIN_DATA_SLY_USE,
-    PLUGIN_DATA_SLY_TEXT,
-    PLUGIN_DATA_SLY_ATTRIBUTE,
-    PLUGIN_DATA_SLY_ELEMENT,
-    PLUGIN_DATA_SLY_TEST,
-    PLUGIN_DATA_SLY_SET,
-    PLUGIN_DATA_SLY_LIST,
-    PLUGIN_DATA_SLY_REPEAT,
-    PLUGIN_DATA_SLY_INCLUDE,
-    PLUGIN_DATA_SLY_RESOURCE,
-    PLUGIN_DATA_SLY_TEMPLATE,
-    PLUGIN_DATA_SLY_CALL,
-    PLUGIN_DATA_SLY_UNWRAP,
+    PLUGIN_DATA_SLY_USE(Collections.emptySet()),
+    PLUGIN_DATA_SLY_TEXT(Collections.emptySet()),
+    PLUGIN_DATA_SLY_ATTRIBUTE(Collections.emptySet()),
+    PLUGIN_DATA_SLY_ELEMENT(Collections.emptySet()),
+    PLUGIN_DATA_SLY_TEST(Collections.emptySet()),
+    PLUGIN_DATA_SLY_SET(Collections.emptySet()),
+    PLUGIN_DATA_SLY_LIST(new HashSet<>(Arrays.asList("begin", "step", "end"))),
+    PLUGIN_DATA_SLY_REPEAT(new HashSet<>(Arrays.asList("begin", "step", "end"))),
+    PLUGIN_DATA_SLY_INCLUDE(new HashSet<>(Arrays.asList("appendPath", "prependPath", "file"))),
+    PLUGIN_DATA_SLY_RESOURCE(new HashSet<>(Arrays.asList("appendPath", "prependPath", "file", "selectors", "addSelectors",
+            "removeSelectors", "resourceType"))),
+    PLUGIN_DATA_SLY_TEMPLATE(Collections.emptySet()),
+    PLUGIN_DATA_SLY_CALL(Collections.emptySet()),
+    PLUGIN_DATA_SLY_UNWRAP(Collections.emptySet()),
 
     // Markup contexts
-    ELEMENT,
-    TEXT,
-    ATTRIBUTE;
+    ELEMENT(Collections.emptySet()),
+    TEXT(Collections.emptySet()),
+    ATTRIBUTE(Collections.emptySet());
 
     private static final String PLUGIN_PREFIX = "PLUGIN_DATA_SLY_";
+
+    private final Set<String> options;
+
+    ExpressionContext(Set<String> options) {
+        this.options = options;
+    }
 
     /**
      * Retrieves the context for the plugin specified by {@code pluginName}.
@@ -57,4 +69,7 @@ public enum ExpressionContext {
         return valueOf(PLUGIN_PREFIX + pluginName.toUpperCase());
     }
 
+    public Set<String> getOptions() {
+        return options;
+    }
 }

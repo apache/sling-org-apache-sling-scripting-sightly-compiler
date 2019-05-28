@@ -47,7 +47,7 @@ public class JoinFilter extends AbstractFilter {
     @Override
     protected Expression apply(Expression expression, Map<String, ExpressionNode> options) {
         ExpressionNode translation =
-                new RuntimeCall(RuntimeCall.JOIN, expression.getRoot(), expression.removeOption(JOIN_OPTION));
+                new RuntimeCall(RuntimeCall.JOIN, expression.getRoot(), options.get(JOIN_OPTION));
         return expression.withNode(translation);
     }
 

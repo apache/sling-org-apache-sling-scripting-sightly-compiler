@@ -21,8 +21,8 @@ package org.apache.sling.scripting.sightly.impl.compiler.frontend;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.apache.sling.scripting.sightly.impl.compiler.CompilerFrontend;
 import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 import org.apache.sling.scripting.sightly.impl.filter.Filter;
 import org.apache.sling.scripting.sightly.impl.html.dom.DocumentParser;
@@ -32,22 +32,23 @@ import org.apache.sling.scripting.sightly.impl.plugin.Plugin;
 /**
  * DOM-based compiler implementation
  */
-public class SimpleFrontend implements CompilerFrontend {
+public class SimpleFrontend {
 
     private final Map<String, Plugin> plugins;
     private final List<Filter> filters;
+    private final Set<String> knownExpressionOptions;
 
-    public SimpleFrontend(List<Plugin> plugins, List<Filter> filters) {
+    public SimpleFrontend(List<Plugin> plugins, List<Filter> filters, Set<String> knownExpressionOptions) {
         this.plugins = new HashMap<>();
         this.filters = filters;
+        this.knownExpressionOptions = knownExpressionOptions;
         for (Plugin plugin : plugins) {
             this.plugins.put(plugin.name(), plugin);
         }
     }
 
-    @Override
     public void compile(PushStream stream, String source) {
-        MarkupHandler markupHandler = new MarkupHandler(stream, plugins, filters);
+        MarkupHandler markupHandler = new MarkupHandler(stream, plugins, filters, knownExpressionOptions);
         DocumentParser.parse(source, markupHandler);
     }
 }

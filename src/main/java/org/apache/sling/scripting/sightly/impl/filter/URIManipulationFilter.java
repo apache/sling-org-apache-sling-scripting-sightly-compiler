@@ -19,6 +19,7 @@
 package org.apache.sling.scripting.sightly.impl.filter;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -53,6 +54,16 @@ public class URIManipulationFilter extends AbstractFilter {
 
     private static final Set<String> OPTIONS = new HashSet<>(Arrays.asList(SCHEME, DOMAIN, PATH, APPEND_PATH, PREPEND_PATH, SELECTORS,
             ADD_SELECTORS, REMOVE_SELECTORS, EXTENSION, SUFFIX, PREPEND_SUFFIX, APPEND_SUFFIX, FRAGMENT, QUERY, ADD_QUERY, REMOVE_QUERY));
+    private static final Set<ExpressionContext> APPLICABLE_CONTEXTS;
+
+    static {
+        Set<ExpressionContext> applicableContexts = new HashSet<>(Arrays.asList(ExpressionContext.values()));
+        applicableContexts.remove(ExpressionContext.PLUGIN_DATA_SLY_TEMPLATE);
+        applicableContexts.remove(ExpressionContext.PLUGIN_DATA_SLY_CALL);
+        applicableContexts.remove(ExpressionContext.PLUGIN_DATA_SLY_RESOURCE);
+        applicableContexts.remove(ExpressionContext.PLUGIN_DATA_SLY_INCLUDE);
+        APPLICABLE_CONTEXTS = Collections.unmodifiableSet(applicableContexts);
+    }
 
 
     private static final class URIManipulationFilterLoader {
@@ -82,6 +93,6 @@ public class URIManipulationFilter extends AbstractFilter {
 
     @Override
     public Set<ExpressionContext> getApplicableContexts() {
-        return NON_PARAMETRIZABLE_CONTEXTS;
+        return APPLICABLE_CONTEXTS;
     }
 }

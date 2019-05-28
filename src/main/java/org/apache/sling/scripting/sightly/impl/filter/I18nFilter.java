@@ -56,13 +56,12 @@ public final class I18nFilter extends AbstractFilter {
 
     @Override
     protected Expression apply(Expression expression, Map<String, ExpressionNode> options) {
-        if (options.containsKey(I18N_OPTION)) {
-            ExpressionNode translation = new RuntimeCall(RuntimeCall.I18N, expression.getRoot(), new MapLiteral(options));
-            expression.removeOption(I18N_OPTION);
-            expression.getOptions().put(FormatFilter.FORMAT_LOCALE_OPTION, options.get(LOCALE_OPTION));
-            return expression.withNode(translation);
+        ExpressionNode translation = new RuntimeCall(RuntimeCall.I18N, expression.getRoot(), new MapLiteral(options));
+        if (options.containsKey(LOCALE_OPTION)) {
+            // put back the locale option, in case it will be used by the FormatFilter
+            expression.getOptions().put(LOCALE_OPTION, options.get(LOCALE_OPTION));
         }
-        return expression;
+        return expression.withNode(translation);
     }
 
     @Override

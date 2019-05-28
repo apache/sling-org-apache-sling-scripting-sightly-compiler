@@ -75,10 +75,10 @@ public class MarkupHandler {
     private static final Set<String> URI_ATTRIBUTES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("action", "cite",
             "data", "formaction", "href",  "manifest", "poster", "src")));
 
-    public MarkupHandler(PushStream stream, Map<String, Plugin> pluginRegistry, List<Filter> filters) {
+    public MarkupHandler(PushStream stream, Map<String, Plugin> pluginRegistry, List<Filter> filters, Set<String> knownExpressionOptions) {
         this.stream = stream;
         this.pluginRegistry = pluginRegistry;
-        this.expressionWrapper = new ExpressionWrapper(stream, filters);
+        this.expressionWrapper = new ExpressionWrapper(stream, filters, knownExpressionOptions);
         this.compilerContext = new CompilerContext(symbolGenerator, expressionWrapper, stream);
     }
 

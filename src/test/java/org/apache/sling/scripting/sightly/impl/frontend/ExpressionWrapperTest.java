@@ -71,7 +71,7 @@ public class ExpressionWrapperTest {
         options.put(I18nFilter.LOCALE_OPTION, new StringConstant("de"));
         options.put(I18nFilter.I18N_OPTION, NullLiteral.INSTANCE);
         interpolation.addExpression(new Expression(new StringConstant("hello"), options));
-        ExpressionWrapper wrapper = new ExpressionWrapper(new PushStream(), filters);
+        ExpressionWrapper wrapper = new ExpressionWrapper(new PushStream(), filters, Collections.emptySet());
         Expression result = wrapper.transform(interpolation, MarkupContext.TEXT, ExpressionContext.TEXT);
         List<ExpressionNode> xssArguments = runOptionsAndXSSAssertions(result, 1);
         RuntimeCall i18n = (RuntimeCall) xssArguments.get(0);
@@ -87,7 +87,7 @@ public class ExpressionWrapperTest {
         formatArray.add(new StringConstant("Doe"));
         options.put(FormatFilter.FORMAT_OPTION, new ArrayLiteral(formatArray));
         interpolation.addExpression(new Expression(new StringConstant("Hello {0} {1}"), options));
-        ExpressionWrapper wrapper = new ExpressionWrapper(new PushStream(), filters);
+        ExpressionWrapper wrapper = new ExpressionWrapper(new PushStream(), filters, Collections.emptySet());
         Expression result = wrapper.transform(interpolation, MarkupContext.TEXT, ExpressionContext.TEXT);
         List<ExpressionNode> xssArguments = runOptionsAndXSSAssertions(result, 0);
         RuntimeCall format = (RuntimeCall) xssArguments.get(0);
@@ -103,7 +103,7 @@ public class ExpressionWrapperTest {
         array.add(new NumericConstant(0));
         array.add(new NumericConstant(1));
         interpolation.addExpression(new Expression(new ArrayLiteral(array), options));
-        ExpressionWrapper wrapper = new ExpressionWrapper(new PushStream(), filters);
+        ExpressionWrapper wrapper = new ExpressionWrapper(new PushStream(), filters, Collections.emptySet());
         Expression result = wrapper.transform(interpolation, MarkupContext.TEXT, ExpressionContext.TEXT);
         List<ExpressionNode> xssArguments = runOptionsAndXSSAssertions(result, 0);
         RuntimeCall join = (RuntimeCall) xssArguments.get(0);
@@ -139,7 +139,7 @@ public class ExpressionWrapperTest {
         interpolation.addExpression(
                 new Expression(new StringConstant("http://www.example.com/resource.selector.extension/suffix#fragment?param=value"),
                         options));
-        ExpressionWrapper wrapper = new ExpressionWrapper(new PushStream(), filters);
+        ExpressionWrapper wrapper = new ExpressionWrapper(new PushStream(), filters, Collections.emptySet());
         Expression result = wrapper.transform(interpolation, MarkupContext.TEXT, ExpressionContext.TEXT);
         List<ExpressionNode> xssArguments = runOptionsAndXSSAssertions(result, 0);
         RuntimeCall join = (RuntimeCall) xssArguments.get(0);

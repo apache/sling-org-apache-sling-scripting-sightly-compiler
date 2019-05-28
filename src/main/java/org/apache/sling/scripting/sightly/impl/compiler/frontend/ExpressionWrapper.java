@@ -46,15 +46,10 @@ public class ExpressionWrapper {
     private final Set<String> knownOptions;
     private final PushStream stream;
 
-    public ExpressionWrapper(PushStream stream, List<Filter> filters) {
+    public ExpressionWrapper(PushStream stream, List<Filter> filters, Set<String> knownExpressionOptions) {
         this.stream = stream;
         this.filters = filters;
-        Set<String> options = new HashSet<>();
-        for (Filter filter : filters) {
-            options.addAll(filter.getOptions());
-        }
-        options.add(Syntax.CONTEXT_OPTION);
-        knownOptions = Collections.unmodifiableSet(options);
+        this.knownOptions = knownExpressionOptions;
     }
 
     public Expression transform(Interpolation interpolation, MarkupContext markupContext, ExpressionContext expressionContext) {

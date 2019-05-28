@@ -73,7 +73,7 @@ public abstract class AbstractFilter implements Filter {
      * @param options    the options of interest for the {@link Filter}
      * @return a map with the retrieved options; the map can be empty if none of the options were found
      */
-    protected Map<String, ExpressionNode> getFilterOptions(Expression expression, Set<String> options) {
+    private Map<String, ExpressionNode> getFilterOptions(Expression expression, Set<String> options) {
         Map<String, ExpressionNode> collector = new HashMap<>();
         for (String option : options) {
             ExpressionNode optionNode = expression.removeOption(option);

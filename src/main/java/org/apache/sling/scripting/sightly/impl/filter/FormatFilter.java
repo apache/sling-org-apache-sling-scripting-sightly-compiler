@@ -36,10 +36,10 @@ public class FormatFilter extends AbstractFilter {
 
     public static final String FORMAT_OPTION = "format";
     public static final String TYPE_OPTION = "type";
-    public static final String FORMAT_LOCALE_OPTION = "formatLocale";
     public static final String TIMEZONE_OPTION = "timezone";
 
-    private static final Set<String> OPTIONS = new HashSet<>(Arrays.asList(FORMAT_OPTION, TYPE_OPTION, FORMAT_LOCALE_OPTION, TIMEZONE_OPTION));
+    private static final Set<String> OPTIONS =
+            new HashSet<>(Arrays.asList(FORMAT_OPTION, TYPE_OPTION, I18nFilter.LOCALE_OPTION, TIMEZONE_OPTION));
     private static final Set<String> REQUIRED_OPTIONS = Collections.singleton(FORMAT_OPTION);
 
     private static final class FormatFilterLoader {
@@ -56,7 +56,7 @@ public class FormatFilter extends AbstractFilter {
     @Override
     protected Expression apply(Expression expression, Map<String, ExpressionNode> options) {
         ExpressionNode translation =
-                new RuntimeCall(RuntimeCall.FORMAT, expression.getRoot(), new MapLiteral(getFilterOptions(expression, getOptions())));
+                new RuntimeCall(RuntimeCall.FORMAT, expression.getRoot(), new MapLiteral(options));
         return expression.withNode(translation);
     }
 
