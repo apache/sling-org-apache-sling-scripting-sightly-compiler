@@ -19,7 +19,6 @@
 package org.apache.sling.scripting.sightly.impl.compiler.frontend;
 
 import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
-import org.apache.sling.scripting.sightly.impl.compiler.Syntax;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.impl.filter.ExpressionContext;
 import org.apache.sling.scripting.sightly.compiler.expression.MarkupContext;

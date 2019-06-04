@@ -58,7 +58,7 @@ public class JoinFilter extends AbstractFilter {
 
     @Override
     public Set<String> getRequiredOptions() {
-        return OPTIONS;
+        return getOptions();
     }
 
     @Override
