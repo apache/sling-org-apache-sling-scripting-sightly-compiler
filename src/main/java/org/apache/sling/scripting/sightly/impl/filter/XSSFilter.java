@@ -20,7 +20,6 @@ package org.apache.sling.scripting.sightly.impl.filter;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;

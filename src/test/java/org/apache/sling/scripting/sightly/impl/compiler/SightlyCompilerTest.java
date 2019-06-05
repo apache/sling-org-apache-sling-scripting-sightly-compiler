@@ -38,7 +38,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(SightlyCompiler.class)
 public class SightlyCompilerTest {
 
     private SightlyCompiler compiler = new SightlyCompiler();

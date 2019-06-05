@@ -55,7 +55,7 @@
 
     <properties>
         <antlr.version>4.7.1</antlr.version>
-        <jacoco.maven.plugin.version>0.7.9</jacoco.maven.plugin.version>
+        <jacoco.maven.plugin.version>0.8.3</jacoco.maven.plugin.version>
     </properties>
 
     <!-- ======================================================================= -->
