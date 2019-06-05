@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
@@ -38,15 +37,12 @@ public class FormatFilter extends AbstractFilter {
     public static final String TYPE_OPTION = "type";
     public static final String TIMEZONE_OPTION = "timezone";
 
-    private static final Set<String> OPTIONS =
-            new HashSet<>(Arrays.asList(FORMAT_OPTION, TYPE_OPTION, I18nFilter.LOCALE_OPTION, TIMEZONE_OPTION));
-    private static final Set<String> REQUIRED_OPTIONS = Collections.singleton(FORMAT_OPTION);
-
     private static final class FormatFilterLoader {
         private static final FormatFilter INSTANCE = new FormatFilter();
     }
 
     private FormatFilter() {
+        super(NON_PARAMETRIZABLE_CONTEXTS, new HashSet<>(Arrays.asList(FORMAT_OPTION, TYPE_OPTION, I18nFilter.LOCALE_OPTION, TIMEZONE_OPTION)), Collections.singleton(FORMAT_OPTION));
     }
 
     public static FormatFilter getInstance() {
@@ -58,20 +54,5 @@ public class FormatFilter extends AbstractFilter {
         ExpressionNode translation =
                 new RuntimeCall(RuntimeCall.FORMAT, expression.getRoot(), new MapLiteral(options));
         return expression.withNode(translation);
-    }
-
-    @Override
-    public Set<String> getOptions() {
-        return OPTIONS;
-    }
-
-    @Override
-    public Set<String> getRequiredOptions() {
-        return REQUIRED_OPTIONS;
-    }
-
-    @Override
-    public Set<ExpressionContext> getApplicableContexts() {
-        return NON_PARAMETRIZABLE_CONTEXTS;
     }
 }

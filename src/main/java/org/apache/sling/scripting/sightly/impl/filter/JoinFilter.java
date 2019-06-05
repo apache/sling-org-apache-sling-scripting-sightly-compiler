@@ -38,7 +38,9 @@ public class JoinFilter extends AbstractFilter {
         private static final JoinFilter INSTANCE = new JoinFilter();
     }
 
-    private JoinFilter() {}
+    private JoinFilter() {
+        super(NON_PARAMETRIZABLE_CONTEXTS, OPTIONS, OPTIONS);
+    }
 
     public static JoinFilter getInstance() {
         return JoinFilterLoader.INSTANCE;
@@ -50,20 +52,4 @@ public class JoinFilter extends AbstractFilter {
                 new RuntimeCall(RuntimeCall.JOIN, expression.getRoot(), options.get(JOIN_OPTION));
         return expression.withNode(translation);
     }
-
-    @Override
-    public Set<String> getOptions() {
-        return OPTIONS;
-    }
-
-    @Override
-    public Set<String> getRequiredOptions() {
-        return getOptions();
-    }
-
-    @Override
-    public Set<ExpressionContext> getApplicableContexts() {
-        return NON_PARAMETRIZABLE_CONTEXTS;
-    }
-
 }

@@ -18,6 +18,7 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.filter;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +37,7 @@ public class XSSFilter extends AbstractFilter {
     }
 
     private XSSFilter() {
+        super(NON_PARAMETRIZABLE_CONTEXTS, Collections.emptySet(), Collections.emptySet());
         priority = 110;
     }
 
@@ -50,10 +52,5 @@ public class XSSFilter extends AbstractFilter {
             return expression.withNode(new RuntimeCall(RuntimeCall.XSS, expression.getRoot(), context));
         }
         return expression;
-    }
-
-    @Override
-    public Set<ExpressionContext> getApplicableContexts() {
-        return NON_PARAMETRIZABLE_CONTEXTS;
     }
 }

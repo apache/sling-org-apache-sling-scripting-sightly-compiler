@@ -39,14 +39,12 @@ public final class I18nFilter extends AbstractFilter {
     public static final String LOCALE_OPTION = "locale";
     public static final String BASENAME_OPTION = "basename";
 
-    private static final Set<String> OPTIONS = new HashSet<>(Arrays.asList(I18N_OPTION, HINT_OPTION, LOCALE_OPTION, BASENAME_OPTION));
-    private static final Set<String> REQUIRED_OPTIONS = Collections.singleton(I18N_OPTION);
-
     private static final class I18nFilterLoader {
         private static final I18nFilter INSTANCE = new I18nFilter();
     }
 
     private I18nFilter() {
+        super(NON_PARAMETRIZABLE_CONTEXTS, new HashSet<>(Arrays.asList(I18N_OPTION, HINT_OPTION, LOCALE_OPTION, BASENAME_OPTION)), Collections.singleton(I18N_OPTION));
         priority = 90;
     }
 
@@ -62,20 +60,5 @@ public final class I18nFilter extends AbstractFilter {
             expression.getOptions().put(LOCALE_OPTION, options.get(LOCALE_OPTION));
         }
         return expression.withNode(translation);
-    }
-
-    @Override
-    public Set<String> getOptions() {
-        return OPTIONS;
-    }
-
-    @Override
-    public Set<String> getRequiredOptions() {
-        return REQUIRED_OPTIONS;
-    }
-
-    @Override
-    public Set<ExpressionContext> getApplicableContexts() {
-        return NON_PARAMETRIZABLE_CONTEXTS;
     }
 }

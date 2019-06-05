@@ -52,8 +52,6 @@ public class URIManipulationFilter extends AbstractFilter {
     public static final String ADD_QUERY = "addQuery";
     public static final String REMOVE_QUERY = "removeQuery";
 
-    private static final Set<String> OPTIONS = new HashSet<>(Arrays.asList(SCHEME, DOMAIN, PATH, APPEND_PATH, PREPEND_PATH, SELECTORS,
-            ADD_SELECTORS, REMOVE_SELECTORS, EXTENSION, SUFFIX, PREPEND_SUFFIX, APPEND_SUFFIX, FRAGMENT, QUERY, ADD_QUERY, REMOVE_QUERY));
     private static final Set<ExpressionContext> APPLICABLE_CONTEXTS;
 
     static {
@@ -70,7 +68,11 @@ public class URIManipulationFilter extends AbstractFilter {
         private static final URIManipulationFilter INSTANCE = new URIManipulationFilter();
     }
 
-    private URIManipulationFilter() {}
+    private URIManipulationFilter() {
+        super(APPLICABLE_CONTEXTS, new HashSet<>(Arrays.asList(SCHEME, DOMAIN, PATH, APPEND_PATH, PREPEND_PATH, SELECTORS,
+                ADD_SELECTORS, REMOVE_SELECTORS, EXTENSION, SUFFIX, PREPEND_SUFFIX, APPEND_SUFFIX, FRAGMENT, QUERY, ADD_QUERY,
+                REMOVE_QUERY)), Collections.emptySet());
+    }
 
     public static URIManipulationFilter getInstance() {
         return URIManipulationFilterLoader.INSTANCE;
@@ -84,15 +86,5 @@ public class URIManipulationFilter extends AbstractFilter {
             return expression.withNode(translation);
         }
         return expression;
-    }
-
-    @Override
-    public Set<String> getOptions() {
-        return OPTIONS;
-    }
-
-    @Override
-    public Set<ExpressionContext> getApplicableContexts() {
-        return APPLICABLE_CONTEXTS;
     }
 }

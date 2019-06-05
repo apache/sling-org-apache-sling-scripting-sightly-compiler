@@ -40,6 +40,16 @@ public abstract class AbstractFilter implements Filter {
         NON_PARAMETRIZABLE_CONTEXTS = Collections.unmodifiableSet(contexts);
     }
 
+    private final Set<ExpressionContext> applicableContexts;
+    private final Set<String> options;
+    private final Set<String> requiredOptions;
+
+    AbstractFilter(Set<ExpressionContext> applicableContexts, Set<String> options, Set<String> requiredOptions) {
+        this.applicableContexts = applicableContexts;
+        this.options = options;
+        this.requiredOptions = requiredOptions;
+    }
+
     @Override
     public int priority() {
         return priority;
@@ -92,5 +102,20 @@ public abstract class AbstractFilter implements Filter {
     @Override
     public boolean equals(Object obj) {
         return obj != null && this.getClass().equals(obj.getClass());
+    }
+
+    @Override
+    public Set<String> getOptions() {
+        return options;
+    }
+
+    @Override
+    public Set<String> getRequiredOptions() {
+        return requiredOptions;
+    }
+
+    @Override
+    public Set<ExpressionContext> getApplicableContexts() {
+        return applicableContexts;
     }
 }
