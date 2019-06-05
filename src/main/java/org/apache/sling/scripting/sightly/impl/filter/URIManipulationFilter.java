@@ -18,7 +18,11 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.filter;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
@@ -48,15 +52,26 @@ public class URIManipulationFilter extends AbstractFilter {
     public static final String ADD_QUERY = "addQuery";
     public static final String REMOVE_QUERY = "removeQuery";
 
+    private static final Set<ExpressionContext> APPLICABLE_CONTEXTS;
+
+    static {
+        Set<ExpressionContext> applicableContexts = new HashSet<>(Arrays.asList(ExpressionContext.values()));
+        applicableContexts.remove(ExpressionContext.PLUGIN_DATA_SLY_TEMPLATE);
+        applicableContexts.remove(ExpressionContext.PLUGIN_DATA_SLY_CALL);
+        applicableContexts.remove(ExpressionContext.PLUGIN_DATA_SLY_RESOURCE);
+        applicableContexts.remove(ExpressionContext.PLUGIN_DATA_SLY_INCLUDE);
+        APPLICABLE_CONTEXTS = Collections.unmodifiableSet(applicableContexts);
+    }
+
 
     private static final class URIManipulationFilterLoader {
         private static final URIManipulationFilter INSTANCE = new URIManipulationFilter();
     }
 
     private URIManipulationFilter() {
-        if (URIManipulationFilterLoader.INSTANCE != null) {
-            throw new IllegalStateException("INSTANCE was already defined.");
-        }
+        super(APPLICABLE_CONTEXTS, new HashSet<>(Arrays.asList(SCHEME, DOMAIN, PATH, APPEND_PATH, PREPEND_PATH, SELECTORS,
+                ADD_SELECTORS, REMOVE_SELECTORS, EXTENSION, SUFFIX, PREPEND_SUFFIX, APPEND_SUFFIX, FRAGMENT, QUERY, ADD_QUERY,
+                REMOVE_QUERY)), Collections.emptySet());
     }
 
     public static URIManipulationFilter getInstance() {
@@ -64,27 +79,12 @@ public class URIManipulationFilter extends AbstractFilter {
     }
 
     @Override
-    public Expression apply(Expression expression, ExpressionContext expressionContext) {
-        if ((expression.containsOption(SCHEME) || expression.containsOption(DOMAIN) || expression.containsOption(PATH) || expression
-                .containsOption(APPEND_PATH) || expression.containsOption(PREPEND_PATH) || expression.containsOption(SELECTORS) ||
-                expression.containsOption(ADD_SELECTORS) || expression.containsOption(REMOVE_SELECTORS) || expression.containsOption
-                (EXTENSION) || expression.containsOption(SUFFIX) || expression.containsOption(PREPEND_SUFFIX) || expression
-                .containsOption(APPEND_SUFFIX) || expression.containsOption(FRAGMENT) || expression.containsOption(QUERY) || expression
-                .containsOption(ADD_QUERY) || expression.containsOption(REMOVE_QUERY)) && expressionContext != ExpressionContext
-                .PLUGIN_DATA_SLY_USE && expressionContext
-                != ExpressionContext.PLUGIN_DATA_SLY_TEMPLATE && expressionContext != ExpressionContext.PLUGIN_DATA_SLY_CALL &&
-                expressionContext != ExpressionContext.PLUGIN_DATA_SLY_RESOURCE) {
-            Map<String, ExpressionNode> uriOptions = getFilterOptions(expression, SCHEME, DOMAIN, PATH, APPEND_PATH, PREPEND_PATH,
-                    SELECTORS, ADD_SELECTORS, REMOVE_SELECTORS, EXTENSION, SUFFIX, PREPEND_SUFFIX, APPEND_SUFFIX, FRAGMENT, QUERY,
-                    ADD_QUERY, REMOVE_QUERY);
-            if (uriOptions.size() > 0) {
-                ExpressionNode translation =
-                        new RuntimeCall(RuntimeCall.URI_MANIPULATION, expression.getRoot(), new MapLiteral(uriOptions));
-                return expression.withNode(translation);
-            }
+    protected Expression apply(Expression expression, Map<String, ExpressionNode> options) {
+        if (options.size() > 0) {
+            ExpressionNode translation =
+                    new RuntimeCall(RuntimeCall.URI_MANIPULATION, expression.getRoot(), new MapLiteral(options));
+            return expression.withNode(translation);
         }
         return expression;
     }
-
-
 }

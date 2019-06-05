@@ -18,6 +18,11 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.filter;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
@@ -30,7 +35,6 @@ public class FormatFilter extends AbstractFilter {
 
     public static final String FORMAT_OPTION = "format";
     public static final String TYPE_OPTION = "type";
-    public static final String FORMAT_LOCALE_OPTION = "formatLocale";
     public static final String TIMEZONE_OPTION = "timezone";
 
     private static final class FormatFilterLoader {
@@ -38,6 +42,7 @@ public class FormatFilter extends AbstractFilter {
     }
 
     private FormatFilter() {
+        super(NON_PARAMETRIZABLE_CONTEXTS, new HashSet<>(Arrays.asList(FORMAT_OPTION, TYPE_OPTION, I18nFilter.LOCALE_OPTION, TIMEZONE_OPTION)), Collections.singleton(FORMAT_OPTION));
     }
 
     public static FormatFilter getInstance() {
@@ -45,21 +50,9 @@ public class FormatFilter extends AbstractFilter {
     }
 
     @Override
-    public Expression apply(Expression expression, ExpressionContext expressionContext) {
-        //todo: if the expression is a string constant, we can produce the transformation at
-        //compile time, with no need of a runtime function
-        if (!expression.containsOption(FORMAT_OPTION) || expressionContext == ExpressionContext.PLUGIN_DATA_SLY_USE || expressionContext
-                == ExpressionContext.PLUGIN_DATA_SLY_TEMPLATE || expressionContext == ExpressionContext.PLUGIN_DATA_SLY_CALL) {
-            return expression;
-        }
+    protected Expression apply(Expression expression, Map<String, ExpressionNode> options) {
         ExpressionNode translation =
-                new RuntimeCall(RuntimeCall.FORMAT, expression.getRoot(),
-                        new MapLiteral(getFilterOptions(expression,
-                                FORMAT_OPTION,
-                                TYPE_OPTION,
-                                I18nFilter.LOCALE_OPTION,
-                                FORMAT_LOCALE_OPTION,
-                                TIMEZONE_OPTION)));
+                new RuntimeCall(RuntimeCall.FORMAT, expression.getRoot(), new MapLiteral(options));
         return expression.withNode(translation);
     }
 }

@@ -38,7 +38,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(SightlyCompiler.class)
 public class SightlyCompilerTest {
 
     private SightlyCompiler compiler = new SightlyCompiler();
@@ -51,7 +50,7 @@ public class SightlyCompilerTest {
 
     @Test
     public void testMissingExplicitContext() {
-        for (String s : new String[] {"", "-win", "-mac"}) {
+        for (String s : new String[]{"", "-win", "-mac"}) {
             String script = "/missing-explicit-context" + s + ".html";
             testMissingExplicitContext(script);
         }
@@ -74,7 +73,7 @@ public class SightlyCompilerTest {
         PowerMockito.mockStatic(System.class);
         PowerMockito.when(System.lineSeparator()).thenReturn("\r\n");
 
-        for (String s : new String[] {"", "-win", "-mac"}) {
+        for (String s : new String[]{"", "-win", "-mac"}) {
             String script = "/missing-explicit-context" + s + ".html";
             testMissingExplicitContext(script);
         }
@@ -85,7 +84,7 @@ public class SightlyCompilerTest {
         PowerMockito.mockStatic(System.class);
         PowerMockito.when(System.lineSeparator()).thenReturn("\r");
 
-        for (String s : new String[] {"", "-win", "-mac"}) {
+        for (String s : new String[]{"", "-win", "-mac"}) {
             String script = "/missing-explicit-context" + s + ".html";
             testMissingExplicitContext(script);
         }
@@ -129,8 +128,8 @@ public class SightlyCompilerTest {
         }
 
         // doubles
-        double  doubleTestRange = 20.00;
-        for (double i = -1.00 * doubleTestRange; i < doubleTestRange; i+= 0.1) {
+        double doubleTestRange = 20.00;
+        for (double i = -1.00 * doubleTestRange; i < doubleTestRange; i += 0.1) {
             assertEquals(0, compileSource("${" + i + "}").getErrors().size());
         }
 
@@ -148,6 +147,17 @@ public class SightlyCompilerTest {
         assertEquals(1, compileSource("${01e-2}").getErrors().size());
         assertEquals(0, compileSource("${1e-2}").getErrors().size());
         assertEquals(0, compileSource("${1e+2}").getErrors().size());
+    }
+
+    @Test
+    public void testUnknownExpressionOptions() {
+        assertEquals(0, compileSource("<sly data-sly-use.a=\"${com.example.Pojo @ param1=1, param2=2}\"></sly>").getWarnings().size());
+        assertEquals(0, compileSource("<sly data-sly-call=\"${myTemplate @ param1=1, param2=2}\"></sly>").getWarnings().size());
+        assertEquals(0, compileSource("<template data-sly-template.myTemplate=\"${@ param1, param2}\"></template>").getWarnings().size());
+        assertEquals(1, compileSource("${currentPage.title @ contex = 'scriptString'}").getWarnings().size());
+        assertEquals(1, compileSource("${a @ unknownOption}").getWarnings().size());
+        assertEquals(2, compileSource("${a @ unknownOption1, unknownOption2}").getWarnings().size());
+        assertEquals(1, compileSource("<div data-sly-text='${\"text\" @ i18nn}'>Replaced</div>").getWarnings().size());
     }
 
     private CompilationResult compileFile(final String file) {

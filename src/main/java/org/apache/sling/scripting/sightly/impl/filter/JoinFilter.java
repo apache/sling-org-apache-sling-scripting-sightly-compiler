@@ -18,6 +18,10 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.filter;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall;
@@ -28,15 +32,14 @@ import org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall;
 public class JoinFilter extends AbstractFilter {
 
     public static final String JOIN_OPTION = "join";
+    private static final Set<String> OPTIONS = Collections.singleton(JOIN_OPTION);
 
     private static final class JoinFilterLoader {
         private static final JoinFilter INSTANCE = new JoinFilter();
     }
 
     private JoinFilter() {
-        if (JoinFilterLoader.INSTANCE != null) {
-            throw new IllegalStateException("INSTANCE was already defined.");
-        }
+        super(NON_PARAMETRIZABLE_CONTEXTS, OPTIONS, OPTIONS);
     }
 
     public static JoinFilter getInstance() {
@@ -44,13 +47,9 @@ public class JoinFilter extends AbstractFilter {
     }
 
     @Override
-    public Expression apply(Expression expression, ExpressionContext expressionContext) {
-        if (!expression.containsOption(JOIN_OPTION) || expressionContext == ExpressionContext.PLUGIN_DATA_SLY_USE || expressionContext
-                == ExpressionContext.PLUGIN_DATA_SLY_TEMPLATE || expressionContext == ExpressionContext.PLUGIN_DATA_SLY_CALL) {
-            return expression;
-        }
+    protected Expression apply(Expression expression, Map<String, ExpressionNode> options) {
         ExpressionNode translation =
-                new RuntimeCall(RuntimeCall.JOIN, expression.getRoot(), expression.removeOption(JOIN_OPTION));
+                new RuntimeCall(RuntimeCall.JOIN, expression.getRoot(), options.get(JOIN_OPTION));
         return expression.withNode(translation);
     }
 }

@@ -21,16 +21,18 @@ package org.apache.sling.scripting.sightly.compiler;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.scripting.sightly.compiler.backend.BackendCompiler;
 import org.apache.sling.scripting.sightly.compiler.commands.CommandStream;
 import org.apache.sling.scripting.sightly.impl.compiler.CompilationResultImpl;
-import org.apache.sling.scripting.sightly.impl.compiler.CompilerFrontend;
 import org.apache.sling.scripting.sightly.impl.compiler.CompilerMessageImpl;
 import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
+import org.apache.sling.scripting.sightly.impl.compiler.Syntax;
 import org.apache.sling.scripting.sightly.impl.compiler.debug.SanityChecker;
 import org.apache.sling.scripting.sightly.impl.compiler.frontend.SimpleFrontend;
 import org.apache.sling.scripting.sightly.impl.compiler.optimization.CoalescingWrites;
@@ -40,6 +42,7 @@ import org.apache.sling.scripting.sightly.impl.compiler.optimization.StreamTrans
 import org.apache.sling.scripting.sightly.impl.compiler.optimization.SyntheticMapRemoval;
 import org.apache.sling.scripting.sightly.impl.compiler.optimization.UnusedVariableRemoval;
 import org.apache.sling.scripting.sightly.impl.compiler.optimization.reduce.ConstantFolding;
+import org.apache.sling.scripting.sightly.impl.filter.ExpressionContext;
 import org.apache.sling.scripting.sightly.impl.filter.Filter;
 import org.apache.sling.scripting.sightly.impl.filter.FormatFilter;
 import org.apache.sling.scripting.sightly.impl.filter.I18nFilter;
@@ -60,6 +63,7 @@ import org.apache.sling.scripting.sightly.impl.plugin.TestPlugin;
 import org.apache.sling.scripting.sightly.impl.plugin.TextPlugin;
 import org.apache.sling.scripting.sightly.impl.plugin.UnwrapPlugin;
 import org.apache.sling.scripting.sightly.impl.plugin.UsePlugin;
+import org.jetbrains.annotations.NotNull;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -74,10 +78,17 @@ import org.osgi.service.component.annotations.Component;
 )
 public final class SightlyCompiler {
 
-    private StreamTransformer optimizer;
-    private CompilerFrontend frontend;
+    private final StreamTransformer optimizer;
+    private final SimpleFrontend frontend;
+    private final Set<String> knownExpressionOptions;
+    private final List<Plugin> plugins;
+    private final List<Filter> filters;
 
     public SightlyCompiler() {
+        this(Collections.emptySet());
+    }
+
+    private SightlyCompiler(Set<String> additionalExpresionOptions) {
         ArrayList<StreamTransformer> transformers = new ArrayList<>(5);
         transformers.add(ConstantFolding.transformer());
         transformers.add(DeadCodeRemoval.transformer());
@@ -87,7 +98,7 @@ public final class SightlyCompiler {
         optimizer = new SequenceStreamTransformer(transformers);
 
         // register plugins
-        final List<Plugin> plugins = new ArrayList<>(12);
+        plugins = new ArrayList<>(12);
         plugins.add(new AttributePlugin());
         plugins.add(new CallPlugin());
         plugins.add(new ElementPlugin());
@@ -104,15 +115,43 @@ public final class SightlyCompiler {
         Collections.sort(plugins);
 
         // register filters
-        final List<Filter> filters = new ArrayList<>(5);
+        filters = new ArrayList<>(5);
         filters.add(I18nFilter.getInstance());
         filters.add(FormatFilter.getInstance());
         filters.add(JoinFilter.getInstance());
         filters.add(URIManipulationFilter.getInstance());
         filters.add(XSSFilter.getInstance());
         Collections.sort(filters);
+        knownExpressionOptions = new HashSet<>(additionalExpresionOptions);
+        for (Filter filter : filters) {
+            knownExpressionOptions.addAll(filter.getOptions());
+        }
+        knownExpressionOptions.add(Syntax.CONTEXT_OPTION);
+        for (ExpressionContext context : ExpressionContext.values()) {
+            knownExpressionOptions.addAll(context.getOptions());
+        }
+        frontend = new SimpleFrontend(plugins, filters, knownExpressionOptions);
+    }
 
-        frontend = new SimpleFrontend(plugins, filters);
+    /**
+     * <p>
+     * Returns an instance of the {@code SightlyCompiler} with the provided {@code options} added to the list of known expression options.
+     * </p>
+     * <p>
+     * The compiler builds internally a set of allowed options from the options permitted by the expressions or plugins. As soon as an
+     * expression contains an unknown option the compiler logs a warning. Since the compiler works with dynamically registered
+     * {@link org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall}s, some of them can work with additional expression
+     * options, not known to the compiler.
+     * </p>
+     * <p>
+     * <strong>NOTE</strong>: The {@code data-sly-template, data-sly-call, data-sly-use} plugins allow arbitrary options which define
+     * parameters and do not generate warnings.
+     * </p>
+     *
+     * @param options the options to add to the compiler's set of known expression options
+     */
+    public static SightlyCompiler withKnownExpressionOptions(@NotNull Set<String> options) {
+        return new SightlyCompiler(options);
     }
 
     /**
@@ -176,7 +215,7 @@ public final class SightlyCompiler {
                 String textBeforeError = documentFragment.substring(0, offendingInputIndex);
                 int line = lineOffset;
                 int lastNewLineIndex = 0;
-                for (String s : new String[] {"\r\n", "\r", "\n"}) {
+                for (String s : new String[]{"\r\n", "\r", "\n"}) {
                     int l = textBeforeError.split(s, -1).length - 1;
                     if (l + lineOffset > line) {
                         line = l + lineOffset;
@@ -188,7 +227,7 @@ public final class SightlyCompiler {
                 }
                 int column = textBeforeError.substring(lastNewLineIndex).length();
                 if (column != columnOffset) {
-                    column +=columnOffset;
+                    column += columnOffset;
                 }
                 return new ScriptError(line, column, longestContiguousOffendingSequence + ": " + message);
             }
