@@ -20,6 +20,14 @@ package org.apache.sling.scripting.sightly.impl.plugin;
 
 import org.apache.sling.scripting.sightly.compiler.commands.Conditional;
 import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
+import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
+import org.apache.sling.scripting.sightly.compiler.expression.nodes.ArrayLiteral;
+import org.apache.sling.scripting.sightly.compiler.expression.nodes.Atom;
+import org.apache.sling.scripting.sightly.compiler.expression.nodes.BinaryOperation;
+import org.apache.sling.scripting.sightly.compiler.expression.nodes.BinaryOperator;
+import org.apache.sling.scripting.sightly.compiler.expression.nodes.Identifier;
+import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
+import org.apache.sling.scripting.sightly.compiler.expression.nodes.NullLiteral;
 import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.impl.compiler.frontend.CompilerContext;
@@ -44,14 +52,27 @@ public class TestPlugin extends AbstractPlugin {
             @Override
             public void beforeElement(PushStream stream, String tagName) {
                 String variableName = decodeVariableName(callInfo);
+                ExpressionNode root = expressionNode.getRoot();
+                boolean constantValueComparison =
+                        root instanceof Atom && !(root instanceof Identifier) ||
+                        root instanceof NullLiteral ||
+                        root instanceof ArrayLiteral ||
+                        root instanceof MapLiteral;
+                if (!constantValueComparison && root instanceof BinaryOperation) {
+                    constantValueComparison = ((BinaryOperation) root).getOperator() == BinaryOperator.CONCATENATE;
+                }
+                if (constantValueComparison) {
+                    stream.warn(new PushStream.StreamMessage("data-sly-test: redundant constant value comparison",
+                            expressionNode.getRawText()));
+                }
                 globalBinding = variableName != null;
                 if (variableName == null) {
                     variableName = compilerContext.generateVariable("testVariable");
                 }
                 if (globalBinding) {
-                    stream.write(new VariableBinding.Global(variableName, expressionNode.getRoot()));
+                    stream.write(new VariableBinding.Global(variableName, root));
                 } else {
-                    stream.write(new VariableBinding.Start(variableName, expressionNode.getRoot()));
+                    stream.write(new VariableBinding.Start(variableName, root));
                 }
                 stream.write(new Conditional.Start(variableName, true));
             }
