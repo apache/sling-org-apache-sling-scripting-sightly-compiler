@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.apache.sling.scripting.sightly.compiler.CompilationResult;
 import org.apache.sling.scripting.sightly.compiler.CompilationUnit;
@@ -158,6 +159,22 @@ public class SightlyCompilerTest {
         assertEquals(1, compileSource("${a @ unknownOption}").getWarnings().size());
         assertEquals(2, compileSource("${a @ unknownOption1, unknownOption2}").getWarnings().size());
         assertEquals(1, compileSource("<div data-sly-text='${\"text\" @ i18nn}'>Replaced</div>").getWarnings().size());
+    }
+
+    @Test
+    public void testRedundantDataSlyTest() {
+        assertEquals("data-sly-test with boolean constant should have raised a warning.", 1,
+                compileSource("<span data-sly-test=\"${true}\">if true</span>").getWarnings().size());
+        assertEquals("data-sly-test with number constant should have raised a warning.", 1,
+                compileSource("<span data-sly-test=\"${0}\">if true</span>").getWarnings().size());
+        assertEquals("data-sly-test with string constant should have raised a warning.", 1,
+                compileSource("<span data-sly-test=\"${'a'}\">if true</span>").getWarnings().size());
+        assertEquals("data-sly-test with null literal should have raised a warning.", 1,
+                compileSource("<span data-sly-test=\"${}\">if true</span>").getWarnings().size());
+        assertEquals("data-sly-test with array literal should have raised a warning.", 1,
+                compileSource("<span data-sly-test=\"${[1, 2, 3]}\">if true</span>").getWarnings().size());
+        assertEquals("data-sly-test with string concatenation should have raised a warning.", 1,
+                compileSource("<span data-sly-test=\"${properties}}\">if true</span>").getWarnings().size());
     }
 
     private CompilationResult compileFile(final String file) {
