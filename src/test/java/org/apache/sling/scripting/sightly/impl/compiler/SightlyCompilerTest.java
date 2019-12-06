@@ -23,16 +23,20 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.apache.sling.scripting.sightly.compiler.CompilationResult;
 import org.apache.sling.scripting.sightly.compiler.CompilationUnit;
 import org.apache.sling.scripting.sightly.compiler.CompilerMessage;
 import org.apache.sling.scripting.sightly.compiler.SightlyCompiler;
+import org.apache.sling.scripting.sightly.compiler.commands.Command;
+import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
+import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
+import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
+import org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall;
+import org.apache.sling.scripting.sightly.compiler.expression.nodes.StringConstant;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -175,6 +179,33 @@ public class SightlyCompilerTest {
                 compileSource("<span data-sly-test=\"${[1, 2, 3]}\">if true</span>").getWarnings().size());
         assertEquals("data-sly-test with string concatenation should have raised a warning.", 1,
                 compileSource("<span data-sly-test=\"${properties}}\">if true</span>").getWarnings().size());
+    }
+
+    @Test
+    public void testUriManipulationDataSlyUse() {
+        /*
+         * In the following expression 'path' should be a parameter for the 'org.example.Pojo' use object and not a uri manipulation
+         * option
+         */
+        CompilationResult compilationResult = compileSource("<span data-sly-use.object=\"${'org.example.Pojo' @ path='/a/b/c'}\"></span>");
+        assertEquals(0, compilationResult.getErrors().size());
+        assertEquals(0, compilationResult.getWarnings().size());
+        List<Command> commands = compilationResult.getCommandStream().getCommands();
+        assertEquals(2, commands.size());
+        Command firstCommand = commands.get(0);
+        assertTrue(firstCommand instanceof VariableBinding.Global);
+        VariableBinding.Global variableBinding = (VariableBinding.Global) firstCommand;
+        ExpressionNode node = variableBinding.getExpression();
+        assertTrue(node instanceof RuntimeCall);
+        RuntimeCall runtimeCall = (RuntimeCall) node;
+        assertEquals(RuntimeCall.USE, runtimeCall.getFunctionName());
+        List<ExpressionNode> arguments = runtimeCall.getArguments();
+        assertEquals(2, arguments.size());
+        ExpressionNode firstArgument = arguments.get(0);
+        assertTrue(firstArgument instanceof StringConstant);
+        assertEquals("org.example.Pojo", ((StringConstant) firstArgument).getText());
+        ExpressionNode secondArgument = arguments.get(1);
+        assertTrue(secondArgument instanceof MapLiteral);
     }
 
     private CompilationResult compileFile(final String file) {

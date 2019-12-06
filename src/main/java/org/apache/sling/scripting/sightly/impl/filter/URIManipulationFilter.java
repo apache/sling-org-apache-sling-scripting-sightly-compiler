@@ -55,9 +55,7 @@ public class URIManipulationFilter extends AbstractFilter {
     private static final Set<ExpressionContext> APPLICABLE_CONTEXTS;
 
     static {
-        Set<ExpressionContext> applicableContexts = new HashSet<>(Arrays.asList(ExpressionContext.values()));
-        applicableContexts.remove(ExpressionContext.PLUGIN_DATA_SLY_TEMPLATE);
-        applicableContexts.remove(ExpressionContext.PLUGIN_DATA_SLY_CALL);
+        Set<ExpressionContext> applicableContexts = new HashSet<>(NON_PARAMETRIZABLE_CONTEXTS);
         applicableContexts.remove(ExpressionContext.PLUGIN_DATA_SLY_RESOURCE);
         applicableContexts.remove(ExpressionContext.PLUGIN_DATA_SLY_INCLUDE);
         APPLICABLE_CONTEXTS = Collections.unmodifiableSet(applicableContexts);
