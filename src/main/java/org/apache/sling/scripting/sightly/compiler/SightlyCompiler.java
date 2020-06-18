@@ -149,6 +149,7 @@ public final class SightlyCompiler {
      * </p>
      *
      * @param options the options to add to the compiler's set of known expression options
+     * @return an instance of the compiler
      */
     public static SightlyCompiler withKnownExpressionOptions(@NotNull Set<String> options) {
         return new SightlyCompiler(options);

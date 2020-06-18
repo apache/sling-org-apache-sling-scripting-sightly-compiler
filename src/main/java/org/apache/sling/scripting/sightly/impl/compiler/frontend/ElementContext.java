@@ -29,7 +29,7 @@ import org.apache.sling.scripting.sightly.impl.plugin.PluginCallInfo;
 import org.apache.sling.scripting.sightly.impl.plugin.PluginInvoke;
 
 /**
- * Data structure used by {@link MarkupHandler}.
+ * Data structure used by {@link org.apache.sling.scripting.sightly.impl.html.dom.MarkupHandler}.
  */
 public class ElementContext {
     private final String tagName;
