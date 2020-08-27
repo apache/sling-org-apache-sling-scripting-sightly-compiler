@@ -36,6 +36,7 @@ import org.apache.sling.scripting.sightly.compiler.expression.nodes.BinaryOperat
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.BooleanConstant;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.Identifier;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
+import org.apache.sling.scripting.sightly.compiler.expression.nodes.NullLiteral;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.PropertyAccess;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.StringConstant;
@@ -163,14 +164,21 @@ public class AttributePlugin extends AbstractPlugin {
             stream.write(new VariableBinding.Start(attrValue, node));
             stream.write(new VariableBinding.Start(escapedAttrValue, contentNode));
             stream.write(
-                    new VariableBinding.Start(
-                            shouldDisplayAttribute,
-                            new BinaryOperation(
-                                    BinaryOperator.OR,
-                                    new Identifier(escapedAttrValue),
-                                    new BinaryOperation(BinaryOperator.EQ, new StringConstant("false"), new Identifier(attrValue))
-                            )
-                    )
+                new VariableBinding.Start(
+                    shouldDisplayAttribute,
+                        new BinaryOperation(
+                                BinaryOperator.AND,
+                                new BinaryOperation(
+                                        BinaryOperator.AND,
+                                        new BinaryOperation(BinaryOperator.NEQ, NullLiteral.INSTANCE, new Identifier(escapedAttrValue)),
+                                        new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(escapedAttrValue))
+                                ),
+                                new BinaryOperation(BinaryOperator.AND,
+                                        new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrValue)),
+                                        new BinaryOperation(BinaryOperator.NEQ, BooleanConstant.FALSE, new Identifier(attrValue))
+                                )
+                        )
+                )
             );
             stream.write(new Conditional.Start(shouldDisplayAttribute, true));
         }
@@ -293,9 +301,16 @@ public class AttributePlugin extends AbstractPlugin {
                     new VariableBinding.Start(
                             shouldDisplayAttribute,
                             new BinaryOperation(
-                                    BinaryOperator.OR,
-                                    new Identifier(escapedContent),
-                                    new BinaryOperation(BinaryOperator.EQ, new StringConstant("false"), new Identifier(attrContentVar))
+                                    BinaryOperator.AND,
+                                    new BinaryOperation(
+                                            BinaryOperator.AND,
+                                            new BinaryOperation(BinaryOperator.NEQ, NullLiteral.INSTANCE, new Identifier(escapedContent)),
+                                            new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(escapedContent))
+                                    ),
+                                    new BinaryOperation(BinaryOperator.AND,
+                                            new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrContentVar)),
+                                            new BinaryOperation(BinaryOperator.NEQ, BooleanConstant.FALSE, new Identifier(attrContentVar))
+                                    )
                             )
                     )
             );

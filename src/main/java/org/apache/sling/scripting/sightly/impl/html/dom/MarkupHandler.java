@@ -40,6 +40,7 @@ import org.apache.sling.scripting.sightly.compiler.expression.nodes.BinaryOperat
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.BinaryOperator;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.BooleanConstant;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.Identifier;
+import org.apache.sling.scripting.sightly.compiler.expression.nodes.NullLiteral;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.StringConstant;
 import org.apache.sling.scripting.sightly.impl.compiler.Patterns;
@@ -187,27 +188,13 @@ public class MarkupHandler {
         // altogether
         Expression expression = expressionWrapper.transform(interpolation, getAttributeMarkupContext(name), ExpressionContext.ATTRIBUTE);
         String attrContent = symbolGenerator.next("attrContent");
-        String shouldDisplayAttr = symbolGenerator.next("shouldDisplayAttr");
         stream.write(new VariableBinding.Start(attrContent, expression.getRoot()));
-        stream.write(
-                new VariableBinding.Start(
-                        shouldDisplayAttr,
-                        new BinaryOperation(
-                                BinaryOperator.OR,
-                                new Identifier(attrContent),
-                                new BinaryOperation(BinaryOperator.EQ, new StringConstant("false"), new Identifier(attrContent))
-                        )
-                )
-        );
-        stream.write(new Conditional.Start(shouldDisplayAttr, true));
         emitAttributeStart(name);
         invoke.beforeAttributeValue(stream, name, expression.getRoot());
         emitAttributeValueStart(quoteChar);
         stream.write(new OutputVariable(attrContent));
         emitAttributeEnd(quoteChar);
         invoke.afterAttributeValue(stream, name);
-        stream.write(Conditional.END);
-        stream.write(VariableBinding.END);
         stream.write(VariableBinding.END);
     }
 
@@ -234,9 +221,16 @@ public class MarkupHandler {
                     new VariableBinding.Start(
                             shouldDisplayAttr,
                             new BinaryOperation(
-                                    BinaryOperator.OR,
-                                    new Identifier(attrContent),
-                                    new BinaryOperation(BinaryOperator.EQ, new StringConstant("false"), new Identifier(attrValue))
+                                    BinaryOperator.AND,
+                                    new BinaryOperation(
+                                            BinaryOperator.AND,
+                                            new BinaryOperation(BinaryOperator.NEQ, NullLiteral.INSTANCE, new Identifier(attrContent)),
+                                            new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrContent))
+                                    ),
+                                    new BinaryOperation(BinaryOperator.AND,
+                                            new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrValue)),
+                                            new BinaryOperation(BinaryOperator.NEQ, BooleanConstant.FALSE, new Identifier(attrValue))
+                                    )
                             )
                     )
             );
@@ -246,9 +240,9 @@ public class MarkupHandler {
                     new VariableBinding.Start(
                             shouldDisplayAttr,
                             new BinaryOperation(
-                                    BinaryOperator.OR,
-                                    new Identifier(attrValue),
-                                    new BinaryOperation(BinaryOperator.EQ, new StringConstant("false"), new Identifier(attrValue))
+                                    BinaryOperator.AND,
+                                    new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrValue)),
+                                    new BinaryOperation(BinaryOperator.NEQ, BooleanConstant.FALSE, new Identifier(attrValue))
                             )
                     )
             );
