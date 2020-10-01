@@ -241,8 +241,12 @@ public class MarkupHandler {
                             shouldDisplayAttr,
                             new BinaryOperation(
                                     BinaryOperator.AND,
-                                    new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrValue)),
-                                    new BinaryOperation(BinaryOperator.NEQ, BooleanConstant.FALSE, new Identifier(attrValue))
+                                    new BinaryOperation(BinaryOperator.NEQ, NullLiteral.INSTANCE, new Identifier(attrValue)),
+                                    new BinaryOperation(
+                                            BinaryOperator.AND,
+                                            new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrValue)),
+                                            new BinaryOperation(BinaryOperator.NEQ, BooleanConstant.FALSE, new Identifier(attrValue))
+                                    )
                             )
                     )
             );
@@ -252,7 +256,7 @@ public class MarkupHandler {
         emitAttributeStart(name);   //write("attrName");
         invoke.beforeAttributeValue(stream, name, node);
         stream.write(new VariableBinding.Start(isTrueVar, //isTrueAttr = (attrValue == true)
-                new BinaryOperation(BinaryOperator.EQ, new Identifier(attrValue), BooleanConstant.TRUE)));
+                new BinaryOperation(BinaryOperator.EQ, BooleanConstant.TRUE, new Identifier(attrValue))));
         stream.write(new Conditional.Start(isTrueVar, false)); //if (!isTrueAttr)
         emitAttributeValueStart(quoteChar); // write("='");
         if (!alreadyEscaped) {

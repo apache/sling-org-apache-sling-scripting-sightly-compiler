@@ -186,8 +186,8 @@ public class AttributePlugin extends AbstractPlugin {
         private void emitWrite(PushStream stream) {
             stream.write(new VariableBinding.Start(isTrueValue,
                     new BinaryOperation(BinaryOperator.EQ,
-                            new Identifier(attrValue),
-                            BooleanConstant.TRUE)));
+                            BooleanConstant.TRUE,
+                            new Identifier(attrValue))));
             stream.write(new Conditional.Start(isTrueValue, false));
             stream.write(new OutText("=\""));
             stream.write(new OutputVariable(escapedAttrValue));
@@ -331,7 +331,7 @@ public class AttributePlugin extends AbstractPlugin {
 
             String isTrueVar = compilerContext.generateVariable("isTrueAttr"); // holds the comparison (attrValue == true)
             stream.write(new VariableBinding.Start(isTrueVar, //isTrueAttr = (attrContent == true)
-                    new BinaryOperation(BinaryOperator.EQ, new Identifier(attrContentVar), BooleanConstant.TRUE)));
+                    new BinaryOperation(BinaryOperator.EQ, BooleanConstant.TRUE, new Identifier(attrContentVar))));
             stream.write(new Conditional.Start(isTrueVar, false)); //if (!isTrueAttr)
             stream.write(new OutText("=\""));
 
