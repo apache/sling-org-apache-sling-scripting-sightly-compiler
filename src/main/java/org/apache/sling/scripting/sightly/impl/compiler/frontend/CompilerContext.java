@@ -45,6 +45,10 @@ public class CompilerContext {
         return symbolGenerator.next(hint);
     }
 
+    public String generateGlobalVariable(String hint) {
+        return symbolGenerator.global(hint);
+    }
+
     public Expression adjustToContext(Expression expression, MarkupContext context, ExpressionContext expressionContext) {
         return expressionWrapper.adjustToContext(expression, context, expressionContext);
     }

@@ -18,12 +18,16 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.impl.compiler.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SymbolGenerator {
 
     public static final String DEFAULT_VAR_PREFIX = "var_";
 
     private int counter = 0;
     private final String prefix;
+    private final Map<String, String> globals = new HashMap<>();
 
     public SymbolGenerator() {
         this(DEFAULT_VAR_PREFIX);
@@ -34,8 +38,13 @@ public class SymbolGenerator {
     }
 
     public String next(String hint) {
-        String middle = (hint != null) ? hint.replaceAll("\\-", "_") : "";
+        String middle = (hint != null) ? hint.replace("-", "_") : "";
         return prefix + middle + counter++;
+    }
+
+    public String global(String hint) {
+        String name = prefix +  ((hint != null) ? hint.replace("-", "_") : "");
+        return globals.computeIfAbsent(name, key -> name + counter++);
     }
 
     public String next() {

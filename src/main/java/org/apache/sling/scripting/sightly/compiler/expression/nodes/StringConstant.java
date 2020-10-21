@@ -18,6 +18,8 @@
  ******************************************************************************/
 package org.apache.sling.scripting.sightly.compiler.expression.nodes;
 
+import java.util.Objects;
+
 import org.apache.sling.scripting.sightly.compiler.expression.NodeVisitor;
 
 /**
@@ -63,4 +65,20 @@ public final class StringConstant implements Atom {
                 '}';
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(text);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof StringConstant) {
+            StringConstant other = (StringConstant) obj;
+            return Objects.equals(text, other.text);
+        }
+        return false;
+    }
 }
