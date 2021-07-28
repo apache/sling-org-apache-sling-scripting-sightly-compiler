@@ -48,8 +48,8 @@ public class BinaryOperatorTest {
             /**
              * SLING-10682 verify compare enum to another enum
              */
-            list.add(new Object[] {TestEnum.ONE.name(), TestEnum.ONE, true, "enum to enum are equal"});
-            list.add(new Object[] {TestEnum.ONE.name(), TestEnum.TWO, false, "enum to enum not equal"});
+            list.add(new Object[] {TestEnum.ONE, TestEnum.ONE, true, "enum to enum are equal"});
+            list.add(new Object[] {TestEnum.ONE, TestEnum.TWO, false, "enum to enum not equal"});
 
             return list;
         }
