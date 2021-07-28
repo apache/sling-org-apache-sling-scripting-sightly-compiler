@@ -225,6 +225,9 @@ public enum BinaryOperator {
         if (left instanceof Boolean && right instanceof Boolean) {
             return left.equals(right);
         }
+        if (left instanceof Enum && right instanceof Enum) {
+            return left.equals(right);
+        }
         if (left == null && right == null) {
             return true;
         }
@@ -244,8 +247,8 @@ public enum BinaryOperator {
                 return false;
             }
         }
-        throw new SightlyCompilerException("Operands are not of the same type: the equality operator can only be applied to String, Number" +
-                " and Boolean types.");
+        throw new SightlyCompilerException("Operands are not of the same type: the equality operator can only be applied to String, Number," +
+                "Boolean and Enum types.");
     }
 
     public static boolean inOp(Object left, Object right) {
