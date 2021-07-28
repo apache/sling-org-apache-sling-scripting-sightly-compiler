@@ -39,6 +39,8 @@ public class BinaryOperatorTest {
         @Parameters(name = "Comparison: {3}")
         public static Iterable<? extends Object> data() {
             List<Object[]> list = new ArrayList<>();
+            list.add(new Object[] {null, null, true, "null to null are equal"});
+
             list.add(new Object[] {TestEnum.ONE, TestEnum.ONE.name(), true, "enum to string are equal"});
             list.add(new Object[] {TestEnum.ONE, TestEnum.TWO.name(), false, "enum to string not equal"});
             list.add(new Object[] {TestEnum.ONE.name(), TestEnum.ONE, true,  "string to enum are equal"});
@@ -70,14 +72,36 @@ public class BinaryOperatorTest {
 
     }
 
+    @RunWith(Parameterized.class)
     public static class StrictEqError {
+
+        @Parameters(name = "Comparison: {2}")
+        public static Iterable<? extends Object> data() {
+            List<Object[]> list = new ArrayList<>();
+            list.add(new Object[] {TestEnum.ONE, new Object(), "enum to object not equal"});
+            list.add(new Object[] {new Object(), TestEnum.TWO, "object to enum not equal"});
+            list.add(new Object[] {new Object(), new Object(),  "object to object not equal"});
+            list.add(new Object[] {null, TestEnum.ONE, "null to enum not equal"});
+            list.add(new Object[] {TestEnum.ONE, null, "enum to null not equal"});
+
+            return list;
+        }
+
+        private Object left;
+        private Object right;
+
+        public StrictEqError(Object left, Object right, String testLabel) {
+            super();
+            this.left = left;
+            this.right = right;
+        }
 
         /**
          * Expect exception when passed the wrong kind of object
          */
         @Test(expected = SightlyCompilerException.class)
         public void testStrictEqWrongType() {
-            BinaryOperator.strictEq(new Object(), new Object());
+            BinaryOperator.strictEq(left, right);
         }
 
     }
