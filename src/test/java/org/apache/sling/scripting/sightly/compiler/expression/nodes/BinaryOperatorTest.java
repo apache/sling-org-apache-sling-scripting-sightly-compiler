@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.sling.scripting.sightly.compiler.SightlyCompilerException;
 import org.apache.sling.scripting.sightly.testobjects.TestEnum;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
@@ -65,6 +66,18 @@ public class BinaryOperatorTest {
         @Test
         public void testStrictEq() {
             assertEquals(expectedOutcome, BinaryOperator.strictEq(left, right));
+        }
+
+    }
+
+    public static class StrictEqError {
+
+        /**
+         * Expect exception when passed the wrong kind of object
+         */
+        @Test(expected = SightlyCompilerException.class)
+        public void testStrictEqWrongType() {
+            BinaryOperator.strictEq(new Object(), new Object());
         }
 
     }
