@@ -106,4 +106,44 @@ public class BinaryOperatorTest {
 
     }
 
+    @RunWith(Parameterized.class)
+    public static class NumberError {
+
+        @Parameters(name = "Comparison: {2}")
+        public static Iterable<? extends Object> data() {
+            List<Object[]> list = new ArrayList<>();
+            list.add(new Object[]{1, new Object(), "number to object not equal"});
+            list.add(new Object[]{new Object(), 2, "object to number not equal"});
+            list.add(new Object[]{TestEnum.ONE, 1, "String to number not equal"});
+            list.add(new Object[]{1, TestEnum.ONE, "number to String not equal"});
+
+            return list;
+        }
+
+        private Object left;
+        private Object right;
+
+        public NumberError(Object left, Object right, String testLabel) {
+            super();
+            this.left = left;
+            this.right = right;
+        }
+
+        /**
+         * Expect exception when passed the wrong kind of object
+         */
+        @Test(expected = SightlyCompilerException.class)
+        public void testLeqEqWrongType() {
+            BinaryOperator.leq(left, right);
+        }
+
+        /**
+         * Expect exception when passed the wrong kind of object
+         */
+        @Test(expected = SightlyCompilerException.class)
+        public void testLtWrongType() {
+            BinaryOperator.lt(left, right);
+        }
+    }
+
 }
