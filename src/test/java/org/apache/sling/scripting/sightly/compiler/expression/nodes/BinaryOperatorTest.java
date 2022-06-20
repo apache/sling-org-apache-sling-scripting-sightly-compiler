@@ -114,8 +114,8 @@ public class BinaryOperatorTest {
             List<Object[]> list = new ArrayList<>();
             list.add(new Object[]{1, new Object(), "number to object not equal"});
             list.add(new Object[]{new Object(), 2, "object to number not equal"});
-            list.add(new Object[]{TestEnum.ONE, 1, "String to number not equal"});
-            list.add(new Object[]{1, TestEnum.ONE, "number to String not equal"});
+            list.add(new Object[]{TestEnum.ONE, 1, "enum to number not equal"});
+            list.add(new Object[]{1, TestEnum.ONE, "number to enum not equal"});
 
             return list;
         }
