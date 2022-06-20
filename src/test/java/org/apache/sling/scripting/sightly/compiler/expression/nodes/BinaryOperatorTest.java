@@ -116,6 +116,8 @@ public class BinaryOperatorTest {
             list.add(new Object[]{new Object(), 2, "object to number not equal"});
             list.add(new Object[]{TestEnum.ONE, 1, "enum to number not equal"});
             list.add(new Object[]{1, TestEnum.ONE, "number to enum not equal"});
+            list.add(new Object[]{1, TestEnum.ONE.name(), "number to string not equal"});
+            list.add(new Object[]{TestEnum.ONE.name(), 1, "string to number not equal"});
 
             return list;
         }
