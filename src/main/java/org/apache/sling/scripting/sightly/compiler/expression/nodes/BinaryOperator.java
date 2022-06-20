@@ -204,14 +204,16 @@ public enum BinaryOperator {
         if (left instanceof Number && right instanceof Number) {
             return ((Number) left).doubleValue() < ((Number) right).doubleValue();
         }
-        throw new SightlyCompilerException("Operands are not of the same type: comparison is supported for Number types only.");
+        throw new SightlyCompilerException("Operands are not of the same type: comparison is supported for Number types only." +
+                "Operands are: leftOperand=" + left + ", rightOperand=" + right);
     }
 
     public static boolean leq(final Object left, final Object right) {
         if (left instanceof Number && right instanceof Number) {
             return ((Number) left).doubleValue() <= ((Number) right).doubleValue();
         }
-        throw new SightlyCompilerException("Operands are not of the same type: comparison is supported for Number types only.");
+        throw new SightlyCompilerException("Operands are not of the same type: comparison is supported for Number types only." +
+                "Operands are: leftOperand=" + left + ", rightOperand=" + right);
     }
 
 
@@ -248,7 +250,7 @@ public enum BinaryOperator {
             }
         }
         throw new SightlyCompilerException("Operands are not of the same type: the equality operator can only be applied to String, Number," +
-                "Boolean and Enum types.");
+                "Boolean and Enum types. Operands are: leftOperand=" + left + ", rightOperand=" + right);
     }
 
     public static boolean inOp(Object left, Object right) {

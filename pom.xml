@@ -50,8 +50,8 @@
         <connection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-scripting-sightly-compiler.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-scripting-sightly-compiler.git</developerConnection>
         <url>https://gitbox.apache.org/repos/asf?p=sling-org-apache-sling-scripting-sightly-compiler.git</url>
-      <tag>org.apache.sling.scripting.sightly.compiler-1.2.6-1.4.0</tag>
-  </scm>
+        <tag>org.apache.sling.scripting.sightly.compiler-1.2.6-1.4.0</tag>
+    </scm>
 
     <properties>
         <antlr.version>4.7.1</antlr.version>
