@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.util;
 
 import java.util.Arrays;
@@ -55,19 +55,21 @@ public class ObjectModelTest {
         List testList = Arrays.asList(testArray);
         assertTrue(ObjectModel.toBoolean(testArray));
         assertTrue(ObjectModel.toBoolean(testPrimitiveArray));
-        assertFalse(ObjectModel.toBoolean(new Integer[]{}));
+        assertFalse(ObjectModel.toBoolean(new Integer[] {}));
         assertTrue(ObjectModel.toBoolean(testList));
         assertFalse(ObjectModel.toBoolean(Collections.emptyList()));
-        Map<String, Integer> map = new HashMap<String, Integer>() {{
-            put("one", 1);
-            put("two", 2);
-        }};
+        Map<String, Integer> map = new HashMap<String, Integer>() {
+            {
+                put("one", 1);
+                put("two", 2);
+            }
+        };
         assertTrue(ObjectModel.toBoolean(map));
         assertFalse(ObjectModel.toBoolean(Collections.EMPTY_MAP));
         assertTrue(ObjectModel.toBoolean(testList.iterator()));
         assertFalse(ObjectModel.toBoolean(Collections.EMPTY_LIST.iterator()));
         assertTrue(ObjectModel.toBoolean(new Bag<>(testArray)));
-        assertFalse(ObjectModel.toBoolean(new Bag<>(new Integer[]{})));
+        assertFalse(ObjectModel.toBoolean(new Bag<>(new Integer[] {})));
         assertTrue(ObjectModel.toBoolean(new Date()));
     }
 
@@ -98,12 +100,14 @@ public class ObjectModelTest {
         assertTrue(ObjectModel.toCollection(null).isEmpty());
         assertTrue(ObjectModel.toCollection(new StringBuilder()).isEmpty());
         Integer[] testArray = new Integer[] {1, 2, 3};
-        int[] testPrimitiveArray = new int[]{1, 2, 3};
+        int[] testPrimitiveArray = new int[] {1, 2, 3};
         List<Integer> testList = Arrays.asList(testArray);
-        Map<String, Integer> map = new HashMap<String, Integer>() {{
-            put("one", 1);
-            put("two", 2);
-        }};
+        Map<String, Integer> map = new HashMap<String, Integer>() {
+            {
+                put("one", 1);
+                put("two", 2);
+            }
+        };
         assertEquals(testList, ObjectModel.toCollection(testArray));
         assertEquals(testList, ObjectModel.toCollection(testPrimitiveArray));
         assertEquals(testList, ObjectModel.toCollection(testList));
@@ -150,28 +154,41 @@ public class ObjectModelTest {
         assertEquals(2, ObjectModel.resolveProperty(testList, 1));
         assertNull(ObjectModel.resolveProperty(testList, 3));
         assertNull(ObjectModel.resolveProperty(testList, -1));
-        Map<String, Integer> map = new HashMap<String, Integer>() {{
-            put("one", 1);
-            put("two", 2);
-        }};
+        Map<String, Integer> map = new HashMap<String, Integer>() {
+            {
+                put("one", 1);
+                put("two", 2);
+            }
+        };
         assertEquals(1, ObjectModel.resolveProperty(map, "one"));
         assertNull(ObjectModel.resolveProperty(map, null));
         assertNull(ObjectModel.resolveProperty(map, ""));
-        Map<Integer, String> stringMap = new HashMap<Integer, String>(){{
-            put(1, "one");
-            put(2, "two");
-        }};
+        Map<Integer, String> stringMap = new HashMap<Integer, String>() {
+            {
+                put(1, "one");
+                put(2, "two");
+            }
+        };
         assertEquals("one", ObjectModel.resolveProperty(stringMap, 1));
         assertEquals("two", ObjectModel.resolveProperty(stringMap, 2));
         Person johnDoe = AdultFactory.createAdult("John", "Doe");
-        assertEquals("Expected to be able to access public static final constants.", 1l, ObjectModel.resolveProperty(johnDoe, "CONSTANT"));
-        assertNull("Did not expect to be able to access public fields from package protected classes.", ObjectModel.resolveProperty(johnDoe,
-                "TODAY"));
-        assertEquals("Expected to be able to access an array's length property.", 3, ObjectModel.resolveProperty(testArray, "length"));
-        assertNotNull("Expected not null result for invocation of interface method on implementation class.",
+        assertEquals(
+                "Expected to be able to access public static final constants.",
+                1l,
+                ObjectModel.resolveProperty(johnDoe, "CONSTANT"));
+        assertNull(
+                "Did not expect to be able to access public fields from package protected classes.",
+                ObjectModel.resolveProperty(johnDoe, "TODAY"));
+        assertEquals(
+                "Expected to be able to access an array's length property.",
+                3,
+                ObjectModel.resolveProperty(testArray, "length"));
+        assertNotNull(
+                "Expected not null result for invocation of interface method on implementation class.",
                 ObjectModel.resolveProperty(johnDoe, "lastName"));
-        assertNull("Expected null result for public method available on implementation but not exposed by interface.", ObjectModel
-                .resolveProperty(johnDoe, "fullName"));
+        assertNull(
+                "Expected null result for public method available on implementation but not exposed by interface.",
+                ObjectModel.resolveProperty(johnDoe, "fullName"));
         assertNull("Expected null result for inexistent method.", ObjectModel.resolveProperty(johnDoe, "nomethod"));
     }
 
@@ -186,10 +203,12 @@ public class ObjectModelTest {
         assertEquals(2, ObjectModel.getIndex(testList, 1));
         assertNull(ObjectModel.getIndex(testList, 3));
         assertNull(ObjectModel.getIndex(testList, -1));
-        Map<Integer, String> stringMap = new HashMap<Integer, String>(){{
-            put(1, "one");
-            put(2, "two");
-        }};
+        Map<Integer, String> stringMap = new HashMap<Integer, String>() {
+            {
+                put(1, "one");
+                put(2, "two");
+            }
+        };
         assertNull(ObjectModel.getIndex(stringMap, 1));
         assertNull(ObjectModel.getIndex(stringMap, 2));
     }
@@ -206,7 +225,6 @@ public class ObjectModelTest {
         assertNull(ObjectModel.invokeBeanMethod(this, null));
         assertNull(ObjectModel.invokeBeanMethod(this, ""));
     }
-
 
     private class Bag<T> implements Iterable<T> {
 
@@ -233,9 +251,7 @@ public class ObjectModelTest {
                 }
 
                 @Override
-                public void remove() {
-
-                }
+                public void remove() {}
             };
         }
     }

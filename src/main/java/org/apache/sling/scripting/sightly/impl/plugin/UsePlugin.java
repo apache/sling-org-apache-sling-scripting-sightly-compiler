@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.plugin;
 
 import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
@@ -35,16 +35,17 @@ public class UsePlugin extends AbstractPlugin {
     }
 
     @Override
-    public PluginInvoke invoke(final Expression expression,
-                               final PluginCallInfo callInfo,
-                               final CompilerContext compilerContext) {
+    public PluginInvoke invoke(
+            final Expression expression, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
         return new DefaultPluginInvoke() {
 
             @Override
             public void beforeElement(PushStream stream, String tagName) {
                 String variableName = decodeVariableName();
-                stream.write(new VariableBinding.Global(variableName,
-                        new RuntimeCall(RuntimeCall.USE, expression.getRoot(), new MapLiteral(expression.getOptions()))));
+                stream.write(new VariableBinding.Global(
+                        variableName,
+                        new RuntimeCall(
+                                RuntimeCall.USE, expression.getRoot(), new MapLiteral(expression.getOptions()))));
             }
 
             private String decodeVariableName() {

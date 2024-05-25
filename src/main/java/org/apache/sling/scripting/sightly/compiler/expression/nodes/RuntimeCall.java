@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler.expression.nodes;
 
 import java.util.ArrayList;
@@ -176,7 +176,6 @@ public final class RuntimeCall implements ExpressionNode {
     private final String functionName;
     private final List<ExpressionNode> arguments;
 
-
     /**
      * Creates a {@code RuntimeCall} based on a {@code functionName} and an array of {@code arguments}.
      *
@@ -195,8 +194,8 @@ public final class RuntimeCall implements ExpressionNode {
      */
     public RuntimeCall(String functionName, List<ExpressionNode> arguments) {
         if (!RUNTIME_FUNCTIONS.contains(functionName)) {
-            throw new SightlyCompilerException(
-                    String.format("Function %s is not a recognised runtime function - %s.", functionName, RUNTIME_FUNCTIONS));
+            throw new SightlyCompilerException(String.format(
+                    "Function %s is not a recognised runtime function - %s.", functionName, RUNTIME_FUNCTIONS));
         }
         this.functionName = functionName;
         this.arguments = new ArrayList<>(arguments);

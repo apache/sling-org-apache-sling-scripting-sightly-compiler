@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler;
 
 import java.io.InputStream;
@@ -46,12 +46,14 @@ public class SightlyCompilerTest {
     @Test
     public void testEmptyExpression() {
         CompilationResult result = compileFile("/empty-expression.html");
-        assertTrue("Didn't expect any warnings or errors.", result.getErrors().size() == 0 && result.getWarnings().size() == 0);
+        assertTrue(
+                "Didn't expect any warnings or errors.",
+                result.getErrors().size() == 0 && result.getWarnings().size() == 0);
     }
 
     @Test
     public void testMissingExplicitContext() {
-        for (String s : new String[]{"", "-win", "-mac"}) {
+        for (String s : new String[] {"", "-win", "-mac"}) {
             String script = "/missing-explicit-context" + s + ".html";
             testMissingExplicitContext(script);
         }
@@ -65,8 +67,10 @@ public class SightlyCompilerTest {
         assertEquals(script + ": Expected warning on a different line.", 18, warningMessage.getLine());
         assertEquals(script + ": Expected warning on a different column.", 14, warningMessage.getColumn());
         assertTrue(script.equals(warningMessage.getScriptName()));
-        assertEquals("${some.value}: Element script requires that all expressions have an explicit context specified. The expression will" +
-                " be replaced with an empty string.", warningMessage.getMessage());
+        assertEquals(
+                "${some.value}: Element script requires that all expressions have an explicit context specified. The expression will"
+                        + " be replaced with an empty string.",
+                warningMessage.getMessage());
     }
 
     @Test
@@ -81,11 +85,14 @@ public class SightlyCompilerTest {
         assertEquals("Expected warning on a different line.", 17, _1stWarning.getLine());
         assertEquals("Expected warning on a different line.", 18, _2ndWarning.getLine());
         assertEquals(script, _2ndWarning.getScriptName());
-        assertEquals("${style.string}: Expressions within the value of attribute style need to have an explicit context option. The " +
-                "expression will be replaced with an empty string.", _1stWarning.getMessage());
-        assertEquals("${onclick.action}: Expressions within the value of attribute onclick need to have an explicit context option. The " +
-                "expression will be replaced with an empty string.", _2ndWarning.getMessage());
-
+        assertEquals(
+                "${style.string}: Expressions within the value of attribute style need to have an explicit context option. The "
+                        + "expression will be replaced with an empty string.",
+                _1stWarning.getMessage());
+        assertEquals(
+                "${onclick.action}: Expressions within the value of attribute onclick need to have an explicit context option. The "
+                        + "expression will be replaced with an empty string.",
+                _2ndWarning.getMessage());
     }
 
     @Test
@@ -130,29 +137,77 @@ public class SightlyCompilerTest {
 
     @Test
     public void testUnknownExpressionOptions() {
-        assertEquals(0, compileSource("<sly data-sly-use.a=\"${com.example.Pojo @ param1=1, param2=2}\"></sly>").getWarnings().size());
-        assertEquals(0, compileSource("<sly data-sly-call=\"${myTemplate @ param1=1, param2=2}\"></sly>").getWarnings().size());
-        assertEquals(0, compileSource("<template data-sly-template.myTemplate=\"${@ param1, param2}\"></template>").getWarnings().size());
-        assertEquals(1, compileSource("${currentPage.title @ contex = 'scriptString'}").getWarnings().size());
+        assertEquals(
+                0,
+                compileSource("<sly data-sly-use.a=\"${com.example.Pojo @ param1=1, param2=2}\"></sly>")
+                        .getWarnings()
+                        .size());
+        assertEquals(
+                0,
+                compileSource("<sly data-sly-call=\"${myTemplate @ param1=1, param2=2}\"></sly>")
+                        .getWarnings()
+                        .size());
+        assertEquals(
+                0,
+                compileSource("<template data-sly-template.myTemplate=\"${@ param1, param2}\"></template>")
+                        .getWarnings()
+                        .size());
+        assertEquals(
+                1,
+                compileSource("${currentPage.title @ contex = 'scriptString'}")
+                        .getWarnings()
+                        .size());
         assertEquals(1, compileSource("${a @ unknownOption}").getWarnings().size());
-        assertEquals(2, compileSource("${a @ unknownOption1, unknownOption2}").getWarnings().size());
-        assertEquals(1, compileSource("<div data-sly-text='${\"text\" @ i18nn}'>Replaced</div>").getWarnings().size());
+        assertEquals(
+                2,
+                compileSource("${a @ unknownOption1, unknownOption2}")
+                        .getWarnings()
+                        .size());
+        assertEquals(
+                1,
+                compileSource("<div data-sly-text='${\"text\" @ i18nn}'>Replaced</div>")
+                        .getWarnings()
+                        .size());
     }
 
     @Test
     public void testRedundantDataSlyTest() {
-        assertEquals("data-sly-test with boolean constant should have raised a warning.", 1,
-                compileSource("<span data-sly-test=\"${true}\">if true</span>").getWarnings().size());
-        assertEquals("data-sly-test with number constant should have raised a warning.", 1,
-                compileSource("<span data-sly-test=\"${0}\">if true</span>").getWarnings().size());
-        assertEquals("data-sly-test with string constant should have raised a warning.", 1,
-                compileSource("<span data-sly-test=\"${'a'}\">if true</span>").getWarnings().size());
-        assertEquals("data-sly-test with null literal should have raised a warning.", 1,
-                compileSource("<span data-sly-test=\"${}\">if true</span>").getWarnings().size());
-        assertEquals("data-sly-test with array literal should have raised a warning.", 1,
-                compileSource("<span data-sly-test=\"${[1, 2, 3]}\">if true</span>").getWarnings().size());
-        assertEquals("data-sly-test with string concatenation should have raised a warning.", 1,
-                compileSource("<span data-sly-test=\"${properties}}\">if true</span>").getWarnings().size());
+        assertEquals(
+                "data-sly-test with boolean constant should have raised a warning.",
+                1,
+                compileSource("<span data-sly-test=\"${true}\">if true</span>")
+                        .getWarnings()
+                        .size());
+        assertEquals(
+                "data-sly-test with number constant should have raised a warning.",
+                1,
+                compileSource("<span data-sly-test=\"${0}\">if true</span>")
+                        .getWarnings()
+                        .size());
+        assertEquals(
+                "data-sly-test with string constant should have raised a warning.",
+                1,
+                compileSource("<span data-sly-test=\"${'a'}\">if true</span>")
+                        .getWarnings()
+                        .size());
+        assertEquals(
+                "data-sly-test with null literal should have raised a warning.",
+                1,
+                compileSource("<span data-sly-test=\"${}\">if true</span>")
+                        .getWarnings()
+                        .size());
+        assertEquals(
+                "data-sly-test with array literal should have raised a warning.",
+                1,
+                compileSource("<span data-sly-test=\"${[1, 2, 3]}\">if true</span>")
+                        .getWarnings()
+                        .size());
+        assertEquals(
+                "data-sly-test with string concatenation should have raised a warning.",
+                1,
+                compileSource("<span data-sly-test=\"${properties}}\">if true</span>")
+                        .getWarnings()
+                        .size());
     }
 
     @Test
@@ -161,7 +216,8 @@ public class SightlyCompilerTest {
          * In the following expression 'path' should be a parameter for the 'org.example.Pojo' use object and not a uri manipulation
          * option
          */
-        CompilationResult compilationResult = compileSource("<span data-sly-use.object=\"${'org.example.Pojo' @ path='/a/b/c'}\"></span>");
+        CompilationResult compilationResult =
+                compileSource("<span data-sly-use.object=\"${'org.example.Pojo' @ path='/a/b/c'}\"></span>");
         assertEquals(0, compilationResult.getErrors().size());
         assertEquals(0, compilationResult.getWarnings().size());
         List<Command> commands = compilationResult.getCommandStream().getCommands();
@@ -213,6 +269,4 @@ public class SightlyCompilerTest {
         };
         return compiler.compile(compilationUnit);
     }
-
-
 }

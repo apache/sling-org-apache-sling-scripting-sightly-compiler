@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler;
 
 import java.io.IOException;
@@ -73,9 +73,7 @@ import org.osgi.service.component.annotations.Component;
  * transpiling the commands to a JVM supported language or by directly executing them.
  * </p>
  */
-@Component(
-        service = SightlyCompiler.class
-)
+@Component(service = SightlyCompiler.class)
 public final class SightlyCompiler {
 
     private final StreamTransformer optimizer;
@@ -182,28 +180,35 @@ public final class SightlyCompiler {
         try {
             scriptSource = IOUtils.toString(compilationUnit.getScriptReader());
 
-            //optimizedStream.addHandler(LoggingHandler.INSTANCE);
+            // optimizedStream.addHandler(LoggingHandler.INSTANCE);
             if (backendCompiler != null) {
                 backendCompiler.handle(optimizedStream);
             }
             frontend.compile(stream, scriptSource);
             for (PushStream.StreamMessage w : stream.getWarnings()) {
                 ScriptError warning = getScriptError(scriptSource, w.getCode(), 1, 0, w.getMessage());
-                compilationResult.getWarnings().add(new CompilerMessageImpl(scriptName, warning.errorMessage, warning.lineNumber, warning
-                        .column));
+                compilationResult
+                        .getWarnings()
+                        .add(new CompilerMessageImpl(
+                                scriptName, warning.errorMessage, warning.lineNumber, warning.column));
             }
         } catch (SightlyCompilerException e) {
-            ScriptError scriptError = getScriptError(scriptSource, e.getOffendingInput(), e.getLine(), e.getColumn(), e.getMessage());
-            compilationResult.getErrors().add(new CompilerMessageImpl(scriptName, scriptError.errorMessage, scriptError.lineNumber,
-                    scriptError.column));
+            ScriptError scriptError =
+                    getScriptError(scriptSource, e.getOffendingInput(), e.getLine(), e.getColumn(), e.getMessage());
+            compilationResult
+                    .getErrors()
+                    .add(new CompilerMessageImpl(
+                            scriptName, scriptError.errorMessage, scriptError.lineNumber, scriptError.column));
         } catch (IOException e) {
-            throw new SightlyCompilerException("Unable to read source code from CompilationUnit identifying script " + scriptName, e);
+            throw new SightlyCompilerException(
+                    "Unable to read source code from CompilationUnit identifying script " + scriptName, e);
         }
         compilationResult.seal();
         return compilationResult;
     }
 
-    private ScriptError getScriptError(String documentFragment, String offendingInput, int lineOffset, int columnOffset, String message) {
+    private ScriptError getScriptError(
+            String documentFragment, String offendingInput, int lineOffset, int columnOffset, String message) {
         if (StringUtils.isNotEmpty(offendingInput)) {
             String longestContiguousOffendingSequence = null;
             if (documentFragment.contains(offendingInput)) {
@@ -216,7 +221,7 @@ public final class SightlyCompiler {
                 String textBeforeError = documentFragment.substring(0, offendingInputIndex);
                 int line = lineOffset;
                 int lastNewLineIndex = 0;
-                for (String s : new String[]{"\r\n", "\r", "\n"}) {
+                for (String s : new String[] {"\r\n", "\r", "\n"}) {
                     int l = textBeforeError.split(s, -1).length - 1;
                     if (l + lineOffset > line) {
                         line = l + lineOffset;

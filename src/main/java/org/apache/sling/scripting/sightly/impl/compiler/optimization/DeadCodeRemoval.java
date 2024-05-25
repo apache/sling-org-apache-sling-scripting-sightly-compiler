@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.optimization;
 
 import java.util.Stack;
@@ -79,7 +79,7 @@ public class DeadCodeRemoval extends TrackingVisitor<Boolean> implements Emitter
             truthValue = ObjectModel.toBoolean(((NumericConstant) node).getValue());
         }
         if (node instanceof NullLiteral) {
-           truthValue = ObjectModel.toBoolean(null);
+            truthValue = ObjectModel.toBoolean(null);
         }
         tracker.pushVariable(variableBindingStart.getVariableName(), truthValue);
         outStream.write(variableBindingStart);
@@ -89,15 +89,16 @@ public class DeadCodeRemoval extends TrackingVisitor<Boolean> implements Emitter
     public void visit(Conditional.Start conditionalStart) {
         Boolean truthValue = tracker.get(conditionalStart.getVariable());
         boolean keepConditionalEnd;
-        if (truthValue == null) { //no information about the value of this variable
+        if (truthValue == null) { // no information about the value of this variable
             keepConditionalEnd = true;
             outStream.write(conditionalStart);
-        } else { //we already know what happens with this conditional. We can remove it
+        } else { // we already know what happens with this conditional. We can remove it
             keepConditionalEnd = false;
             if (truthValue != conditionalStart.getExpectedTruthValue()) {
-                //this conditional will always fail. We can ignore everything until
-                //the corresponding end-conditional
-                stateControl.push(new StatefulRangeIgnore(stateControl, Conditional.Start.class, Conditional.End.class));
+                // this conditional will always fail. We can ignore everything until
+                // the corresponding end-conditional
+                stateControl.push(
+                        new StatefulRangeIgnore(stateControl, Conditional.Start.class, Conditional.End.class));
                 return;
             }
         }
@@ -126,5 +127,4 @@ public class DeadCodeRemoval extends TrackingVisitor<Boolean> implements Emitter
     protected void onCommand(Command command) {
         outStream.write(command);
     }
-
 }

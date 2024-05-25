@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.frontend;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -31,5 +31,4 @@ public class ParserHelper {
         String trimmed = escaped.substring(1, escaped.length() - 1);
         return new StringConstant(trimmed);
     }
-
 }

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.html.dom;
 
 import java.io.IOException;
@@ -59,23 +59,22 @@ public class HtmlParserTest {
         List<TemplateNode> children = null;
         String name = "UNKNOWN";
 
-
         if (node.getClass() == Template.class) {
-            Template template = (Template)node;
+            Template template = (Template) node;
             children = template.getChildren();
             name = template.getName();
         } else if (node.getClass() == TemplateElementNode.class) {
-            TemplateElementNode element = (TemplateElementNode)node;
+            TemplateElementNode element = (TemplateElementNode) node;
             children = element.getChildren();
             name = "ELEMENT: " + element.getName();
         } else if (node.getClass() == TemplateTextNode.class) {
-            name = "TEXT: " + ((TemplateTextNode)node).getText();
+            name = "TEXT: " + ((TemplateTextNode) node).getText();
         } else if (node.getClass() == TemplateCommentNode.class) {
-            name = "COMMENT: " + ((TemplateCommentNode)node).getText();
+            name = "COMMENT: " + ((TemplateCommentNode) node).getText();
         }
 
         System.out.print(StringUtils.repeat("\t", indentation));
-        System.out.println(name.replace("\n","\\n").replace("\r", "\\r"));
+        System.out.println(name.replace("\n", "\\n").replace("\r", "\\r"));
         if (children == null) {
             return;
         }
@@ -100,29 +99,27 @@ public class HtmlParserTest {
         List<TemplateNode> parsedChildren = null, referenceChildren = null;
 
         if (parsed.getClass() == Template.class) {
-            Template parsedTemplate = (Template)parsed;
-            Template referenceTemplate = (Template)reference;
-            assertEquals("Expecting same name",
-                    referenceTemplate.getName(),
-                    parsedTemplate.getName());
+            Template parsedTemplate = (Template) parsed;
+            Template referenceTemplate = (Template) reference;
+            assertEquals("Expecting same name", referenceTemplate.getName(), parsedTemplate.getName());
             parsedChildren = parsedTemplate.getChildren();
             referenceChildren = referenceTemplate.getChildren();
         } else if (parsed.getClass() == TemplateElementNode.class) {
-            TemplateElementNode parsedElement = (TemplateElementNode)parsed;
-            TemplateElementNode referenceElement = (TemplateElementNode)reference;
-            assertEquals("Expecting same name",
-                    referenceElement.getName(),
-                    parsedElement.getName());
+            TemplateElementNode parsedElement = (TemplateElementNode) parsed;
+            TemplateElementNode referenceElement = (TemplateElementNode) reference;
+            assertEquals("Expecting same name", referenceElement.getName(), parsedElement.getName());
             parsedChildren = parsedElement.getChildren();
             referenceChildren = referenceElement.getChildren();
         } else if (parsed.getClass() == TemplateTextNode.class) {
-            assertEquals("Expecting same content",
-                    ((TemplateTextNode)reference).getText(),
-                    ((TemplateTextNode)parsed).getText());
+            assertEquals(
+                    "Expecting same content",
+                    ((TemplateTextNode) reference).getText(),
+                    ((TemplateTextNode) parsed).getText());
         } else if (parsed.getClass() == TemplateCommentNode.class) {
-            assertEquals("Expecting same content",
-                    ((TemplateCommentNode)reference).getText(),
-                    ((TemplateCommentNode)parsed).getText());
+            assertEquals(
+                    "Expecting same content",
+                    ((TemplateCommentNode) reference).getText(),
+                    ((TemplateCommentNode) parsed).getText());
         }
 
         if (parsedChildren == null || referenceChildren == null) {
@@ -130,9 +127,7 @@ public class HtmlParserTest {
             return;
         }
 
-        assertEquals("Expecting same number of children",
-                parsedChildren.size(),
-                referenceChildren.size());
+        assertEquals("Expecting same number of children", parsedChildren.size(), referenceChildren.size());
 
         for (int i = 0, n = parsedChildren.size(); i < n; i++) {
             assertSameStructure(parsedChildren.get(i), referenceChildren.get(i));
@@ -152,29 +147,27 @@ public class HtmlParserTest {
         }
         Template reference = new Template();
         if (commentIx > 0) {
-            reference.addChild(new TemplateTextNode(
-                    textAndComment.substring(0, commentIx)));
+            reference.addChild(new TemplateTextNode(textAndComment.substring(0, commentIx)));
         }
-        reference.addChild(new TemplateCommentNode(
-                textAndComment.substring(commentIx)));
+        reference.addChild(new TemplateCommentNode(textAndComment.substring(commentIx)));
         return reference;
     }
 
     @Test
     public void testParseCommentSpanningAcrossCharBuffer() throws Exception {
         String[] testStrings = new String[] {
-                "<!--/* comment */-->",
-                "1<!--/* comment */-->",
-                "12<!--/* comment */-->",
-                "123<!--/* comment */-->",
-                "1234<!--/* comment */-->",
-                "12345<!--/* comment */-->",
-                "123456<!--/* comment */-->",
-                "1234567<!--/* comment */-->",
-                "12345678<!--/* comment */-->",
-                "123456789<!--/* comment */-->",
-                "1234567890<!--/* comment */-->",
-                "12345678901<!--/* comment */-->"
+            "<!--/* comment */-->",
+            "1<!--/* comment */-->",
+            "12<!--/* comment */-->",
+            "123<!--/* comment */-->",
+            "1234<!--/* comment */-->",
+            "12345<!--/* comment */-->",
+            "123456<!--/* comment */-->",
+            "1234567<!--/* comment */-->",
+            "12345678<!--/* comment */-->",
+            "123456789<!--/* comment */-->",
+            "1234567890<!--/* comment */-->",
+            "12345678901<!--/* comment */-->"
         };
         Template reference = null, parsed = null;
         Whitebox.setInternalState(HtmlParser.class, "BUF_SIZE", 10);
@@ -201,19 +194,34 @@ public class HtmlParserTest {
 
     @Test
     public void testVoidElements() throws IOException {
-        VoidAndSelfClosingElementsDocumentHandler voidAndSelfClosingElementsDocumentHandler = new VoidAndSelfClosingElementsDocumentHandler();
+        VoidAndSelfClosingElementsDocumentHandler voidAndSelfClosingElementsDocumentHandler =
+                new VoidAndSelfClosingElementsDocumentHandler();
         for (String tag : HtmlParser.VOID_ELEMENTS) {
             StringReader stringReader = new StringReader("<" + tag + " " + DATA_TEST_ATTRIBUTE + ">");
             HtmlParser.parse(stringReader, voidAndSelfClosingElementsDocumentHandler);
-            assertEquals("Parsed tag is not what was expected.", tag, voidAndSelfClosingElementsDocumentHandler.getLastProcessedTag());
+            assertEquals(
+                    "Parsed tag is not what was expected.",
+                    tag,
+                    voidAndSelfClosingElementsDocumentHandler.getLastProcessedTag());
         }
-        assertEquals("Expected 0 invocations for 'onEndElement'", 0, voidAndSelfClosingElementsDocumentHandler.onEndElementInvocations);
-        assertEquals("Expected as many invocations for 'onStartElement' as many void elements.", HtmlParser.VOID_ELEMENTS.size(),
+        assertEquals(
+                "Expected 0 invocations for 'onEndElement'",
+                0,
+                voidAndSelfClosingElementsDocumentHandler.onEndElementInvocations);
+        assertEquals(
+                "Expected as many invocations for 'onStartElement' as many void elements.",
+                HtmlParser.VOID_ELEMENTS.size(),
                 voidAndSelfClosingElementsDocumentHandler.onStartElementInvocations);
 
-        HtmlParser.parse(new StringReader("<img " + DATA_TEST_ATTRIBUTE + "/>"), voidAndSelfClosingElementsDocumentHandler);
-        assertEquals("Expected 0 invocations for 'onEndElement'", 0, voidAndSelfClosingElementsDocumentHandler.onEndElementInvocations);
-        assertEquals("Expected as many invocations for 'onStartElement' as many void elements + 1.", HtmlParser.VOID_ELEMENTS.size() + 1,
+        HtmlParser.parse(
+                new StringReader("<img " + DATA_TEST_ATTRIBUTE + "/>"), voidAndSelfClosingElementsDocumentHandler);
+        assertEquals(
+                "Expected 0 invocations for 'onEndElement'",
+                0,
+                voidAndSelfClosingElementsDocumentHandler.onEndElementInvocations);
+        assertEquals(
+                "Expected as many invocations for 'onStartElement' as many void elements + 1.",
+                HtmlParser.VOID_ELEMENTS.size() + 1,
                 voidAndSelfClosingElementsDocumentHandler.onStartElementInvocations);
     }
 
@@ -226,9 +234,13 @@ public class HtmlParserTest {
             HtmlParser.parse(stringReader, handler);
             assertEquals("Parsed tag is not what was expected.", tag, handler.getLastProcessedTag());
         }
-        assertEquals("Expected as many invocations for 'onEndElement' as many test elements.", tags.size(),
+        assertEquals(
+                "Expected as many invocations for 'onEndElement' as many test elements.",
+                tags.size(),
                 handler.onEndElementInvocations);
-        assertEquals("Expected as many invocations for 'onStartElement' as many test elements.", tags.size(),
+        assertEquals(
+                "Expected as many invocations for 'onStartElement' as many test elements.",
+                tags.size(),
                 handler.onStartElementInvocations);
     }
 
@@ -237,14 +249,10 @@ public class HtmlParserTest {
         private String lastProcessedTag;
 
         @Override
-        public void onCharacters(char[] ch, int off, int len) {
-
-        }
+        public void onCharacters(char[] ch, int off, int len) {}
 
         @Override
-        public void onComment(String characters) {
-
-        }
+        public void onComment(String characters) {}
 
         @Override
         public void onStartElement(String name, AttributeList attList, boolean endSlash) {
@@ -252,19 +260,13 @@ public class HtmlParserTest {
         }
 
         @Override
-        public void onEndElement(String name) {
-
-        }
+        public void onEndElement(String name) {}
 
         @Override
-        public void onStart() {
-
-        }
+        public void onStart() {}
 
         @Override
-        public void onEnd() {
-
-        }
+        public void onEnd() {}
 
         String getLastProcessedTag() {
             return lastProcessedTag;
@@ -279,9 +281,11 @@ public class HtmlParserTest {
         @Override
         public void onStartElement(String name, AttributeList attList, boolean endSlash) {
             super.onStartElement(name, attList, endSlash);
-            assertTrue("Expected a " + DATA_TEST_ATTRIBUTE + ".",
-                    attList.attributeCount() == 1 && attList.containsAttribute(DATA_TEST_ATTRIBUTE) &&
-                            attList.getValue(DATA_TEST_ATTRIBUTE) == null);
+            assertTrue(
+                    "Expected a " + DATA_TEST_ATTRIBUTE + ".",
+                    attList.attributeCount() == 1
+                            && attList.containsAttribute(DATA_TEST_ATTRIBUTE)
+                            && attList.getValue(DATA_TEST_ATTRIBUTE) == null);
             assertTrue("Expected a self-closing attribute.", endSlash);
             onStartElementInvocations++;
         }
@@ -300,9 +304,11 @@ public class HtmlParserTest {
         @Override
         public void onStartElement(String name, AttributeList attList, boolean endSlash) {
             super.onStartElement(name, attList, endSlash);
-            assertTrue("Expected a " + DATA_TEST_ATTRIBUTE + ".",
-                    attList.attributeCount() == 1 && attList.containsAttribute(DATA_TEST_ATTRIBUTE) &&
-                            attList.getValue(DATA_TEST_ATTRIBUTE) == null);
+            assertTrue(
+                    "Expected a " + DATA_TEST_ATTRIBUTE + ".",
+                    attList.attributeCount() == 1
+                            && attList.containsAttribute(DATA_TEST_ATTRIBUTE)
+                            && attList.getValue(DATA_TEST_ATTRIBUTE) == null);
             assertFalse("Did not expect a self-closing attribute.", endSlash);
             onStartElementInvocations++;
         }
@@ -313,8 +319,4 @@ public class HtmlParserTest {
             onEndElementInvocations++;
         }
     }
-
-
-
-
 }

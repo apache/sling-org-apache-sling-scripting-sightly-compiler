@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.optimization;
 
 import org.apache.sling.scripting.sightly.compiler.commands.Command;
@@ -57,7 +57,6 @@ public final class CoalescingWrites implements CommandHandler {
         }
     }
 
-
     @Override
     public void onError(String errorMessage) {
         flushText();
@@ -72,7 +71,7 @@ public final class CoalescingWrites implements CommandHandler {
 
     private String detectText(Command command) {
         if (command instanceof OutText) {
-            return  ((OutText) command).getText();
+            return ((OutText) command).getText();
         }
         return null;
     }

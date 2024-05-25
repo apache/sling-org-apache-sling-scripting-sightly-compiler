@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,18 +15,18 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.plugin;
 
 import org.apache.sling.scripting.sightly.compiler.commands.Command;
 import org.apache.sling.scripting.sightly.compiler.commands.Conditional;
-import org.apache.sling.scripting.sightly.impl.compiler.Patterns;
 import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
-import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.BooleanConstant;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.StringConstant;
+import org.apache.sling.scripting.sightly.impl.compiler.Patterns;
+import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 import org.apache.sling.scripting.sightly.impl.compiler.frontend.CompilerContext;
 
 /**
@@ -40,7 +40,8 @@ public class UnwrapPlugin extends AbstractPlugin {
     }
 
     @Override
-    public PluginInvoke invoke(final Expression expression, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
+    public PluginInvoke invoke(
+            final Expression expression, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
 
         return new DefaultPluginInvoke() {
 
@@ -108,7 +109,8 @@ public class UnwrapPlugin extends AbstractPlugin {
             }
 
             private boolean isEmptyExpression(ExpressionNode node) {
-                return node instanceof StringConstant && ((StringConstant) node).getText().isEmpty();
+                return node instanceof StringConstant
+                        && ((StringConstant) node).getText().isEmpty();
             }
         };
     }

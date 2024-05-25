@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.plugin;
 
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
@@ -30,77 +30,47 @@ import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 public class DefaultPluginInvoke implements PluginInvoke {
 
     @Override
-    public void beforeElement(PushStream stream, String tagName) {
-        
-    }
+    public void beforeElement(PushStream stream, String tagName) {}
 
     @Override
-    public void beforeTagOpen(PushStream stream) {
-
-    }
+    public void beforeTagOpen(PushStream stream) {}
 
     @Override
-    public void beforeAttributes(PushStream stream) {
-
-    }
+    public void beforeAttributes(PushStream stream) {}
 
     @Override
-    public void beforeAttribute(PushStream stream, String attributeName) {
-
-    }
+    public void beforeAttribute(PushStream stream, String attributeName) {}
 
     @Override
-    public void beforeAttributeValue(PushStream stream, String attributeName, ExpressionNode attributeValue) {
-
-    }
+    public void beforeAttributeValue(PushStream stream, String attributeName, ExpressionNode attributeValue) {}
 
     @Override
-    public void afterAttributeValue(PushStream stream, String attributeName) {
-
-    }
+    public void afterAttributeValue(PushStream stream, String attributeName) {}
 
     @Override
-    public void afterAttribute(PushStream stream, String attributeName) {
-
-    }
+    public void afterAttribute(PushStream stream, String attributeName) {}
 
     @Override
-    public void onPluginCall(PushStream stream, PluginCallInfo callInfo, Expression expression) {
-
-    }
+    public void onPluginCall(PushStream stream, PluginCallInfo callInfo, Expression expression) {}
 
     @Override
-    public void afterAttributes(PushStream stream) {
-
-    }
+    public void afterAttributes(PushStream stream) {}
 
     @Override
-    public void afterTagOpen(PushStream stream) {
-
-    }
+    public void afterTagOpen(PushStream stream) {}
 
     @Override
-    public void beforeChildren(PushStream stream) {
-
-    }
+    public void beforeChildren(PushStream stream) {}
 
     @Override
-    public void afterChildren(PushStream stream) {
-
-    }
+    public void afterChildren(PushStream stream) {}
 
     @Override
-    public void beforeTagClose(PushStream stream, boolean isSelfClosing) {
-
-    }
+    public void beforeTagClose(PushStream stream, boolean isSelfClosing) {}
 
     @Override
-    public void afterTagClose(PushStream stream, boolean isSelfClosing) {
-
-    }
+    public void afterTagClose(PushStream stream, boolean isSelfClosing) {}
 
     @Override
-    public void afterElement(PushStream stream) {
-
-    }
+    public void afterElement(PushStream stream) {}
 }

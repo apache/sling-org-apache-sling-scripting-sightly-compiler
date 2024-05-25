@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,10 +15,8 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler.expression.nodes;
-
-import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +28,8 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Enclosed.class)
 public class BinaryOperatorTest {
@@ -43,8 +43,8 @@ public class BinaryOperatorTest {
 
             list.add(new Object[] {TestEnum.ONE, TestEnum.ONE.name(), true, "enum to string are equal"});
             list.add(new Object[] {TestEnum.ONE, TestEnum.TWO.name(), false, "enum to string not equal"});
-            list.add(new Object[] {TestEnum.ONE.name(), TestEnum.ONE, true,  "string to enum are equal"});
-            list.add(new Object[] {TestEnum.ONE.name(), TestEnum.TWO, false,  "string to enum not equal"});
+            list.add(new Object[] {TestEnum.ONE.name(), TestEnum.ONE, true, "string to enum are equal"});
+            list.add(new Object[] {TestEnum.ONE.name(), TestEnum.TWO, false, "string to enum not equal"});
             /**
              * SLING-10682 verify compare enum to another enum
              */
@@ -69,7 +69,6 @@ public class BinaryOperatorTest {
         public void testStrictEq() {
             assertEquals(expectedOutcome, BinaryOperator.strictEq(left, right));
         }
-
     }
 
     @RunWith(Parameterized.class)
@@ -80,7 +79,7 @@ public class BinaryOperatorTest {
             List<Object[]> list = new ArrayList<>();
             list.add(new Object[] {TestEnum.ONE, new Object(), "enum to object not equal"});
             list.add(new Object[] {new Object(), TestEnum.TWO, "object to enum not equal"});
-            list.add(new Object[] {new Object(), new Object(),  "object to object not equal"});
+            list.add(new Object[] {new Object(), new Object(), "object to object not equal"});
             list.add(new Object[] {null, TestEnum.ONE, "null to enum not equal"});
             list.add(new Object[] {TestEnum.ONE, null, "enum to null not equal"});
 
@@ -103,7 +102,6 @@ public class BinaryOperatorTest {
         public void testStrictEqWrongType() {
             BinaryOperator.strictEq(left, right);
         }
-
     }
 
     @RunWith(Parameterized.class)
@@ -112,12 +110,12 @@ public class BinaryOperatorTest {
         @Parameters(name = "Comparison: {2}")
         public static Iterable<? extends Object> data() {
             List<Object[]> list = new ArrayList<>();
-            list.add(new Object[]{1, new Object(), "number to object not equal"});
-            list.add(new Object[]{new Object(), 2, "object to number not equal"});
-            list.add(new Object[]{TestEnum.ONE, 1, "enum to number not equal"});
-            list.add(new Object[]{1, TestEnum.ONE, "number to enum not equal"});
-            list.add(new Object[]{1, TestEnum.ONE.name(), "number to string not equal"});
-            list.add(new Object[]{TestEnum.ONE.name(), 1, "string to number not equal"});
+            list.add(new Object[] {1, new Object(), "number to object not equal"});
+            list.add(new Object[] {new Object(), 2, "object to number not equal"});
+            list.add(new Object[] {TestEnum.ONE, 1, "enum to number not equal"});
+            list.add(new Object[] {1, TestEnum.ONE, "number to enum not equal"});
+            list.add(new Object[] {1, TestEnum.ONE.name(), "number to string not equal"});
+            list.add(new Object[] {TestEnum.ONE.name(), 1, "string to number not equal"});
 
             return list;
         }
@@ -147,5 +145,4 @@ public class BinaryOperatorTest {
             BinaryOperator.lt(left, right);
         }
     }
-
 }

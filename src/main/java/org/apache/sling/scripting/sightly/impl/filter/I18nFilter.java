@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.filter;
 
 import java.util.Arrays;
@@ -43,7 +43,10 @@ public final class I18nFilter extends AbstractFilter {
     }
 
     private I18nFilter() {
-        super(NON_PARAMETRIZABLE_CONTEXTS, new HashSet<>(Arrays.asList(I18N_OPTION, HINT_OPTION, LOCALE_OPTION, BASENAME_OPTION)), Collections.singleton(I18N_OPTION));
+        super(
+                NON_PARAMETRIZABLE_CONTEXTS,
+                new HashSet<>(Arrays.asList(I18N_OPTION, HINT_OPTION, LOCALE_OPTION, BASENAME_OPTION)),
+                Collections.singleton(I18N_OPTION));
         priority = 90;
     }
 

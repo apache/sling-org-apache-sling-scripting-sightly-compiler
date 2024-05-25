@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler.expression.nodes;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +35,7 @@ public enum UnaryOperator {
     },
 
     /** Evaluates whether the operand is a string of only whitespace characters */
-    IS_WHITESPACE  {
+    IS_WHITESPACE {
         @Override
         public Object eval(Object operand) {
             return StringUtils.isWhitespace(ObjectModel.toString(operand));
@@ -53,5 +53,4 @@ public enum UnaryOperator {
     };
 
     public abstract Object eval(Object operand);
-
 }

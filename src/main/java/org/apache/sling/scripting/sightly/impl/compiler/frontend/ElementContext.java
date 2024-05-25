@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.frontend;
 
 import java.util.AbstractMap;
@@ -61,8 +61,7 @@ public class ElementContext {
     }
 
     public void addPluginCall(String name, PluginCallInfo info, Expression expression) {
-        attributes.add(new Attribute(name,
-                new AbstractMap.SimpleEntry<>(info, expression), '0'));
+        attributes.add(new Attribute(name, new AbstractMap.SimpleEntry<>(info, expression), '0'));
     }
 
     public Iterable<Attribute> getAttributes() {
@@ -105,7 +104,6 @@ public class ElementContext {
         }
     }
 
-
     private static final class PrioritizedInvoke implements Comparable<PrioritizedInvoke> {
 
         private final PluginInvoke invoke;
@@ -121,7 +119,7 @@ public class ElementContext {
             if (this.priority < o.priority) {
                 return -1;
             } else if (this.priority == o.priority) {
-                return  0;
+                return 0;
             }
             return 1;
         }

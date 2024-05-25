@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.frontend;
 
 import java.util.ArrayList;
@@ -50,7 +50,8 @@ public class ExpressionWrapper {
         this.knownOptions = knownExpressionOptions;
     }
 
-    public Expression transform(Interpolation interpolation, MarkupContext markupContext, ExpressionContext expressionContext) {
+    public Expression transform(
+            Interpolation interpolation, MarkupContext markupContext, ExpressionContext expressionContext) {
         ArrayList<ExpressionNode> nodes = new ArrayList<>();
         HashMap<String, ExpressionNode> options = new HashMap<>();
         for (Fragment fragment : interpolation.getFragments()) {
@@ -59,12 +60,10 @@ public class ExpressionWrapper {
             } else {
                 Expression expression = fragment.getExpression();
                 if (AbstractFilter.NON_PARAMETRIZABLE_CONTEXTS.contains(expressionContext)) {
-                    expression.getOptions().keySet().stream().filter(option -> !knownOptions.contains(option)).forEach(
-                        unknownOption ->
-                        stream.warn(
-                            new PushStream.StreamMessage(String.format("Unknown option '%s'.", unknownOption), expression.getRawText())
-                        )
-                    );
+                    expression.getOptions().keySet().stream()
+                            .filter(option -> !knownOptions.contains(option))
+                            .forEach(unknownOption -> stream.warn(new PushStream.StreamMessage(
+                                    String.format("Unknown option '%s'.", unknownOption), expression.getRawText())));
                 }
                 Expression transformed = adjustToContext(expression, markupContext, expressionContext);
                 nodes.add(transformed.getRoot());
@@ -73,7 +72,7 @@ public class ExpressionWrapper {
         }
         ExpressionNode root = join(nodes);
         if (interpolation.size() > 1) {
-            //context must not be calculated by merging
+            // context must not be calculated by merging
             options.remove(Syntax.CONTEXT_OPTION);
         }
         return new Expression(root, options, interpolation.getContent());
@@ -87,7 +86,8 @@ public class ExpressionWrapper {
         return result;
     }
 
-    public Expression adjustToContext(Expression expression, MarkupContext context, ExpressionContext expressionContext) {
+    public Expression adjustToContext(
+            Expression expression, MarkupContext context, ExpressionContext expressionContext) {
         if (context != null && !expression.containsOption(Syntax.CONTEXT_OPTION)) {
             expression.getOptions().put(Syntax.CONTEXT_OPTION, new StringConstant(context.getName()));
         }

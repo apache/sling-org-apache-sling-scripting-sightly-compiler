@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.frontend;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import org.apache.sling.scripting.sightly.compiler.expression.Expression;
  */
 public class Interpolation {
 
-    //todo: this should be immutable to maintain the design consistent
+    // todo: this should be immutable to maintain the design consistent
 
     private List<Fragment> fragments = new ArrayList<>();
     private String content;
@@ -78,8 +78,6 @@ public class Interpolation {
 
     @Override
     public String toString() {
-        return "Interpolation{" +
-                "fragments=" + fragments +
-                '}';
+        return "Interpolation{" + "fragments=" + fragments + '}';
     }
 }

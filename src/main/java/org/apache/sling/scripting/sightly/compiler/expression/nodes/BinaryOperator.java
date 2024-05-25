@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler.expression.nodes;
 
 import java.util.Collection;
@@ -107,7 +107,6 @@ public enum BinaryOperator {
         public Object eval(Object left, Object right) {
             return !eq(left, right);
         }
-
     },
     /**
      * Strict version of equality, restricted to just some types.
@@ -133,7 +132,8 @@ public enum BinaryOperator {
     ADD {
         @Override
         public Object eval(Object left, Object right) {
-            return adjust(ObjectModel.toNumber(left).doubleValue() + ObjectModel.toNumber(right).doubleValue());
+            return adjust(ObjectModel.toNumber(left).doubleValue()
+                    + ObjectModel.toNumber(right).doubleValue());
         }
     },
 
@@ -143,7 +143,8 @@ public enum BinaryOperator {
     SUB {
         @Override
         public Object eval(Object left, Object right) {
-            return adjust(ObjectModel.toNumber(left).doubleValue() - ObjectModel.toNumber(right).doubleValue());
+            return adjust(ObjectModel.toNumber(left).doubleValue()
+                    - ObjectModel.toNumber(right).doubleValue());
         }
     },
     /**
@@ -152,7 +153,8 @@ public enum BinaryOperator {
     MUL {
         @Override
         public Object eval(Object left, Object right) {
-            return adjust(ObjectModel.toNumber(left).doubleValue() * ObjectModel.toNumber(right).doubleValue());
+            return adjust(ObjectModel.toNumber(left).doubleValue()
+                    * ObjectModel.toNumber(right).doubleValue());
         }
     },
     /**
@@ -161,7 +163,8 @@ public enum BinaryOperator {
     DIV {
         @Override
         public Object eval(Object left, Object right) {
-            return adjust(ObjectModel.toNumber(left).doubleValue() / ObjectModel.toNumber(right).doubleValue());
+            return adjust(ObjectModel.toNumber(left).doubleValue()
+                    / ObjectModel.toNumber(right).doubleValue());
         }
     },
     /**
@@ -170,7 +173,8 @@ public enum BinaryOperator {
     I_DIV {
         @Override
         public Object eval(Object left, Object right) {
-            return ObjectModel.toNumber(left).intValue() / ObjectModel.toNumber(right).intValue();
+            return ObjectModel.toNumber(left).intValue()
+                    / ObjectModel.toNumber(right).intValue();
         }
     },
 
@@ -183,7 +187,6 @@ public enum BinaryOperator {
             return adjust(ObjectModel.toNumber(left).intValue()
                     % ObjectModel.toNumber(right).intValue());
         }
-
     },
 
     IN {
@@ -204,18 +207,19 @@ public enum BinaryOperator {
         if (left instanceof Number && right instanceof Number) {
             return ((Number) left).doubleValue() < ((Number) right).doubleValue();
         }
-        throw new SightlyCompilerException("Operands are not of the same type: comparison is supported for Number types only." +
-                "Operands are: leftOperand=" + left + ", rightOperand=" + right);
+        throw new SightlyCompilerException(
+                "Operands are not of the same type: comparison is supported for Number types only."
+                        + "Operands are: leftOperand=" + left + ", rightOperand=" + right);
     }
 
     public static boolean leq(final Object left, final Object right) {
         if (left instanceof Number && right instanceof Number) {
             return ((Number) left).doubleValue() <= ((Number) right).doubleValue();
         }
-        throw new SightlyCompilerException("Operands are not of the same type: comparison is supported for Number types only." +
-                "Operands are: leftOperand=" + left + ", rightOperand=" + right);
+        throw new SightlyCompilerException(
+                "Operands are not of the same type: comparison is supported for Number types only."
+                        + "Operands are: leftOperand=" + left + ", rightOperand=" + right);
     }
-
 
     public static boolean strictEq(Object left, Object right) {
         if (left instanceof Number && right instanceof Number) {
@@ -249,8 +253,9 @@ public enum BinaryOperator {
                 return false;
             }
         }
-        throw new SightlyCompilerException("Operands are not of the same type: the equality operator can only be applied to String, Number," +
-                "Boolean and Enum types. Operands are: leftOperand=" + left + ", rightOperand=" + right);
+        throw new SightlyCompilerException(
+                "Operands are not of the same type: the equality operator can only be applied to String, Number,"
+                        + "Boolean and Enum types. Operands are: leftOperand=" + left + ", rightOperand=" + right);
     }
 
     public static boolean inOp(Object left, Object right) {

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,11 +15,10 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.html.dom;
 
 import java.io.IOException;
-
 
 /**
  * Invoked by the <code>HTMLParser</code> when elements are scanned.
@@ -46,16 +45,14 @@ public interface DocumentHandler {
      *                 an ending slash (xhtml-compliant)
      * @throws IOException if the element cannot be processed
      */
-    void onStartElement(String name, AttributeList attList, boolean endSlash)
-    throws IOException;
+    void onStartElement(String name, AttributeList attList, boolean endSlash) throws IOException;
 
     /**
      * Receive notification of the end of an element.
      * @param name tag name
      * @throws IOException if the element cannot be processed
      */
-    void onEndElement(String name)
-    throws IOException;
+    void onEndElement(String name) throws IOException;
 
     /**
      * Receive notification of parsing start.

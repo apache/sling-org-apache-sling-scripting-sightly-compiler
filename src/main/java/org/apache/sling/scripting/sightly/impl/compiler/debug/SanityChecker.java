@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.debug;
 
 import java.util.Stack;
@@ -36,14 +36,15 @@ import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
 public final class SanityChecker extends AbstractCommandVisitor implements CommandHandler {
 
     private enum NestedType {
-        CONDITIONAL, VARIABLE_BIND, LOOP
+        CONDITIONAL,
+        VARIABLE_BIND,
+        LOOP
     }
 
     private final Stack<NestedType> stack = new Stack<>();
     private boolean inProcedure;
 
-    private SanityChecker() {
-    }
+    private SanityChecker() {}
 
     public static void attachChecker(CommandStream commandStream) {
         commandStream.addHandler(new SanityChecker());
@@ -118,8 +119,8 @@ public final class SanityChecker extends AbstractCommandVisitor implements Comma
         }
         NestedType top = stack.pop();
         if (top != nestedType) {
-            throw new IllegalStateException("Command closing is unmatched. Expected " + top + ", actual: " + nestedType);
+            throw new IllegalStateException(
+                    "Command closing is unmatched. Expected " + top + ", actual: " + nestedType);
         }
     }
-
 }
