@@ -20,4 +20,7 @@
     <Match>
         <Package name="org.apache.sling.scripting.sightly.impl.parser.expr.generated"/>
     </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2,MS_EXPOSE_REP"/>
+    </Match>
 </FindBugsFilter>

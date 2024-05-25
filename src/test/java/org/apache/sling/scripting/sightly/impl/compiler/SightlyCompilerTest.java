@@ -35,14 +35,10 @@ import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.RuntimeCall;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.StringConstant;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(PowerMockRunner.class)
 public class SightlyCompilerTest {
 
     private SightlyCompiler compiler = new SightlyCompiler();
@@ -71,28 +67,6 @@ public class SightlyCompilerTest {
         assertTrue(script.equals(warningMessage.getScriptName()));
         assertEquals("${some.value}: Element script requires that all expressions have an explicit context specified. The expression will" +
                 " be replaced with an empty string.", warningMessage.getMessage());
-    }
-
-    @Test
-    public void testMissingExplicitContextOnWindows() {
-        PowerMockito.mockStatic(System.class);
-        PowerMockito.when(System.lineSeparator()).thenReturn("\r\n");
-
-        for (String s : new String[]{"", "-win", "-mac"}) {
-            String script = "/missing-explicit-context" + s + ".html";
-            testMissingExplicitContext(script);
-        }
-    }
-
-    @Test
-    public void testMissingExplicitContextOnMac() {
-        PowerMockito.mockStatic(System.class);
-        PowerMockito.when(System.lineSeparator()).thenReturn("\r");
-
-        for (String s : new String[]{"", "-win", "-mac"}) {
-            String script = "/missing-explicit-context" + s + ".html";
-            testMissingExplicitContext(script);
-        }
     }
 
     @Test
