@@ -72,6 +72,12 @@ public final class HtmlParser {
     /** Expression state constant */
     private static final int EXPR_MAYBE = 1;
 
+    /** Expression state constant */
+    private static final int EXPR_INSIDE_STRING = 2;
+
+    /** Expression state constant */
+    private static final int EXPR_INSIDE_STRING_AFTER_BACKSLASH = 3;
+
     static final Set<String> VOID_ELEMENTS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track",
             "wbr")));
@@ -403,17 +409,35 @@ public final class HtmlParser {
                     break;
 
                 case EXPRESSION:
-                    if (exprType == EXPR_MAYBE && c != '{') {
-                        // not a valid expression
-                        if (c == '<') {
-                            // reset to process tag correctly
-                            curr--;
+                    if (exprType == EXPR_MAYBE) {
+                        if (c == '{') {
+                            exprType = EXPR_NONE;
+                        } else {
+                            // not a valid expression
+                            if (c == '<') {
+                                // reset to process tag correctly
+                                curr--;
+                            }
+                            parseState = PARSE_STATE.OUTSIDE;
                         }
-                        parseState = PARSE_STATE.OUTSIDE;
-                    } else if (c == '}') {
-                        parseState = PARSE_STATE.OUTSIDE;
+                    } else if (exprType == EXPR_NONE) {
+                        if (c == '}') {
+                            parseState = PARSE_STATE.OUTSIDE;
+                        } else if (c == '"' || c == '\'') {
+                            exprType = EXPR_INSIDE_STRING;
+                            quoteChar = c;
+                        }
+                    } else if (exprType == EXPR_INSIDE_STRING) {
+                        if (c == '\\') {
+                            exprType = EXPR_INSIDE_STRING_AFTER_BACKSLASH;
+                        } else if (c == quoteChar) {
+                            exprType = EXPR_NONE;
+                        }
+                    } else {
+                        assert exprType == EXPR_INSIDE_STRING_AFTER_BACKSLASH;
+                        // ignore whatever came after the backslash and stay inside the string
+                        exprType = EXPR_INSIDE_STRING;
                     }
-                    exprType = EXPR_NONE;
                     break;
                 default:
                     break;
