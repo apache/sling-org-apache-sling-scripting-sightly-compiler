@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler.commands;
 
 /**
@@ -36,7 +36,13 @@ public final class Loop {
             this(listVariable, itemVariable, indexVariable, null, null, null);
         }
 
-        public Start(String listVariable, String itemVariable, String indexVariable, String beginVariable, String stepVariable, String endVariable) {
+        public Start(
+                String listVariable,
+                String itemVariable,
+                String indexVariable,
+                String beginVariable,
+                String stepVariable,
+                String endVariable) {
             this.listVariable = listVariable;
             this.itemVariable = itemVariable;
             this.indexVariable = indexVariable;
@@ -76,22 +82,20 @@ public final class Loop {
 
         @Override
         public String toString() {
-            return "Loop.Start{" +
-                    "listVariable='" + listVariable + '\'' +
-                    ", itemVariable='" + itemVariable + '\'' +
-                    ", indexVariable='" + indexVariable + '\'' +
-                    ", beginVariable='" + beginVariable + '\'' +
-                    ", stepVariable='" + stepVariable + '\'' +
-                    ", endVariable='" + endVariable + '\'' +
-                    '}';
+            return "Loop.Start{" + "listVariable='"
+                    + listVariable + '\'' + ", itemVariable='"
+                    + itemVariable + '\'' + ", indexVariable='"
+                    + indexVariable + '\'' + ", beginVariable='"
+                    + beginVariable + '\'' + ", stepVariable='"
+                    + stepVariable + '\'' + ", endVariable='"
+                    + endVariable + '\'' + '}';
         }
     }
 
     public static final End END = new End();
 
     public static final class End implements Command {
-        private End() {
-        }
+        private End() {}
 
         @Override
         public void accept(CommandVisitor visitor) {
@@ -103,5 +107,4 @@ public final class Loop {
             return "Loop.End{}";
         }
     }
-
 }

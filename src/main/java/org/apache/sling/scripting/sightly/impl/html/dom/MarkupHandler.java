@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,8 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
-
+ */
 package org.apache.sling.scripting.sightly.impl.html.dom;
 
 import java.util.Arrays;
@@ -73,10 +72,14 @@ public class MarkupHandler {
     private final ExpressionWrapper expressionWrapper;
 
     private final Stack<ElementContext> elementStack = new Stack<>();
-    private static final Set<String> URI_ATTRIBUTES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("action", "cite",
-            "data", "formaction", "href",  "manifest", "poster", "src")));
+    private static final Set<String> URI_ATTRIBUTES = Collections.unmodifiableSet(
+            new HashSet<>(Arrays.asList("action", "cite", "data", "formaction", "href", "manifest", "poster", "src")));
 
-    public MarkupHandler(PushStream stream, Map<String, Plugin> pluginRegistry, List<Filter> filters, Set<String> knownExpressionOptions) {
+    public MarkupHandler(
+            PushStream stream,
+            Map<String, Plugin> pluginRegistry,
+            List<Filter> filters,
+            Set<String> knownExpressionOptions) {
         this.stream = stream;
         this.pluginRegistry = pluginRegistry;
         this.expressionWrapper = new ExpressionWrapper(stream, filters, knownExpressionOptions);
@@ -95,7 +98,7 @@ public class MarkupHandler {
                 handlePlugin(name, StringUtils.defaultString(value, ""), context);
             } catch (SightlyCompilerException e) {
                 if (StringUtils.isEmpty(e.getOffendingInput()) && StringUtils.isNotEmpty(value)) {
-                    throw new SightlyCompilerException(e.getMessage(), name + "=" + quoteChar + value + quoteChar );
+                    throw new SightlyCompilerException(e.getMessage(), name + "=" + quoteChar + value + quoteChar);
                 }
                 throw e;
             }
@@ -173,7 +176,8 @@ public class MarkupHandler {
         return textValue.replace("\"", "&quot;");
     }
 
-    private void emitExpressionAttribute(String name, Interpolation interpolation, char quoteChar, PluginInvoke invoke) {
+    private void emitExpressionAttribute(
+            String name, Interpolation interpolation, char quoteChar, PluginInvoke invoke) {
         interpolation = attributeChecked(name, interpolation);
         if (interpolation.size() == 1) {
             emitSingleFragment(name, interpolation, quoteChar, invoke);
@@ -186,7 +190,8 @@ public class MarkupHandler {
         // Simplified algorithm for attribute output, which works when the interpolation is not of size 1. In this
         // case we are certain that the attribute value cannot be the boolean value true, so we can skip this test
         // altogether
-        Expression expression = expressionWrapper.transform(interpolation, getAttributeMarkupContext(name), ExpressionContext.ATTRIBUTE);
+        Expression expression = expressionWrapper.transform(
+                interpolation, getAttributeMarkupContext(name), ExpressionContext.ATTRIBUTE);
         String attrContent = symbolGenerator.next("attrContent");
         stream.write(new VariableBinding.Start(attrContent, expression.getRoot()));
         emitAttributeStart(name);
@@ -199,9 +204,10 @@ public class MarkupHandler {
     }
 
     private void emitSingleFragment(String name, Interpolation interpolation, char quoteChar, PluginInvoke invoke) {
-        Expression valueExpression = expressionWrapper.transform(interpolation, null, ExpressionContext.ATTRIBUTE); //raw expression
-        String attrValue = symbolGenerator.next("attrValue"); //holds the raw attribute value
-        String attrContent = symbolGenerator.next("attrContent"); //holds the escaped attribute value
+        Expression valueExpression =
+                expressionWrapper.transform(interpolation, null, ExpressionContext.ATTRIBUTE); // raw expression
+        String attrValue = symbolGenerator.next("attrValue"); // holds the raw attribute value
+        String attrContent = symbolGenerator.next("attrContent"); // holds the escaped attribute value
         String isTrueVar = symbolGenerator.next("isTrueAttr"); // holds the comparison (attrValue == true)
         String shouldDisplayAttr = symbolGenerator.next("shouldDisplayAttr");
         MarkupContext markupContext = getAttributeMarkupContext(name);
@@ -213,69 +219,68 @@ public class MarkupHandler {
             }
         }
         ExpressionNode node = valueExpression.getRoot();
-        stream.write(new VariableBinding.Start(attrValue, node)); //attrContent = <expr>
+        stream.write(new VariableBinding.Start(attrValue, node)); // attrContent = <expr>
         if (!alreadyEscaped) {
             Expression contentExpression = valueExpression.withNode(new Identifier(attrValue));
-            stream.write(new VariableBinding.Start(attrContent, adjustContext(compilerContext, contentExpression, markupContext).getRoot()));
-            stream.write(
-                    new VariableBinding.Start(
-                            shouldDisplayAttr,
+            stream.write(new VariableBinding.Start(
+                    attrContent,
+                    adjustContext(compilerContext, contentExpression, markupContext)
+                            .getRoot()));
+            stream.write(new VariableBinding.Start(
+                    shouldDisplayAttr,
+                    new BinaryOperation(
+                            BinaryOperator.AND,
                             new BinaryOperation(
                                     BinaryOperator.AND,
                                     new BinaryOperation(
-                                            BinaryOperator.AND,
-                                            new BinaryOperation(BinaryOperator.NEQ, NullLiteral.INSTANCE, new Identifier(attrContent)),
-                                            new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrContent))
-                                    ),
-                                    new BinaryOperation(BinaryOperator.AND,
-                                            new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrValue)),
-                                            new BinaryOperation(BinaryOperator.NEQ, BooleanConstant.FALSE, new Identifier(attrValue))
-                                    )
-                            )
-                    )
-            );
+                                            BinaryOperator.NEQ, NullLiteral.INSTANCE, new Identifier(attrContent)),
+                                    new BinaryOperation(
+                                            BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrContent))),
+                            new BinaryOperation(
+                                    BinaryOperator.AND,
+                                    new BinaryOperation(
+                                            BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrValue)),
+                                    new BinaryOperation(
+                                            BinaryOperator.NEQ, BooleanConstant.FALSE, new Identifier(attrValue))))));
 
         } else {
-            stream.write(
-                    new VariableBinding.Start(
-                            shouldDisplayAttr,
+            stream.write(new VariableBinding.Start(
+                    shouldDisplayAttr,
+                    new BinaryOperation(
+                            BinaryOperator.AND,
+                            new BinaryOperation(BinaryOperator.NEQ, NullLiteral.INSTANCE, new Identifier(attrValue)),
                             new BinaryOperation(
                                     BinaryOperator.AND,
-                                    new BinaryOperation(BinaryOperator.NEQ, NullLiteral.INSTANCE, new Identifier(attrValue)),
                                     new BinaryOperation(
-                                            BinaryOperator.AND,
-                                            new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrValue)),
-                                            new BinaryOperation(BinaryOperator.NEQ, BooleanConstant.FALSE, new Identifier(attrValue))
-                                    )
-                            )
-                    )
-            );
+                                            BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrValue)),
+                                    new BinaryOperation(
+                                            BinaryOperator.NEQ, BooleanConstant.FALSE, new Identifier(attrValue))))));
         }
         stream.write(new Conditional.Start(shouldDisplayAttr, true)); // if (attrContent)
 
-        emitAttributeStart(name);   //write("attrName");
+        emitAttributeStart(name); // write("attrName");
         invoke.beforeAttributeValue(stream, name, node);
-        stream.write(new VariableBinding.Start(isTrueVar, //isTrueAttr = (attrValue == true)
+        stream.write(new VariableBinding.Start(
+                isTrueVar, // isTrueAttr = (attrValue == true)
                 new BinaryOperation(BinaryOperator.EQ, BooleanConstant.TRUE, new Identifier(attrValue))));
-        stream.write(new Conditional.Start(isTrueVar, false)); //if (!isTrueAttr)
+        stream.write(new Conditional.Start(isTrueVar, false)); // if (!isTrueAttr)
         emitAttributeValueStart(quoteChar); // write("='");
         if (!alreadyEscaped) {
-            stream.write(new OutputVariable(attrContent)); //write(attrContent)
+            stream.write(new OutputVariable(attrContent)); // write(attrContent)
         } else {
             stream.write(new OutputVariable(attrValue)); // write(attrValue)
         }
-        emitAttributeEnd(quoteChar); //write("'");
-        stream.write(Conditional.END); //end if isTrueAttr
-        stream.write(VariableBinding.END); //end scope for isTrueAttr
+        emitAttributeEnd(quoteChar); // write("'");
+        stream.write(Conditional.END); // end if isTrueAttr
+        stream.write(VariableBinding.END); // end scope for isTrueAttr
         invoke.afterAttributeValue(stream, name);
-        stream.write(Conditional.END); //end if attrContent
-        stream.write(VariableBinding.END); //end scope for attrContent
+        stream.write(Conditional.END); // end if attrContent
+        stream.write(VariableBinding.END); // end scope for attrContent
         if (!alreadyEscaped) {
             stream.write(VariableBinding.END);
         }
-        stream.write(VariableBinding.END); //end scope for attrValue
+        stream.write(VariableBinding.END); // end scope for attrValue
     }
-
 
     private void emitAttributeStart(String name) {
         out(" " + name);
@@ -298,7 +303,6 @@ public class MarkupHandler {
         out(String.valueOf(quote));
     }
 
-
     public void onCloseTag(String markup) {
         ElementContext context = elementStack.pop();
         PluginInvoke invoke = context.pluginInvoke();
@@ -317,7 +321,6 @@ public class MarkupHandler {
         invoke.afterElement(stream);
     }
 
-
     public void onText(String text) {
         String tag = currentElementTag();
         boolean explicitContextRequired = isExplicitContextRequired(tag);
@@ -325,23 +328,19 @@ public class MarkupHandler {
         outText(text, markupContext);
     }
 
-
     public void onComment(String markup) {
         if (!Syntax.isSightlyComment(markup)) {
             outText(markup, MarkupContext.COMMENT);
         }
     }
 
-
     public void onDataNode(String markup) {
         out(markup);
     }
 
-
     public void onDocType(String markup) {
         out(markup);
     }
-
 
     public void onDocumentFinished() {
         this.stream.close();
@@ -356,7 +355,9 @@ public class MarkupHandler {
         if (text != null) {
             out(text);
         } else {
-            outExprNode(expressionWrapper.transform(interpolation, context, ExpressionContext.TEXT).getRoot());
+            outExprNode(expressionWrapper
+                    .transform(interpolation, context, ExpressionContext.TEXT)
+                    .getRoot());
         }
     }
 
@@ -371,9 +372,12 @@ public class MarkupHandler {
                     addedFragment = fragment;
                 } else {
                     String currentTag = currentElementTag();
-                    String warningMessage = String.format("Element %s requires that all expressions have an explicit context specified. " +
-                            "The expression will be replaced with an empty string.", currentTag);
-                    stream.warn(new PushStream.StreamMessage(warningMessage, fragment.getExpression().getRawText()));
+                    String warningMessage = String.format(
+                            "Element %s requires that all expressions have an explicit context specified. "
+                                    + "The expression will be replaced with an empty string.",
+                            currentTag);
+                    stream.warn(new PushStream.StreamMessage(
+                            warningMessage, fragment.getExpression().getRawText()));
                     addedFragment = new Fragment.Expr(new Expression(StringConstant.EMPTY));
                 }
             }
@@ -392,8 +396,10 @@ public class MarkupHandler {
             if (fragment.isExpression()) {
                 Expression expression = fragment.getExpression();
                 if (!expression.containsOption(Syntax.CONTEXT_OPTION)) {
-                    String warningMessage = String.format("Expressions within the value of attribute %s need to have an explicit context " +
-                            "option. The expression will be replaced with an empty string.", attributeName);
+                    String warningMessage = String.format(
+                            "Expressions within the value of attribute %s need to have an explicit context "
+                                    + "option. The expression will be replaced with an empty string.",
+                            attributeName);
                     stream.warn(new PushStream.StreamMessage(warningMessage, expression.getRawText()));
                     addedFragment = new Fragment.Text("");
                 }
@@ -403,14 +409,12 @@ public class MarkupHandler {
         return newInterpolation;
     }
 
-
     private void outExprNode(ExpressionNode node) {
         String variable = symbolGenerator.next();
         stream.write(new VariableBinding.Start(variable, node));
         stream.write(new OutputVariable(variable));
         stream.write(VariableBinding.END);
     }
-
 
     private String tryAsSimpleText(Interpolation interpolation) {
         if (interpolation.size() == 1) {
@@ -433,7 +437,8 @@ public class MarkupHandler {
         if (callInfo != null) {
             Plugin plugin = obtainPlugin(callInfo.getName());
             ExpressionContext expressionContext = ExpressionContext.getContextForPlugin(plugin.name());
-            Expression expr = expressionWrapper.transform(expressionParser.parseInterpolation(value), null, expressionContext);
+            Expression expr =
+                    expressionWrapper.transform(expressionParser.parseInterpolation(value), null, expressionContext);
             PluginInvoke invoke = plugin.invoke(expr, callInfo, compilerContext);
             context.addPlugin(invoke, plugin.priority());
             context.addPluginCall(name, callInfo, expr);
@@ -443,16 +448,17 @@ public class MarkupHandler {
     private Plugin obtainPlugin(String name) {
         Plugin plugin = pluginRegistry.get(name);
         if (plugin == null) {
-            throw new SightlyCompilerException(String.format("None of the registered plugins can handle the data-sly-%s block element.",
-                    name), "data-sly-" + name);
+            throw new SightlyCompilerException(
+                    String.format("None of the registered plugins can handle the data-sly-%s block element.", name),
+                    "data-sly-" + name);
         }
         return plugin;
     }
 
     private MarkupContext getAttributeMarkupContext(String attributeName) {
-       if (URI_ATTRIBUTES.contains(attributeName.toLowerCase())) {
-           return MarkupContext.URI;
-       }
+        if (URI_ATTRIBUTES.contains(attributeName.toLowerCase())) {
+            return MarkupContext.URI;
+        }
         return MarkupContext.ATTRIBUTE;
     }
 
@@ -465,11 +471,11 @@ public class MarkupHandler {
     }
 
     private boolean isExplicitContextRequired(String parentElementName) {
-        return parentElementName != null &&
-                ("script".equals(parentElementName) || "style".equals(parentElementName));
+        return parentElementName != null && ("script".equals(parentElementName) || "style".equals(parentElementName));
     }
 
-    private Expression adjustContext(CompilerContext compilerContext, Expression expression, MarkupContext markupContext) {
+    private Expression adjustContext(
+            CompilerContext compilerContext, Expression expression, MarkupContext markupContext) {
         ExpressionNode root = expression.getRoot();
         if (root instanceof RuntimeCall) {
             RuntimeCall runtimeCall = (RuntimeCall) root;

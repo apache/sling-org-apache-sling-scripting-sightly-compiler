@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler.commands;
 
 /**
@@ -47,10 +47,9 @@ public final class Conditional {
 
         @Override
         public String toString() {
-            return "Conditional.Start{" +
-                    "variable='" + variable + '\'' +
-                    ", expectedTruthValue=" + expectedTruthValue +
-                    '}';
+            return "Conditional.Start{" + "variable='"
+                    + variable + '\'' + ", expectedTruthValue="
+                    + expectedTruthValue + '}';
         }
     }
 
@@ -58,8 +57,7 @@ public final class Conditional {
 
     public static final class End implements Command {
 
-        private End() {
-        }
+        private End() {}
 
         @Override
         public void accept(CommandVisitor visitor) {

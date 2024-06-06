@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.plugin;
 
 import java.util.HashMap;
@@ -41,7 +41,8 @@ public class ResourcePlugin extends AbstractPlugin {
     }
 
     @Override
-    public PluginInvoke invoke(final Expression expression, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
+    public PluginInvoke invoke(
+            final Expression expression, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
 
         return new DefaultPluginInvoke() {
 
@@ -50,8 +51,10 @@ public class ResourcePlugin extends AbstractPlugin {
             @Override
             public void beforeChildren(PushStream stream) {
                 String resourceVar = compilerContext.generateVariable("resourceContent");
-                stream.write(new VariableBinding.Start(resourceVar,
-                        new RuntimeCall(RuntimeCall.RESOURCE, expression.getRoot(), new MapLiteral(expressionOptions))));
+                stream.write(new VariableBinding.Start(
+                        resourceVar,
+                        new RuntimeCall(
+                                RuntimeCall.RESOURCE, expression.getRoot(), new MapLiteral(expressionOptions))));
                 stream.write(new OutputVariable(resourceVar));
                 stream.write(VariableBinding.END);
                 Patterns.beginStreamIgnore(stream);
@@ -61,7 +64,6 @@ public class ResourcePlugin extends AbstractPlugin {
             public void afterChildren(PushStream stream) {
                 Patterns.endStreamIgnore(stream);
             }
-
         };
     }
 }

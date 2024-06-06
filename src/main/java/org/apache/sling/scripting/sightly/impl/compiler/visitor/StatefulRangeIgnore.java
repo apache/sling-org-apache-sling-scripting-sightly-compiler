@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.visitor;
 
 import org.apache.sling.scripting.sightly.compiler.commands.Command;
@@ -28,8 +28,10 @@ public class StatefulRangeIgnore extends IgnoreRange {
 
     private final StatefulVisitor.StateControl stateControl;
 
-    public StatefulRangeIgnore(StatefulVisitor.StateControl stateControl, Class<? extends Command> rangeStart,
-                               Class<? extends Command> rangeEnd) {
+    public StatefulRangeIgnore(
+            StatefulVisitor.StateControl stateControl,
+            Class<? extends Command> rangeStart,
+            Class<? extends Command> rangeEnd) {
         super(rangeStart, rangeEnd);
         this.stateControl = stateControl;
     }

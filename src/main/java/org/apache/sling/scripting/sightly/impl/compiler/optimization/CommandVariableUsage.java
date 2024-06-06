@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,20 +15,20 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.optimization;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.sling.scripting.sightly.compiler.commands.AbstractCommandVisitor;
-import org.apache.sling.scripting.sightly.compiler.commands.OutputVariable;
-import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.commands.Command;
 import org.apache.sling.scripting.sightly.compiler.commands.Conditional;
 import org.apache.sling.scripting.sightly.compiler.commands.Loop;
+import org.apache.sling.scripting.sightly.compiler.commands.OutputVariable;
 import org.apache.sling.scripting.sightly.compiler.commands.Procedure;
 import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
+import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 
 /**
  * Extracts the variables used in a command

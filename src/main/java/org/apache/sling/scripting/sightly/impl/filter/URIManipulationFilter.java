@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.filter;
 
 import java.util.Arrays;
@@ -61,15 +61,31 @@ public class URIManipulationFilter extends AbstractFilter {
         APPLICABLE_CONTEXTS = Collections.unmodifiableSet(applicableContexts);
     }
 
-
     private static final class URIManipulationFilterLoader {
         private static final URIManipulationFilter INSTANCE = new URIManipulationFilter();
     }
 
     private URIManipulationFilter() {
-        super(APPLICABLE_CONTEXTS, new HashSet<>(Arrays.asList(SCHEME, DOMAIN, PATH, APPEND_PATH, PREPEND_PATH, SELECTORS,
-                ADD_SELECTORS, REMOVE_SELECTORS, EXTENSION, SUFFIX, PREPEND_SUFFIX, APPEND_SUFFIX, FRAGMENT, QUERY, ADD_QUERY,
-                REMOVE_QUERY)), Collections.emptySet());
+        super(
+                APPLICABLE_CONTEXTS,
+                new HashSet<>(Arrays.asList(
+                        SCHEME,
+                        DOMAIN,
+                        PATH,
+                        APPEND_PATH,
+                        PREPEND_PATH,
+                        SELECTORS,
+                        ADD_SELECTORS,
+                        REMOVE_SELECTORS,
+                        EXTENSION,
+                        SUFFIX,
+                        PREPEND_SUFFIX,
+                        APPEND_SUFFIX,
+                        FRAGMENT,
+                        QUERY,
+                        ADD_QUERY,
+                        REMOVE_QUERY)),
+                Collections.emptySet());
     }
 
     public static URIManipulationFilter getInstance() {

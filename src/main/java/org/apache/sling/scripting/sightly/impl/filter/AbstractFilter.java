@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.filter;
 
 import java.util.Arrays;
@@ -32,6 +32,7 @@ public abstract class AbstractFilter implements Filter {
 
     protected int priority = 100;
     public static final Set<ExpressionContext> NON_PARAMETRIZABLE_CONTEXTS;
+
     static {
         Set<ExpressionContext> contexts = new HashSet<>(Arrays.asList(ExpressionContext.values()));
         contexts.remove(ExpressionContext.PLUGIN_DATA_SLY_USE);
@@ -68,7 +69,8 @@ public abstract class AbstractFilter implements Filter {
     @Override
     public Expression apply(Expression expression, ExpressionContext expressionContext) {
         Set<String> expressionOptions = expression.getOptions().keySet();
-        if (getApplicableContexts().contains(expressionContext) && expressionOptions.containsAll(getRequiredOptions())) {
+        if (getApplicableContexts().contains(expressionContext)
+                && expressionOptions.containsAll(getRequiredOptions())) {
             return apply(expression, getFilterOptions(expression, getOptions()));
         }
         return expression;

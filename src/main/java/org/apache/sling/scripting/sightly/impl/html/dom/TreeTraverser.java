@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.html.dom;
 
 import org.apache.commons.lang3.StringUtils;
@@ -75,7 +75,11 @@ public class TreeTraverser {
                         String quoteChar = String.valueOf(attribute.getQuoteChar());
                         offendingInput.append(" ").append(attribute.getName());
                         if (StringUtils.isNotEmpty(attribute.getValue())) {
-                            offendingInput.append("=").append(quoteChar).append(attribute.getValue()).append(quoteChar);
+                            offendingInput
+                                    .append("=")
+                                    .append(quoteChar)
+                                    .append(attribute.getValue())
+                                    .append(quoteChar);
                         }
                     }
                 } else {
@@ -123,5 +127,4 @@ public class TreeTraverser {
             traverseNode(node);
         }
     }
-
 }

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,11 +15,10 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler.expression.nodes;
 
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
-
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -35,6 +34,4 @@ public interface Atom extends ExpressionNode {
      * @return the text content
      */
     String getText();
-
 }
-

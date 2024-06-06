@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,11 +15,12 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.plugin;
 
 import org.apache.sling.scripting.sightly.compiler.commands.Conditional;
 import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
+import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.ArrayLiteral;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.Atom;
@@ -29,7 +30,6 @@ import org.apache.sling.scripting.sightly.compiler.expression.nodes.Identifier;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.NullLiteral;
 import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
-import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 import org.apache.sling.scripting.sightly.impl.compiler.frontend.CompilerContext;
 
 /**
@@ -43,7 +43,8 @@ public class TestPlugin extends AbstractPlugin {
     }
 
     @Override
-    public PluginInvoke invoke(final Expression expressionNode, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
+    public PluginInvoke invoke(
+            final Expression expressionNode, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
 
         return new DefaultPluginInvoke() {
 
@@ -53,17 +54,16 @@ public class TestPlugin extends AbstractPlugin {
             public void beforeElement(PushStream stream, String tagName) {
                 String variableName = decodeVariableName(callInfo);
                 ExpressionNode root = expressionNode.getRoot();
-                boolean constantValueComparison =
-                        root instanceof Atom && !(root instanceof Identifier) ||
-                        root instanceof NullLiteral ||
-                        root instanceof ArrayLiteral ||
-                        root instanceof MapLiteral;
+                boolean constantValueComparison = root instanceof Atom && !(root instanceof Identifier)
+                        || root instanceof NullLiteral
+                        || root instanceof ArrayLiteral
+                        || root instanceof MapLiteral;
                 if (!constantValueComparison && root instanceof BinaryOperation) {
                     constantValueComparison = ((BinaryOperation) root).getOperator() == BinaryOperator.CONCATENATE;
                 }
                 if (constantValueComparison) {
-                    stream.warn(new PushStream.StreamMessage("data-sly-test: redundant constant value comparison",
-                            expressionNode.getRawText()));
+                    stream.warn(new PushStream.StreamMessage(
+                            "data-sly-test: redundant constant value comparison", expressionNode.getRawText()));
                 }
                 globalBinding = variableName != null;
                 if (variableName == null) {
@@ -86,6 +86,4 @@ public class TestPlugin extends AbstractPlugin {
             }
         };
     }
-
-
 }

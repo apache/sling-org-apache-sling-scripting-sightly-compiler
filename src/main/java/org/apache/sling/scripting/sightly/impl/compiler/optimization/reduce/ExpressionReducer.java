@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.optimization.reduce;
 
 import java.util.ArrayList;
@@ -71,8 +71,8 @@ public class ExpressionReducer implements NodeVisitor<EvalResult> {
             }
             throw e;
         } catch (Exception e) {
-            //evaluating constant expressions may lead to errors (like division by zero)
-            //in this case we leave the nodes as-is.
+            // evaluating constant expressions may lead to errors (like division by zero)
+            // in this case we leave the nodes as-is.
             return EvalResult.nonConstant(node);
         }
     }
@@ -82,13 +82,10 @@ public class ExpressionReducer implements NodeVisitor<EvalResult> {
         EvalResult target = eval(propertyAccess.getTarget());
         EvalResult property = eval(propertyAccess.getProperty());
         if (!target.isConstant() || !property.isConstant()) {
-            return EvalResult.nonConstant(new PropertyAccess(
-                    target.getNode(),
-                    property.getNode()));
+            return EvalResult.nonConstant(new PropertyAccess(target.getNode(), property.getNode()));
         }
 
-        return EvalResult.constant(ObjectModel.resolveProperty(
-                target.getValue(), property.getValue()));
+        return EvalResult.constant(ObjectModel.resolveProperty(target.getValue(), property.getValue()));
     }
 
     @Override
@@ -110,10 +107,8 @@ public class ExpressionReducer implements NodeVisitor<EvalResult> {
         EvalResult left = eval(binaryOperation.getLeftOperand());
         EvalResult right = eval(binaryOperation.getRightOperand());
         if (!(left.isConstant() && right.isConstant())) {
-            return EvalResult.nonConstant(new BinaryOperation(
-                    binaryOperation.getOperator(),
-                    left.getNode(),
-                    right.getNode()));
+            return EvalResult.nonConstant(
+                    new BinaryOperation(binaryOperation.getOperator(), left.getNode(), right.getNode()));
         }
         return EvalResult.constant(binaryOperation.getOperator().eval(left.getValue(), right.getValue()));
     }
@@ -132,8 +127,7 @@ public class ExpressionReducer implements NodeVisitor<EvalResult> {
     public EvalResult evaluate(UnaryOperation unaryOperation) {
         EvalResult target = eval(unaryOperation.getTarget());
         if (!target.isConstant()) {
-            return EvalResult.nonConstant(new UnaryOperation(
-                    unaryOperation.getOperator(), target.getNode()));
+            return EvalResult.nonConstant(new UnaryOperation(unaryOperation.getOperator(), target.getNode()));
         }
         return EvalResult.constant(unaryOperation.getOperator().eval(target.getValue()));
     }
@@ -143,9 +137,7 @@ public class ExpressionReducer implements NodeVisitor<EvalResult> {
         EvalResult condition = eval(ternaryOperator.getCondition());
         if (!condition.isConstant()) {
             return EvalResult.nonConstant(new TernaryOperator(
-                    condition.getNode(),
-                    ternaryOperator.getThenBranch(),
-                    ternaryOperator.getElseBranch()));
+                    condition.getNode(), ternaryOperator.getThenBranch(), ternaryOperator.getElseBranch()));
         }
         return (ObjectModel.toBoolean(condition.getValue()))
                 ? eval(ternaryOperator.getThenBranch())

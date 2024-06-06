@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.frontend;
 
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
@@ -26,9 +26,11 @@ import org.apache.sling.scripting.sightly.compiler.expression.Expression;
 public interface Fragment {
 
     boolean isString();
+
     boolean isExpression();
 
     Expression getExpression();
+
     String getText();
 
     /**
@@ -62,9 +64,7 @@ public interface Fragment {
 
         @Override
         public String toString() {
-            return "Expr{" +
-                    "expression=" + expression +
-                    '}';
+            return "Expr{" + "expression=" + expression + '}';
         }
     }
 
@@ -98,9 +98,7 @@ public interface Fragment {
 
         @Override
         public String toString() {
-            return "Text{" +
-                    "text='" + text + '\'' +
-                    '}';
+            return "Text{" + "text='" + text + '\'' + '}';
         }
     }
 }

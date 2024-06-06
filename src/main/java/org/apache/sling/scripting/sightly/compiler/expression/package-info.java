@@ -15,7 +15,6 @@
  * limitations under the License.
  ******************************************************************************/
 
-
 /**
  * The {@code org.apache.sling.scripting.sightly.compiler.expression} package defines the API for
  * {@link org.apache.sling.scripting.sightly.compiler.expression.Expression} processing.

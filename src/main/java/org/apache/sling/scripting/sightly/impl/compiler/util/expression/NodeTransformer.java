@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.util.expression;
 
 import java.util.ArrayList;
@@ -61,7 +61,8 @@ public class NodeTransformer implements NodeVisitor<ExpressionNode> {
 
     @Override
     public ExpressionNode evaluate(BinaryOperation binaryOperation) {
-        return new BinaryOperation(binaryOperation.getOperator(),
+        return new BinaryOperation(
+                binaryOperation.getOperator(),
                 transform(binaryOperation.getLeftOperand()),
                 transform(binaryOperation.getRightOperand()));
     }

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,24 +15,24 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.optimization;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.sling.scripting.sightly.compiler.commands.Command;
+import org.apache.sling.scripting.sightly.compiler.commands.CommandStream;
+import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.Identifier;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.MapLiteral;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.NullLiteral;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.PropertyAccess;
 import org.apache.sling.scripting.sightly.compiler.expression.nodes.StringConstant;
-import org.apache.sling.scripting.sightly.compiler.commands.Command;
-import org.apache.sling.scripting.sightly.compiler.commands.CommandStream;
-import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
+import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 import org.apache.sling.scripting.sightly.impl.compiler.util.expression.NodeTransformer;
 import org.apache.sling.scripting.sightly.impl.compiler.util.stream.EmitterVisitor;
-import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
 import org.apache.sling.scripting.sightly.impl.compiler.util.stream.Streams;
 import org.apache.sling.scripting.sightly.impl.compiler.visitor.TrackingVisitor;
 
@@ -54,8 +54,7 @@ public final class SyntheticMapRemoval extends TrackingVisitor<MapLiteral> imple
     private final PushStream outputStream = new PushStream();
     private final NodeTransformer transformer = new PropertyAccessTransformer();
 
-    private SyntheticMapRemoval() {
-    }
+    private SyntheticMapRemoval() {}
 
     @Override
     public void visit(VariableBinding.Start variableBindingStart) {
@@ -78,7 +77,7 @@ public final class SyntheticMapRemoval extends TrackingVisitor<MapLiteral> imple
         super.visit(variableBindingEnd);
         MapLiteral literal = entry.getValue();
         if (literal != null) {
-            //need to un-bind all the introduced variables
+            // need to un-bind all the introduced variables
             for (int i = 0; i < literal.getMap().size(); i++) {
                 outputStream.write(VariableBinding.END);
             }

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.filter;
 
 import java.util.Collections;
@@ -48,8 +48,7 @@ public class JoinFilter extends AbstractFilter {
 
     @Override
     protected Expression apply(Expression expression, Map<String, ExpressionNode> options) {
-        ExpressionNode translation =
-                new RuntimeCall(RuntimeCall.JOIN, expression.getRoot(), options.get(JOIN_OPTION));
+        ExpressionNode translation = new RuntimeCall(RuntimeCall.JOIN, expression.getRoot(), options.get(JOIN_OPTION));
         return expression.withNode(translation);
     }
 }

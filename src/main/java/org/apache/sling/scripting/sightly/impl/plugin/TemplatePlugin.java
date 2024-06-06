@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.plugin;
 
 import java.util.Map;
@@ -40,14 +40,15 @@ public class TemplatePlugin extends AbstractPlugin {
     }
 
     @Override
-    public PluginInvoke invoke(final Expression expressionNode, final PluginCallInfo callInfo, CompilerContext compilerContext) {
+    public PluginInvoke invoke(
+            final Expression expressionNode, final PluginCallInfo callInfo, CompilerContext compilerContext) {
         final String templateName = decodeName(callInfo);
 
         return new DefaultPluginInvoke() {
 
             @Override
             public void beforeTagOpen(PushStream stream) {
-                //ignoring template tags
+                // ignoring template tags
                 Patterns.beginStreamIgnore(stream);
             }
 
@@ -64,12 +65,12 @@ public class TemplatePlugin extends AbstractPlugin {
 
             @Override
             public void afterTagOpen(PushStream stream) {
-                Patterns.endStreamIgnore(stream); //resuming normal operation
+                Patterns.endStreamIgnore(stream); // resuming normal operation
             }
 
             @Override
             public void beforeTagClose(PushStream stream, boolean isSelfClosing) {
-                Patterns.beginStreamIgnore(stream); //ignoring closing tags
+                Patterns.beginStreamIgnore(stream); // ignoring closing tags
             }
 
             @Override
@@ -81,7 +82,6 @@ public class TemplatePlugin extends AbstractPlugin {
                 Map<String, ExpressionNode> options = expressionNode.getOptions();
                 return options.keySet();
             }
-
         };
     }
 

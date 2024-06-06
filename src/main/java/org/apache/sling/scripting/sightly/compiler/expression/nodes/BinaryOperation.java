@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler.expression.nodes;
 
 import org.apache.sling.scripting.sightly.compiler.expression.Expression;
@@ -53,7 +53,11 @@ public final class BinaryOperation implements ExpressionNode {
      * @param rightOperand     the right operand
      * @param parentExpression the parent expression of this operation
      */
-    public BinaryOperation(BinaryOperator operator, ExpressionNode leftOperand, ExpressionNode rightOperand, Expression parentExpression) {
+    public BinaryOperation(
+            BinaryOperator operator,
+            ExpressionNode leftOperand,
+            ExpressionNode rightOperand,
+            Expression parentExpression) {
         this(operator, leftOperand, rightOperand);
         this.parentExpression = parentExpression;
     }
@@ -111,11 +115,9 @@ public final class BinaryOperation implements ExpressionNode {
 
     @Override
     public String toString() {
-        return "BinaryOperation{" +
-                "operator=" + operator +
-                ", leftOperand=" + leftOperand +
-                ", rightOperand=" + rightOperand +
-                '}';
+        return "BinaryOperation{" + "operator="
+                + operator + ", leftOperand="
+                + leftOperand + ", rightOperand="
+                + rightOperand + '}';
     }
-
 }

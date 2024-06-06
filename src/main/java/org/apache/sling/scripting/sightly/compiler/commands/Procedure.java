@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler.commands;
 
 import java.util.Collections;
@@ -55,8 +55,7 @@ public class Procedure {
 
     public static final class End implements Command {
 
-        private End() {
-        }
+        private End() {}
 
         @Override
         public void accept(CommandVisitor visitor) {
@@ -87,5 +86,4 @@ public class Procedure {
             visitor.visit(this);
         }
     }
-
 }

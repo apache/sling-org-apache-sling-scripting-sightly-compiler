@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.frontend;
 
 import java.util.Collections;
@@ -34,13 +34,21 @@ import org.apache.sling.scripting.sightly.compiler.SightlyCompilerException;
 public class SightlyParserErrorListener extends BaseErrorListener {
 
     @Override
-    public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg,
-                            RecognitionException e) {
+    public void syntaxError(
+            Recognizer<?, ?> recognizer,
+            Object offendingSymbol,
+            int line,
+            int charPositionInLine,
+            String msg,
+            RecognitionException e) {
         String offendingInput;
         if (Parser.class.isAssignableFrom(recognizer.getClass())) {
             List<String> stack = ((Parser) recognizer).getRuleInvocationStack();
             Collections.reverse(stack);
-            offendingInput = ((CommonTokenStream) recognizer.getInputStream()).getTokenSource().getInputStream().toString();
+            offendingInput = ((CommonTokenStream) recognizer.getInputStream())
+                    .getTokenSource()
+                    .getInputStream()
+                    .toString();
         } else {
             offendingInput = recognizer.getInputStream().toString();
         }

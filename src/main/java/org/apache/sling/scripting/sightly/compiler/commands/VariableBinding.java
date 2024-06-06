@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler.commands;
 
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
@@ -49,10 +49,9 @@ public final class VariableBinding {
 
         @Override
         public String toString() {
-            return "VariableBinding.Start{" +
-                    "variableName='" + variableName + '\'' +
-                    ", expression=" + expression +
-                    '}';
+            return "VariableBinding.Start{" + "variableName='"
+                    + variableName + '\'' + ", expression="
+                    + expression + '}';
         }
     }
 
@@ -60,8 +59,7 @@ public final class VariableBinding {
 
     public static final class End implements Command {
 
-        private End() {
-        }
+        private End() {}
 
         @Override
         public void accept(CommandVisitor visitor) {
@@ -91,7 +89,6 @@ public final class VariableBinding {
         public ExpressionNode getExpression() {
             return expressionNode;
         }
-
 
         @Override
         public void accept(CommandVisitor visitor) {

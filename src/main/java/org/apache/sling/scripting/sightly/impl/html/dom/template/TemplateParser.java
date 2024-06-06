@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.html.dom.template;
 
 import java.io.IOException;
@@ -87,15 +87,16 @@ public class TemplateParser {
             this.checkText();
             final List<TemplateAttribute> attrs = new ArrayList<TemplateAttribute>();
             final Iterator<String> iter = attList.attributeNames();
-            while ( iter.hasNext() ) {
+            while (iter.hasNext()) {
                 final String aName = iter.next();
-                final TemplateAttribute attr = new TemplateAttribute(aName, attList.getValue(aName), attList.getQuoteChar(aName));
+                final TemplateAttribute attr =
+                        new TemplateAttribute(aName, attList.getValue(aName), attList.getQuoteChar(aName));
                 attrs.add(attr);
             }
             final TemplateElementNode element = new TemplateElementNode(name, endSlash, attrs);
             element.setHasStartElement();
             elementStack.peek().addChild(element);
-            if ( !endSlash ) {
+            if (!endSlash) {
                 elementStack.push(element);
             }
         }
@@ -104,13 +105,13 @@ public class TemplateParser {
             this.checkText();
             if (contains(name)) {
                 TemplateElementNode element = this.elementStack.pop();
-                while ( !name.equals(element.getName()) ) {
+                while (!name.equals(element.getName())) {
                     element = this.elementStack.pop();
                 }
                 element.setHasEndElement();
             } else {
-                final TemplateElementNode element
-                        = new TemplateElementNode(name, false, new ArrayList<TemplateAttribute>());
+                final TemplateElementNode element =
+                        new TemplateElementNode(name, false, new ArrayList<TemplateAttribute>());
                 elementStack.peek().addChild(element);
                 element.setHasEndElement();
             }

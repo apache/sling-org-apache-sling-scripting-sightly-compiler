@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.plugin;
 
 import org.apache.sling.scripting.sightly.compiler.commands.OutputVariable;
@@ -40,14 +40,17 @@ public class TextPlugin extends AbstractPlugin {
     }
 
     @Override
-    public PluginInvoke invoke(final Expression expression, PluginCallInfo callInfo, final CompilerContext compilerContext) {
+    public PluginInvoke invoke(
+            final Expression expression, PluginCallInfo callInfo, final CompilerContext compilerContext) {
         return new DefaultPluginInvoke() {
 
             @Override
             public void beforeChildren(PushStream stream) {
                 String variable = compilerContext.generateVariable("textContent");
-                stream.write(new VariableBinding.Start(variable,
-                        adjustContext(compilerContext, expression, MarkupContext.TEXT, ExpressionContext.TEXT).getRoot()));
+                stream.write(new VariableBinding.Start(
+                        variable,
+                        adjustContext(compilerContext, expression, MarkupContext.TEXT, ExpressionContext.TEXT)
+                                .getRoot()));
                 stream.write(new OutputVariable(variable));
                 stream.write(VariableBinding.END);
                 Patterns.beginStreamIgnore(stream);
@@ -60,8 +63,11 @@ public class TextPlugin extends AbstractPlugin {
         };
     }
 
-    private Expression adjustContext(CompilerContext compilerContext, Expression expression, MarkupContext markupContext,
-                                     ExpressionContext expressionContext) {
+    private Expression adjustContext(
+            CompilerContext compilerContext,
+            Expression expression,
+            MarkupContext markupContext,
+            ExpressionContext expressionContext) {
         ExpressionNode root = expression.getRoot();
         if (root instanceof RuntimeCall) {
             RuntimeCall runtimeCall = (RuntimeCall) root;

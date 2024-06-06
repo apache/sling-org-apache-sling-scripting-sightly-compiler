@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.filter;
 
 import java.util.Arrays;
@@ -41,8 +41,15 @@ public enum ExpressionContext {
     PLUGIN_DATA_SLY_LIST(new HashSet<>(Arrays.asList("begin", "step", "end"))),
     PLUGIN_DATA_SLY_REPEAT(new HashSet<>(Arrays.asList("begin", "step", "end"))),
     PLUGIN_DATA_SLY_INCLUDE(new HashSet<>(Arrays.asList("appendPath", "prependPath", "file", "requestAttributes"))),
-    PLUGIN_DATA_SLY_RESOURCE(new HashSet<>(Arrays.asList("appendPath", "prependPath", "file", "selectors", "addSelectors",
-            "removeSelectors", "resourceType", "requestAttributes"))),
+    PLUGIN_DATA_SLY_RESOURCE(new HashSet<>(Arrays.asList(
+            "appendPath",
+            "prependPath",
+            "file",
+            "selectors",
+            "addSelectors",
+            "removeSelectors",
+            "resourceType",
+            "requestAttributes"))),
     PLUGIN_DATA_SLY_TEMPLATE(Collections.emptySet()),
     PLUGIN_DATA_SLY_CALL(Collections.emptySet()),
     PLUGIN_DATA_SLY_UNWRAP(Collections.emptySet()),

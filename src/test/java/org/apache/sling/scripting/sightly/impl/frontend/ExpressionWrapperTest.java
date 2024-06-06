@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.frontend;
 
 import java.util.ArrayList;
@@ -129,16 +129,18 @@ public class ExpressionWrapperTest {
         options.put(URIManipulationFilter.FRAGMENT, new StringConstant("rewrite"));
         Map<String, ExpressionNode> query = new HashMap<>();
         query.put("q", new StringConstant("sightly"));
-        query.put("array", new ArrayLiteral(new ArrayList<ExpressionNode>() {{
-            add(new NumericConstant(1));
-            add(new NumericConstant(2));
-            add(new NumericConstant(3));
-        }}));
+        query.put("array", new ArrayLiteral(new ArrayList<ExpressionNode>() {
+            {
+                add(new NumericConstant(1));
+                add(new NumericConstant(2));
+                add(new NumericConstant(3));
+            }
+        }));
         options.put(URIManipulationFilter.QUERY, new MapLiteral(query));
         options.put(URIManipulationFilter.REMOVE_QUERY, new StringConstant("array"));
-        interpolation.addExpression(
-                new Expression(new StringConstant("http://www.example.com/resource.selector.extension/suffix#fragment?param=value"),
-                        options));
+        interpolation.addExpression(new Expression(
+                new StringConstant("http://www.example.com/resource.selector.extension/suffix#fragment?param=value"),
+                options));
         ExpressionWrapper wrapper = new ExpressionWrapper(new PushStream(), filters, Collections.emptySet());
         Expression result = wrapper.transform(interpolation, MarkupContext.TEXT, ExpressionContext.TEXT);
         List<ExpressionNode> xssArguments = runOptionsAndXSSAssertions(result, 0);
@@ -147,10 +149,12 @@ public class ExpressionWrapperTest {
     }
 
     private List<ExpressionNode> runOptionsAndXSSAssertions(Expression result, int expectedOptions) {
-        assertEquals("Options map size for expression after processing is different from expected.", expectedOptions, result.getOptions().size());
+        assertEquals(
+                "Options map size for expression after processing is different from expected.",
+                expectedOptions,
+                result.getOptions().size());
         RuntimeCall xss = (RuntimeCall) result.getRoot();
         assertEquals("Expected XSS escaping applied to expression.", RuntimeCall.XSS, xss.getFunctionName());
         return xss.getArguments();
     }
-
 }

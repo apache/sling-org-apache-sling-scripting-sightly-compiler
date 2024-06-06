@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.plugin;
 
 import java.util.HashMap;
@@ -57,16 +57,17 @@ public class AttributePlugin extends AbstractPlugin {
         priority = 150;
     }
 
-
     @Override
     public PluginInvoke invoke(Expression expression, PluginCallInfo callInfo, CompilerContext compilerContext) {
         String attributeName = decodeAttributeName(callInfo);
         if (attributeName != null && MarkupUtils.isSensitiveAttribute(attributeName)) {
-            String warningMessage = String.format("Sensible attribute (%s) detected: event attributes (on*) and the style attribute " +
-                    "cannot be generated with the data-sly-attribute block element; if you need to output a dynamic value for " +
-                    "this attribute then use an expression with an appropriate context.", attributeName);
+            String warningMessage = String.format(
+                    "Sensible attribute (%s) detected: event attributes (on*) and the style attribute "
+                            + "cannot be generated with the data-sly-attribute block element; if you need to output a dynamic value for "
+                            + "this attribute then use an expression with an appropriate context.",
+                    attributeName);
             compilerContext.getPushStream().warn(new PushStream.StreamMessage(warningMessage, expression.getRawText()));
-            return new DefaultPluginInvoke(); //no-op invocation
+            return new DefaultPluginInvoke(); // no-op invocation
         }
         return (attributeName != null)
                 ? new SingleAttributeInvoke(attributeName, expression, compilerContext)
@@ -101,7 +102,10 @@ public class AttributePlugin extends AbstractPlugin {
             this.shouldDisplayAttribute = compilerContext.generateVariable("shouldDisplayAttr_" + attributeName);
             this.node = expression.getRoot();
             if (!expression.containsOption(Syntax.CONTEXT_OPTION)) {
-                this.contentNode = escapeNodeWithHint(compilerContext, new Identifier(attrValue), MarkupContext.ATTRIBUTE,
+                this.contentNode = escapeNodeWithHint(
+                        compilerContext,
+                        new Identifier(attrValue),
+                        MarkupContext.ATTRIBUTE,
                         new StringConstant(attributeName));
             } else {
                 this.contentNode = new Identifier(attrValue);
@@ -163,31 +167,31 @@ public class AttributePlugin extends AbstractPlugin {
         private void emitStart(PushStream stream) {
             stream.write(new VariableBinding.Start(attrValue, node));
             stream.write(new VariableBinding.Start(escapedAttrValue, contentNode));
-            stream.write(
-                new VariableBinding.Start(
+            stream.write(new VariableBinding.Start(
                     shouldDisplayAttribute,
-                        new BinaryOperation(
-                                BinaryOperator.AND,
-                                new BinaryOperation(
-                                        BinaryOperator.AND,
-                                        new BinaryOperation(BinaryOperator.NEQ, NullLiteral.INSTANCE, new Identifier(escapedAttrValue)),
-                                        new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(escapedAttrValue))
-                                ),
-                                new BinaryOperation(BinaryOperator.AND,
-                                        new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrValue)),
-                                        new BinaryOperation(BinaryOperator.NEQ, BooleanConstant.FALSE, new Identifier(attrValue))
-                                )
-                        )
-                )
-            );
+                    new BinaryOperation(
+                            BinaryOperator.AND,
+                            new BinaryOperation(
+                                    BinaryOperator.AND,
+                                    new BinaryOperation(
+                                            BinaryOperator.NEQ, NullLiteral.INSTANCE, new Identifier(escapedAttrValue)),
+                                    new BinaryOperation(
+                                            BinaryOperator.NEQ,
+                                            StringConstant.EMPTY,
+                                            new Identifier(escapedAttrValue))),
+                            new BinaryOperation(
+                                    BinaryOperator.AND,
+                                    new BinaryOperation(
+                                            BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrValue)),
+                                    new BinaryOperation(
+                                            BinaryOperator.NEQ, BooleanConstant.FALSE, new Identifier(attrValue))))));
             stream.write(new Conditional.Start(shouldDisplayAttribute, true));
         }
 
         private void emitWrite(PushStream stream) {
-            stream.write(new VariableBinding.Start(isTrueValue,
-                    new BinaryOperation(BinaryOperator.EQ,
-                            BooleanConstant.TRUE,
-                            new Identifier(attrValue))));
+            stream.write(new VariableBinding.Start(
+                    isTrueValue,
+                    new BinaryOperation(BinaryOperator.EQ, BooleanConstant.TRUE, new Identifier(attrValue))));
             stream.write(new Conditional.Start(isTrueValue, false));
             stream.write(new OutText("=\""));
             stream.write(new OutputVariable(escapedAttrValue));
@@ -230,7 +234,8 @@ public class AttributePlugin extends AbstractPlugin {
                 String attrNameVar = compilerContext.generateVariable("attrName_" + attributeName);
                 String attrValue = compilerContext.generateVariable("mapContains_" + attributeName);
                 stream.write(new VariableBinding.Start(attrNameVar, new StringConstant(attributeName)));
-                stream.write(new VariableBinding.Start(attrValue, attributeValueNode(new StringConstant(attributeName))));
+                stream.write(
+                        new VariableBinding.Start(attrValue, attributeValueNode(new StringConstant(attributeName))));
                 writeAttribute(stream, attrNameVar, attrValue);
                 stream.write(new Conditional.Start(attrValue, false));
             }
@@ -272,17 +277,17 @@ public class AttributePlugin extends AbstractPlugin {
             String attrNameEscaped = compilerContext.generateVariable("attrNameEscaped");
             String attrIndex = compilerContext.generateVariable("attrIndex");
             stream.write(new Loop.Start(attrMapVar, attrNameVar, attrIndex));
-            stream.write(new VariableBinding.Start(attrNameEscaped,
-                    escapeNode(new Identifier(attrNameVar), MarkupContext.ATTRIBUTE_NAME, null)));
+            stream.write(new VariableBinding.Start(
+                    attrNameEscaped, escapeNode(new Identifier(attrNameVar), MarkupContext.ATTRIBUTE_NAME, null)));
             stream.write(new Conditional.Start(attrNameEscaped, true));
             String isIgnoredAttr = compilerContext.generateVariable("isIgnoredAttr");
-            stream.write(
-                    new VariableBinding.Start(isIgnoredAttr, new PropertyAccess(new Identifier(ignoredVar), new Identifier(attrNameVar))));
+            stream.write(new VariableBinding.Start(
+                    isIgnoredAttr, new PropertyAccess(new Identifier(ignoredVar), new Identifier(attrNameVar))));
             stream.write(new Conditional.Start(isIgnoredAttr, false));
             String attrContent = compilerContext.generateVariable("attrContent");
             stream.write(new VariableBinding.Start(attrContent, attributeValueNode(new Identifier(attrNameVar))));
             writeAttribute(stream, attrNameEscaped, attrContent);
-            stream.write(VariableBinding.END); //end of attrContent
+            stream.write(VariableBinding.END); // end of attrContent
             stream.write(Conditional.END);
             stream.write(VariableBinding.END);
             stream.write(Conditional.END);
@@ -295,27 +300,28 @@ public class AttributePlugin extends AbstractPlugin {
         private void writeAttribute(PushStream stream, String attrNameVar, String attrContentVar) {
             String escapedContent = compilerContext.generateVariable("attrContentEscaped");
             String shouldDisplayAttribute = compilerContext.generateVariable("shouldDisplayAttr");
-            stream.write(new VariableBinding.Start(escapedContent,
-                    escapedExpression(new Identifier(attrContentVar), new Identifier(attrNameVar))));
-            stream.write(
-                    new VariableBinding.Start(
-                            shouldDisplayAttribute,
+            stream.write(new VariableBinding.Start(
+                    escapedContent, escapedExpression(new Identifier(attrContentVar), new Identifier(attrNameVar))));
+            stream.write(new VariableBinding.Start(
+                    shouldDisplayAttribute,
+                    new BinaryOperation(
+                            BinaryOperator.AND,
                             new BinaryOperation(
                                     BinaryOperator.AND,
                                     new BinaryOperation(
-                                            BinaryOperator.AND,
-                                            new BinaryOperation(BinaryOperator.NEQ, NullLiteral.INSTANCE, new Identifier(escapedContent)),
-                                            new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(escapedContent))
-                                    ),
-                                    new BinaryOperation(BinaryOperator.AND,
-                                            new BinaryOperation(BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrContentVar)),
-                                            new BinaryOperation(BinaryOperator.NEQ, BooleanConstant.FALSE, new Identifier(attrContentVar))
-                                    )
-                            )
-                    )
-            );
+                                            BinaryOperator.NEQ, NullLiteral.INSTANCE, new Identifier(escapedContent)),
+                                    new BinaryOperation(
+                                            BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(escapedContent))),
+                            new BinaryOperation(
+                                    BinaryOperator.AND,
+                                    new BinaryOperation(
+                                            BinaryOperator.NEQ, StringConstant.EMPTY, new Identifier(attrContentVar)),
+                                    new BinaryOperation(
+                                            BinaryOperator.NEQ,
+                                            BooleanConstant.FALSE,
+                                            new Identifier(attrContentVar))))));
             stream.write(new Conditional.Start(shouldDisplayAttribute, true));
-            stream.write(new OutText(" "));   //write("attrName");
+            stream.write(new OutText(" ")); // write("attrName");
             writeAttributeName(stream, attrNameVar);
             writeAttributeValue(stream, escapedContent, attrContentVar);
             stream.write(Conditional.END);
@@ -329,17 +335,19 @@ public class AttributePlugin extends AbstractPlugin {
 
         private void writeAttributeValue(PushStream stream, String escapedContent, String attrContentVar) {
 
-            String isTrueVar = compilerContext.generateVariable("isTrueAttr"); // holds the comparison (attrValue == true)
-            stream.write(new VariableBinding.Start(isTrueVar, //isTrueAttr = (attrContent == true)
+            String isTrueVar =
+                    compilerContext.generateVariable("isTrueAttr"); // holds the comparison (attrValue == true)
+            stream.write(new VariableBinding.Start(
+                    isTrueVar, // isTrueAttr = (attrContent == true)
                     new BinaryOperation(BinaryOperator.EQ, BooleanConstant.TRUE, new Identifier(attrContentVar))));
-            stream.write(new Conditional.Start(isTrueVar, false)); //if (!isTrueAttr)
+            stream.write(new Conditional.Start(isTrueVar, false)); // if (!isTrueAttr)
             stream.write(new OutText("=\""));
 
-            stream.write(new OutputVariable(escapedContent)); //write(escapedContent)
+            stream.write(new OutputVariable(escapedContent)); // write(escapedContent)
 
             stream.write(new OutText("\""));
-            stream.write(Conditional.END); //end if isTrueAttr
-            stream.write(VariableBinding.END); //end scope for isTrueAttr
+            stream.write(Conditional.END); // end if isTrueAttr
+            stream.write(VariableBinding.END); // end scope for isTrueAttr
         }
 
         private ExpressionNode attributeValueNode(ExpressionNode attributeNameNode) {
@@ -355,12 +363,14 @@ public class AttributePlugin extends AbstractPlugin {
         }
     }
 
-    private static ExpressionNode escapeNodeWithHint(CompilerContext compilerContext, ExpressionNode node, MarkupContext markupContext,
-                                                     ExpressionNode hint) {
+    private static ExpressionNode escapeNodeWithHint(
+            CompilerContext compilerContext, ExpressionNode node, MarkupContext markupContext, ExpressionNode hint) {
         if (hint != null) {
-            //todo: this is not the indicated way to escape via XSS. Correct after modifying the compiler context API
+            // todo: this is not the indicated way to escape via XSS. Correct after modifying the compiler context API
             return new RuntimeCall(RuntimeCall.XSS, node, new StringConstant(markupContext.getName()), hint);
         }
-        return compilerContext.adjustToContext(new Expression(node), markupContext, ExpressionContext.ATTRIBUTE).getRoot();
+        return compilerContext
+                .adjustToContext(new Expression(node), markupContext, ExpressionContext.ATTRIBUTE)
+                .getRoot();
     }
 }

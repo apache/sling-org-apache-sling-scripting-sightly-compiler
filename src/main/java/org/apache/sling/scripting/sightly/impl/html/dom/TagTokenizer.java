@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.html.dom;
 
 import java.io.CharArrayWriter;
@@ -42,37 +42,37 @@ class TagTokenizer {
     private final AttributeListImpl attributes = new AttributeListImpl();
 
     /** Parse state constant */
-    private final static int START = 0;
+    private static final int START = 0;
 
     /** Parse state constant */
-    private final static int TAG = START + 1;
+    private static final int TAG = START + 1;
 
     /** Parse state constant */
-    private final static int NAME = TAG + 1;
+    private static final int NAME = TAG + 1;
 
     /** Parse state constant */
-    private final static int INSIDE = NAME + 1;
+    private static final int INSIDE = NAME + 1;
 
     /** Parse state constant */
-    private final static int ATTNAME = INSIDE + 1;
+    private static final int ATTNAME = INSIDE + 1;
 
     /** Parse state constant */
-    private final static int EQUAL = ATTNAME + 1;
+    private static final int EQUAL = ATTNAME + 1;
 
     /** Parse state constant */
-    private final static int ATTVALUE = EQUAL + 1;
+    private static final int ATTVALUE = EQUAL + 1;
 
     /** Parse state constant */
-    private final static int STRING = ATTVALUE + 1;
+    private static final int STRING = ATTVALUE + 1;
 
     /** Parse state constant */
-    private final static int ENDSLASH = STRING + 1;
+    private static final int ENDSLASH = STRING + 1;
 
     /** Parse state constant */
-    private final static int END = ENDSLASH + 1;
+    private static final int END = ENDSLASH + 1;
 
     /** Parse state constant */
-    private final static int BETWEEN_ATTNAME = END + 1;
+    private static final int BETWEEN_ATTNAME = END + 1;
 
     /** Quote character */
     private char quoteChar = '"';
@@ -239,7 +239,6 @@ class TagTokenizer {
                     break;
                 case END:
                     break;
-
             }
         }
     }
@@ -294,11 +293,9 @@ class TagTokenizer {
     private void attributeEnded() {
         if (attName.size() > 0) {
             if (hasAttributeValue) {
-                attributes.addAttribute(attName.toString(), attValue.toString(),
-                        quoteChar);
+                attributes.addAttribute(attName.toString(), attValue.toString(), quoteChar);
             } else {
                 attributes.addAttribute(attName.toString(), quoteChar);
-
             }
             attName.reset();
             attValue.reset();

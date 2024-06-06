@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,19 +15,19 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.compiler.optimization.reduce;
 
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
-import org.apache.sling.scripting.sightly.impl.compiler.optimization.StreamTransformer;
 import org.apache.sling.scripting.sightly.compiler.commands.Command;
 import org.apache.sling.scripting.sightly.compiler.commands.CommandStream;
 import org.apache.sling.scripting.sightly.compiler.commands.VariableBinding;
-import org.apache.sling.scripting.sightly.impl.compiler.util.stream.EmitterVisitor;
+import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
 import org.apache.sling.scripting.sightly.impl.compiler.PushStream;
+import org.apache.sling.scripting.sightly.impl.compiler.optimization.StreamTransformer;
+import org.apache.sling.scripting.sightly.impl.compiler.util.stream.EmitterVisitor;
 import org.apache.sling.scripting.sightly.impl.compiler.util.stream.Streams;
 import org.apache.sling.scripting.sightly.impl.compiler.visitor.TrackingVisitor;
 
@@ -38,8 +38,7 @@ public final class ConstantFolding extends TrackingVisitor<EvalResult> implement
 
     private final PushStream outStream = new PushStream();
 
-    private ConstantFolding() {
-    }
+    private ConstantFolding() {}
 
     public static StreamTransformer transformer() {
         return new StreamTransformer() {
@@ -61,9 +60,9 @@ public final class ConstantFolding extends TrackingVisitor<EvalResult> implement
     }
 
     private EvalResult avoidFoldingDataStructures(EvalResult evalResult) {
-        //this prevents us from replacing variables that are bound to maps & collections
-        //in expressions since that would mean we rebuild the same constant data structures
-        //each time
+        // this prevents us from replacing variables that are bound to maps & collections
+        // in expressions since that would mean we rebuild the same constant data structures
+        // each time
         if (evalResult.isConstant() && isDataStructure(evalResult.getValue())) {
             return EvalResult.nonConstant(evalResult.getNode());
         }

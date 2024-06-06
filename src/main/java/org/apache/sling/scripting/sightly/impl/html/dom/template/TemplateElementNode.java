@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.html.dom.template;
 
 import java.util.ArrayList;
@@ -35,9 +35,7 @@ public class TemplateElementNode extends TemplateNode {
 
     private final List<TemplateNode> children = new ArrayList<TemplateNode>();
 
-    public TemplateElementNode(final String name,
-                               final boolean hasEndSlash,
-                               final List<TemplateAttribute> attributes) {
+    public TemplateElementNode(final String name, final boolean hasEndSlash, final List<TemplateAttribute> attributes) {
         this.name = name;
         this.hasEndSlash = hasEndSlash;
         this.attributes = attributes;

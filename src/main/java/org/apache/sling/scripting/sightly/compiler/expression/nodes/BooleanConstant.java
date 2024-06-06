@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler.expression.nodes;
 
 import org.apache.sling.scripting.sightly.compiler.expression.NodeVisitor;
@@ -62,7 +62,6 @@ public final class BooleanConstant implements Atom {
         return rawText;
     }
 
-
     @Override
     public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.evaluate(this);
@@ -70,9 +69,6 @@ public final class BooleanConstant implements Atom {
 
     @Override
     public String toString() {
-        return "BooleanConstant{" +
-                "rawText='" + rawText + '\'' +
-                '}';
+        return "BooleanConstant{" + "rawText='" + rawText + '\'' + '}';
     }
-
 }

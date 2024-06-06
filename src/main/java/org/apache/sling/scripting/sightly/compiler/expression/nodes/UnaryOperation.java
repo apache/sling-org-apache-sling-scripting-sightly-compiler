@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler.expression.nodes;
 
 import org.apache.sling.scripting.sightly.compiler.expression.ExpressionNode;
@@ -65,10 +65,6 @@ public final class UnaryOperation implements ExpressionNode {
 
     @Override
     public String toString() {
-        return "UnaryOperation{" +
-                "operator=" + operator +
-                ", operand=" + target +
-                '}';
+        return "UnaryOperation{" + "operator=" + operator + ", operand=" + target + '}';
     }
-
 }

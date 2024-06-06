@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.plugin;
 
 import org.apache.sling.scripting.sightly.compiler.commands.OutputVariable;
@@ -38,7 +38,8 @@ public class IncludePlugin extends AbstractPlugin {
     }
 
     @Override
-    public PluginInvoke invoke(final Expression expression, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
+    public PluginInvoke invoke(
+            final Expression expression, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
         return new DefaultPluginInvoke() {
 
             @Override
@@ -46,11 +47,15 @@ public class IncludePlugin extends AbstractPlugin {
                 String includedContentVar = compilerContext.generateVariable("includedResult");
                 String pathVar = compilerContext.generateVariable("includePath");
                 stream.write(new VariableBinding.Start(pathVar, expression.getRoot()));
-                stream.write(new VariableBinding.Start(includedContentVar,
-                        new RuntimeCall(RuntimeCall.INCLUDE, new Identifier(pathVar), new MapLiteral(expression.getOptions()))));
+                stream.write(new VariableBinding.Start(
+                        includedContentVar,
+                        new RuntimeCall(
+                                RuntimeCall.INCLUDE,
+                                new Identifier(pathVar),
+                                new MapLiteral(expression.getOptions()))));
                 stream.write(new OutputVariable(includedContentVar));
-                stream.write(VariableBinding.END); //end includedContentVar
-                stream.write(VariableBinding.END); //end pathVar
+                stream.write(VariableBinding.END); // end includedContentVar
+                stream.write(VariableBinding.END); // end pathVar
                 Patterns.beginStreamIgnore(stream);
             }
 

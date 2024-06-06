@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.compiler.commands;
 
 /**
@@ -24,62 +24,38 @@ package org.apache.sling.scripting.sightly.compiler.commands;
 public abstract class AbstractCommandVisitor implements CommandVisitor {
 
     @Override
-    public void visit(Conditional.Start conditionalStart) {
-
-    }
+    public void visit(Conditional.Start conditionalStart) {}
 
     @Override
-    public void visit(Conditional.End conditionalEnd) {
-
-    }
+    public void visit(Conditional.End conditionalEnd) {}
 
     @Override
-    public void visit(VariableBinding.Start variableBindingStart) {
-
-    }
+    public void visit(VariableBinding.Start variableBindingStart) {}
 
     @Override
-    public void visit(VariableBinding.End variableBindingEnd) {
-
-    }
+    public void visit(VariableBinding.End variableBindingEnd) {}
 
     @Override
-    public void visit(VariableBinding.Global globalAssignment) {
-
-    }
+    public void visit(VariableBinding.Global globalAssignment) {}
 
     @Override
-    public void visit(OutputVariable outputVariable) {
-
-    }
+    public void visit(OutputVariable outputVariable) {}
 
     @Override
-    public void visit(OutText outText) {
-
-    }
+    public void visit(OutText outText) {}
 
     @Override
-    public void visit(Loop.Start loopStart) {
-
-    }
+    public void visit(Loop.Start loopStart) {}
 
     @Override
-    public void visit(Loop.End loopEnd) {
-
-    }
+    public void visit(Loop.End loopEnd) {}
 
     @Override
-    public void visit(Procedure.Start startProcedure) {
-
-    }
+    public void visit(Procedure.Start startProcedure) {}
 
     @Override
-    public void visit(Procedure.End endProcedure) {
-
-    }
+    public void visit(Procedure.End endProcedure) {}
 
     @Override
-    public void visit(Procedure.Call procedureCall) {
-
-    }
+    public void visit(Procedure.Call procedureCall) {}
 }

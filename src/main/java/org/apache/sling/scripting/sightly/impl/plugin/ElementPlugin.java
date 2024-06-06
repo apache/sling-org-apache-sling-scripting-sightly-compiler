@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.plugin;
 
 import java.util.ArrayList;
@@ -49,20 +49,30 @@ public class ElementPlugin extends AbstractPlugin {
         name = "element";
     }
 
-    public static final Set<ExpressionNode> VOID_ELEMENTS =
-            Collections.unmodifiableSet(new HashSet<>(
-                    Arrays.asList(new StringConstant("area"), new StringConstant("base"), new StringConstant("br"),
-                            new StringConstant("col"), new StringConstant("embed"), new StringConstant("hr"), new StringConstant("img"),
-                            new StringConstant("input"), new StringConstant("link"), new StringConstant("meta"),
-                            new StringConstant("param"), new StringConstant("source"), new StringConstant("track"),
-                            new StringConstant("wbr"))));
+    public static final Set<ExpressionNode> VOID_ELEMENTS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+            new StringConstant("area"),
+            new StringConstant("base"),
+            new StringConstant("br"),
+            new StringConstant("col"),
+            new StringConstant("embed"),
+            new StringConstant("hr"),
+            new StringConstant("img"),
+            new StringConstant("input"),
+            new StringConstant("link"),
+            new StringConstant("meta"),
+            new StringConstant("param"),
+            new StringConstant("source"),
+            new StringConstant("track"),
+            new StringConstant("wbr"))));
 
     @Override
-    public PluginInvoke invoke(final Expression expression, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
+    public PluginInvoke invoke(
+            final Expression expression, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
 
         return new DefaultPluginInvoke() {
 
-            private final ExpressionNode node = adjustContext(compilerContext, expression).getRoot();
+            private final ExpressionNode node =
+                    adjustContext(compilerContext, expression).getRoot();
             private final String tagVar = compilerContext.generateVariable("tagVar");
             private final String tagAllowed = compilerContext.generateVariable("tagAllowed");
             private final String voidElements = compilerContext.generateGlobalVariable("elementPluginVoidElements");
@@ -70,10 +80,13 @@ public class ElementPlugin extends AbstractPlugin {
 
             @Override
             public void beforeElement(PushStream stream, String tagName) {
-                stream.write(new VariableBinding.Global(voidElements, new ArrayLiteral(new ArrayList<>(VOID_ELEMENTS))));
+                stream.write(
+                        new VariableBinding.Global(voidElements, new ArrayLiteral(new ArrayList<>(VOID_ELEMENTS))));
                 stream.write(new VariableBinding.Start(tagVar, node));
-                stream.write(new VariableBinding.Start(tagAllowed, new UnaryOperation(UnaryOperator.NOT,
-                        new UnaryOperation(UnaryOperator.NOT, new Identifier(tagVar)))));
+                stream.write(new VariableBinding.Start(
+                        tagAllowed,
+                        new UnaryOperation(
+                                UnaryOperator.NOT, new UnaryOperation(UnaryOperator.NOT, new Identifier(tagVar)))));
             }
 
             @Override
@@ -106,11 +119,9 @@ public class ElementPlugin extends AbstractPlugin {
             @Override
             public void beforeTagClose(PushStream stream, boolean isSelfClosing) {
                 stream.write(new Conditional.Start(tagAllowed, true));
-                stream.write(
-                        new VariableBinding.Start(selfClosingTag,
-                                new BinaryOperation(BinaryOperator.IN, new Identifier(tagVar), new Identifier(voidElements))
-                        )
-                );
+                stream.write(new VariableBinding.Start(
+                        selfClosingTag,
+                        new BinaryOperation(BinaryOperator.IN, new Identifier(tagVar), new Identifier(voidElements))));
                 stream.write(new Conditional.Start(selfClosingTag, false));
                 stream.write(new OutText("</"));
                 stream.write(new OutputVariable(tagVar));
@@ -132,7 +143,6 @@ public class ElementPlugin extends AbstractPlugin {
                 stream.write(VariableBinding.END);
             }
         };
-
     }
 
     private Expression adjustContext(CompilerContext compilerContext, Expression expression) {

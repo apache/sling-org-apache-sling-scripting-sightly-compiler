@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.filter;
 
 import java.util.Arrays;
@@ -42,7 +42,10 @@ public class FormatFilter extends AbstractFilter {
     }
 
     private FormatFilter() {
-        super(NON_PARAMETRIZABLE_CONTEXTS, new HashSet<>(Arrays.asList(FORMAT_OPTION, TYPE_OPTION, I18nFilter.LOCALE_OPTION, TIMEZONE_OPTION)), Collections.singleton(FORMAT_OPTION));
+        super(
+                NON_PARAMETRIZABLE_CONTEXTS,
+                new HashSet<>(Arrays.asList(FORMAT_OPTION, TYPE_OPTION, I18nFilter.LOCALE_OPTION, TIMEZONE_OPTION)),
+                Collections.singleton(FORMAT_OPTION));
     }
 
     public static FormatFilter getInstance() {
@@ -51,8 +54,7 @@ public class FormatFilter extends AbstractFilter {
 
     @Override
     protected Expression apply(Expression expression, Map<String, ExpressionNode> options) {
-        ExpressionNode translation =
-                new RuntimeCall(RuntimeCall.FORMAT, expression.getRoot(), new MapLiteral(options));
+        ExpressionNode translation = new RuntimeCall(RuntimeCall.FORMAT, expression.getRoot(), new MapLiteral(options));
         return expression.withNode(translation);
     }
 }

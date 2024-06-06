@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- ******************************************************************************/
+ */
 package org.apache.sling.scripting.sightly.impl.plugin;
 
 import org.apache.sling.scripting.sightly.compiler.SightlyCompilerException;
@@ -35,9 +35,8 @@ public class CallPlugin extends AbstractPlugin {
     }
 
     @Override
-    public PluginInvoke invoke(final Expression expression,
-                               final PluginCallInfo callInfo,
-                               final CompilerContext compilerContext) {
+    public PluginInvoke invoke(
+            final Expression expression, final PluginCallInfo callInfo, final CompilerContext compilerContext) {
         if (callInfo.getArguments().length > 0) {
             throw new SightlyCompilerException("Call plugin should have no arguments.");
         }
@@ -53,7 +52,7 @@ public class CallPlugin extends AbstractPlugin {
                 stream.write(new Procedure.Call(templateVar, argsVar));
                 stream.write(VariableBinding.END);
                 stream.write(VariableBinding.END);
-                //ignoring everything else
+                // ignoring everything else
                 Patterns.beginStreamIgnore(stream);
             }
 
@@ -61,7 +60,6 @@ public class CallPlugin extends AbstractPlugin {
             public void afterChildren(PushStream stream) {
                 Patterns.endStreamIgnore(stream);
             }
-
         };
     }
 }
