@@ -41,15 +41,17 @@ public abstract class AbstractRepeatPlugin extends AbstractPlugin {
     protected static final String BEGIN = "begin";
     protected static final String STEP = "step";
     protected static final String END = "end";
+    protected static final String LENGTH = "length";
 
     protected MapLiteral buildStatusObj(String indexVar, String sizeVar) {
         HashMap<String, ExpressionNode> obj = new HashMap<>();
         Identifier indexId = new Identifier(indexVar);
+        Identifier size = new Identifier(size);
         BinaryOperation firstExpr = new BinaryOperation(BinaryOperator.EQ, indexId, NumericConstant.ZERO);
         BinaryOperation lastExpr = new BinaryOperation(
                 BinaryOperator.EQ,
                 indexId,
-                new BinaryOperation(BinaryOperator.SUB, new Identifier(sizeVar), NumericConstant.ONE));
+                new BinaryOperation(BinaryOperator.SUB, size, NumericConstant.ONE));
         obj.put(INDEX, indexId);
         obj.put(COUNT, new BinaryOperation(BinaryOperator.ADD, indexId, NumericConstant.ONE));
         obj.put(FIRST, firstExpr);
@@ -59,6 +61,7 @@ public abstract class AbstractRepeatPlugin extends AbstractPlugin {
         obj.put(LAST, lastExpr);
         obj.put(ODD, parityCheck(indexId, NumericConstant.ZERO));
         obj.put(EVEN, parityCheck(indexId, NumericConstant.ONE));
+        obj.put(LENGTH, size);
         return new MapLiteral(obj);
     }
 
