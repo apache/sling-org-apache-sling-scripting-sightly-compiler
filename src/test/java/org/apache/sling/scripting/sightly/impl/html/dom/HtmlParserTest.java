@@ -244,6 +244,29 @@ public class HtmlParserTest {
                 handler.onStartElementInvocations);
     }
 
+    @Test
+    public void testTrickyStringLiterals() throws IOException {
+        String[] testStrings = new String[] {
+            "${'easy case'}",
+            "${'looks like <html> but isn\\'t}",
+            "${'not over yet } but now it's over'}",
+            "${'not over } <br> now it's over'}",
+            "${'brace } <html> } escaped apos \\' } done'}",
+            "${\"brace } <html> } escaped quote \\\" } done\"}"
+        };
+
+        for (String testString : testStrings) {
+            Template reference = new Template();
+            reference.addChild(new TemplateTextNode(testString));
+
+            TemplateParser.TemplateParserContext context = new TemplateParser.TemplateParserContext();
+            HtmlParser.parse(new StringReader(testString), context);
+            Template parsed = context.getTemplate();
+
+            assertSameStructure(reference, parsed);
+        }
+    }
+
     abstract class AbstractDocumentHandler implements DocumentHandler {
 
         private String lastProcessedTag;
