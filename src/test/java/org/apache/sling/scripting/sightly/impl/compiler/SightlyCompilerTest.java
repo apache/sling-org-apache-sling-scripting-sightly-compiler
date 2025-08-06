@@ -238,6 +238,14 @@ public class SightlyCompilerTest {
         assertTrue(secondArgument instanceof MapLiteral);
     }
 
+    @Test
+    public void testMarkupInStringLiteral() {
+        CompilationResult result = compileFile("/markup-in-string-literal.html");
+        assertTrue(
+                "Didn't expect any warnings or errors.",
+                result.getErrors().isEmpty() && result.getWarnings().isEmpty());
+    }
+
     private CompilationResult compileFile(final String file) {
         InputStream stream = this.getClass().getResourceAsStream(file);
         final Reader reader = new InputStreamReader(stream);
